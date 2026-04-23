@@ -4,7 +4,7 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
  
   <modelVersion>4.0.0</modelVersion>
-  <groupId>edu.brown.cs</groupId>
+  <groupId>potato</groupId>
   <artifactId>catan</artifactId>
   <packaging>jar</packaging>
   <version>1.0</version>
@@ -113,7 +113,7 @@
                 </descriptorRefs>
                 <archive>
                     <manifest>
-                        <mainClass>edu.brown.cs.catan.Main</mainClass>
+                        <mainClass>catan.Main</mainClass>
                     </manifest>
                 </archive>
             </configuration>
