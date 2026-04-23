@@ -1,4 +1,4 @@
-package edu.brown.cs.networking;
+package tinc.networking;
 
 
 class Util {

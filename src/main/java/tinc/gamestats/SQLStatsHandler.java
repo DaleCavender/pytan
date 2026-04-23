@@ -1,4 +1,4 @@
-package edu.brown.cs.gamestats;
+package tinc.gamestats;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

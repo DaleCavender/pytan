@@ -9,9 +9,9 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 
-import edu.brown.cs.board.HexCoordinate;
-import edu.brown.cs.board.Intersection;
-import edu.brown.cs.board.IntersectionCoordinate;
+import tinc.board.HexCoordinate;
+import tinc.board.Intersection;
+import tinc.board.IntersectionCoordinate;
 import tinc.Player;
 import tinc.Referee;
 import tinc.Resource;

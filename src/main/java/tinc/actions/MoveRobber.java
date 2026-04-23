@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import edu.brown.cs.board.HexCoordinate;
+import tinc.board.HexCoordinate;
 import tinc.Player;
 import tinc.Referee;
 import tinc.Resource;

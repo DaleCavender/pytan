@@ -1,4 +1,4 @@
-package edu.brown.cs.graph;
+package tinc.graph;
 
 import static org.junit.Assert.assertTrue;
 

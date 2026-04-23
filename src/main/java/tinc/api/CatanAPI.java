@@ -1,4 +1,4 @@
-package edu.brown.cs.api;
+package tinc.api;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ import tinc.GameSettings;
 import tinc.MasterReferee;
 import tinc.Referee;
 import tinc.Referee.GameStatus;
-import edu.brown.cs.networking.API;
+import tinc.networking.API;
 
 public class CatanAPI implements API {
 

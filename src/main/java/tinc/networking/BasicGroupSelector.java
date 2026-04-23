@@ -1,9 +1,9 @@
-package edu.brown.cs.networking;
+package tinc.networking;
 
 import java.util.Collection;
 
-import edu.brown.cs.networking.Group;
-import edu.brown.cs.networking.UserGroup.UserGroupBuilder;
+import tinc.networking.Group;
+import tinc.networking.UserGroup.UserGroupBuilder;
 
 // a simple sorter that takes no preferences of the end user into account,
 // and simply filters groups by whether or not they're full.

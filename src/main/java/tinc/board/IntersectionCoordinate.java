@@ -1,4 +1,4 @@
-package edu.brown.cs.board;
+package tinc.board;
 
 /**
  * System for specifiying the location of the intersections on the board.

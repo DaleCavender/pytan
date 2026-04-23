@@ -1,4 +1,4 @@
-package edu.brown.cs.gamestats;
+package tinc.gamestats;
 
 public interface StatsHandler {
 

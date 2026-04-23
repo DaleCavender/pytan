@@ -6,9 +6,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import edu.brown.cs.board.HexCoordinate;
-import edu.brown.cs.board.IntersectionCoordinate;
-import edu.brown.cs.board.PathCoordinate;
+import tinc.board.HexCoordinate;
+import tinc.board.IntersectionCoordinate;
+import tinc.board.PathCoordinate;
 import tinc.MasterReferee;
 import tinc.Player;
 import tinc.Referee;

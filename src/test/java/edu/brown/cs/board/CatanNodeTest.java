@@ -1,10 +1,10 @@
-package edu.brown.cs.board;
+package tinc.board;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import edu.brown.cs.graph.Node;
+import tinc.graph.Node;
 
 public class CatanNodeTest {
 

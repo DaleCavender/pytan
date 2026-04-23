@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 import tinc.FollowUpAction;
-import edu.brown.cs.board.Board;
-import edu.brown.cs.board.Intersection;
-import edu.brown.cs.gamestats.CatanStats;
-import edu.brown.cs.gamestats.GameStats;
+import tinc.board.Board;
+import tinc.board.Intersection;
+import tinc.gamestats.CatanStats;
+import tinc.gamestats.GameStats;
 
 /**
  * An implementation of Referee that can read and write data. There should be

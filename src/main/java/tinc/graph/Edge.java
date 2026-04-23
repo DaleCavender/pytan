@@ -1,4 +1,4 @@
-package edu.brown.cs.graph;
+package tinc.graph;
 
 /**
  *

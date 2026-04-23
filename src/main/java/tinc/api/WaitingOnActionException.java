@@ -1,4 +1,4 @@
-package edu.brown.cs.api;
+package tinc.api;
 
 import java.util.HashMap;
 import java.util.Map;

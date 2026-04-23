@@ -1,4 +1,4 @@
-package edu.brown.cs.gamestats;
+package tinc.gamestats;
 
 import java.util.HashMap;
 import java.util.Map;

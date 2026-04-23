@@ -1,4 +1,4 @@
-package edu.brown.cs.board;
+package tinc.board;
 
 import tinc.Resource;
 

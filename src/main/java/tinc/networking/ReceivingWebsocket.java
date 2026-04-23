@@ -1,6 +1,6 @@
-package edu.brown.cs.networking;
+package tinc.networking;
 
-import static edu.brown.cs.networking.Util.print;
+import static tinc.networking.Util.print;
 
 import java.io.IOException;
 import java.net.HttpCookie;

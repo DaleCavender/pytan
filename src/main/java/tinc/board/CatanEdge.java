@@ -1,7 +1,7 @@
-package edu.brown.cs.board;
+package tinc.board;
 
-import edu.brown.cs.graph.Edge;
-import edu.brown.cs.graph.Node;
+import tinc.graph.Edge;
+import tinc.graph.Node;
 
 /**
  * Catan specific implementation of the Edge class for the graph.

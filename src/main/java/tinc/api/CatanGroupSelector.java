@@ -1,4 +1,4 @@
-package edu.brown.cs.api;
+package tinc.api;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,12 +7,12 @@ import java.util.Optional;
 
 import com.google.gson.JsonObject;
 
-import edu.brown.cs.networking.DistinctRandom;
-import edu.brown.cs.networking.Group;
-import edu.brown.cs.networking.GroupSelector;
-import edu.brown.cs.networking.RequestProcessor;
-import edu.brown.cs.networking.User;
-import edu.brown.cs.networking.UserGroup.UserGroupBuilder;
+import tinc.networking.DistinctRandom;
+import tinc.networking.Group;
+import tinc.networking.GroupSelector;
+import tinc.networking.RequestProcessor;
+import tinc.networking.User;
+import tinc.networking.UserGroup.UserGroupBuilder;
 
 public class CatanGroupSelector implements GroupSelector {
 

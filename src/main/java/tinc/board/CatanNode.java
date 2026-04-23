@@ -1,11 +1,11 @@
-package edu.brown.cs.board;
+package tinc.board;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import edu.brown.cs.graph.Edge;
-import edu.brown.cs.graph.Node;
+import tinc.graph.Edge;
+import tinc.graph.Node;
 
 /**
  * Catan specific implementation of the Node interface.

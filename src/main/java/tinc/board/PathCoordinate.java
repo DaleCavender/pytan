@@ -1,4 +1,4 @@
-package edu.brown.cs.board;
+package tinc.board;
 
 /**
  * System for maintaing and describing location of paths on the board.

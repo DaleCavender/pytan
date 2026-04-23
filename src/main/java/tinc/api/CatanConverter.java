@@ -1,4 +1,4 @@
-package edu.brown.cs.api;
+package tinc.api;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,17 +11,17 @@ import com.google.gson.JsonObject;
 
 import tinc.ActionResponse;
 import tinc.FollowUpAction;
-import edu.brown.cs.board.Board;
-import edu.brown.cs.board.BoardTile;
-import edu.brown.cs.board.Building;
-import edu.brown.cs.board.HexCoordinate;
-import edu.brown.cs.board.Intersection;
-import edu.brown.cs.board.IntersectionCoordinate;
-import edu.brown.cs.board.Path;
-import edu.brown.cs.board.Port;
-import edu.brown.cs.board.Road;
-import edu.brown.cs.board.Tile;
-import edu.brown.cs.board.TileType;
+import tinc.board.Board;
+import tinc.board.BoardTile;
+import tinc.board.Building;
+import tinc.board.HexCoordinate;
+import tinc.board.Intersection;
+import tinc.board.IntersectionCoordinate;
+import tinc.board.Path;
+import tinc.board.Port;
+import tinc.board.Road;
+import tinc.board.Tile;
+import tinc.board.TileType;
 import tinc.DevelopmentCard;
 import tinc.GameSettings;
 import tinc.Player;

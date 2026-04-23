@@ -5,10 +5,10 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-import edu.brown.cs.board.Intersection;
-import edu.brown.cs.board.IntersectionCoordinate;
-import edu.brown.cs.board.Path;
-import edu.brown.cs.board.PathCoordinate;
+import tinc.board.Intersection;
+import tinc.board.IntersectionCoordinate;
+import tinc.board.Path;
+import tinc.board.PathCoordinate;
 import tinc.Player;
 import tinc.Referee;
 import tinc.Referee.GameStatus;

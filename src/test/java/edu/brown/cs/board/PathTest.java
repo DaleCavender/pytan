@@ -1,4 +1,4 @@
-package edu.brown.cs.board;
+package tinc.board;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

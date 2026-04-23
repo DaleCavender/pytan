@@ -6,10 +6,10 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-import edu.brown.cs.api.CatanGroupSelector;
-import edu.brown.cs.networking.GCT;
-import edu.brown.cs.networking.GCT.GCTBuilder;
-import edu.brown.cs.networking.Networking;
+import tinc.api.CatanGroupSelector;
+import tinc.networking.GCT;
+import tinc.networking.GCT.GCTBuilder;
+import tinc.networking.Networking;
 import freemarker.template.Configuration;
 import spark.ModelAndView;
 import spark.Request;

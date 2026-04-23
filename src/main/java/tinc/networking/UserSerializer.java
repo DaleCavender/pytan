@@ -1,4 +1,4 @@
-package edu.brown.cs.networking;
+package tinc.networking;
 
 import java.lang.reflect.Type;
 

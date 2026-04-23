@@ -1,12 +1,12 @@
-package edu.brown.cs.api;
+package tinc.api;
 
 import com.google.gson.JsonObject;
 
-import edu.brown.cs.networking.API;
-import edu.brown.cs.networking.Group;
-import edu.brown.cs.networking.Networking;
-import edu.brown.cs.networking.RequestProcessor;
-import edu.brown.cs.networking.User;
+import tinc.networking.API;
+import tinc.networking.Group;
+import tinc.networking.Networking;
+import tinc.networking.RequestProcessor;
+import tinc.networking.User;
 
 
 public class GameOverProcessor implements RequestProcessor {

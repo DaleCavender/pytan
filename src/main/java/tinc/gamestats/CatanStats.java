@@ -1,4 +1,4 @@
-package edu.brown.cs.gamestats;
+package tinc.gamestats;
 
 //Higher level class for storing GameStats in database
 public class CatanStats {

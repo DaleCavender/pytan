@@ -1,4 +1,4 @@
-package edu.brown.cs.api;
+package tinc.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -20,8 +20,8 @@ import tinc.ProposeTrade;
 import tinc.StartGame;
 import tinc.TradeWithBank;
 import tinc.UpdateResource;
-import edu.brown.cs.board.HexCoordinate;
-import edu.brown.cs.board.IntersectionCoordinate;
+import tinc.board.HexCoordinate;
+import tinc.board.IntersectionCoordinate;
 import tinc.MasterReferee;
 import tinc.Player;
 import tinc.Referee;

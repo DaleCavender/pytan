@@ -6,7 +6,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import edu.brown.cs.board.Path;
+import tinc.board.Path;
 import tinc.DevelopmentCard;
 import tinc.Player;
 import tinc.Referee;

@@ -10,7 +10,7 @@ import java.util.Random;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 
-import edu.brown.cs.board.Tile;
+import tinc.board.Tile;
 import tinc.Player;
 import tinc.Referee;
 import tinc.Resource;

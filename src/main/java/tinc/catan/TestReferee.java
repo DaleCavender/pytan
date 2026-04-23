@@ -3,8 +3,8 @@ package tinc;
 import tinc.BuildCity;
 import tinc.BuildRoad;
 import tinc.BuildSettlement;
-import edu.brown.cs.board.HexCoordinate;
-import edu.brown.cs.board.IntersectionCoordinate;
+import tinc.board.HexCoordinate;
+import tinc.board.IntersectionCoordinate;
 
 /**
  * Used for Testing purposes.

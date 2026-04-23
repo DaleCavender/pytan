@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import tinc.FollowUpAction;
-import edu.brown.cs.board.Board;
-import edu.brown.cs.gamestats.GameStats;
+import tinc.board.Board;
+import tinc.gamestats.GameStats;
 
 public interface Referee {
 

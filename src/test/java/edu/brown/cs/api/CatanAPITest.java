@@ -1,4 +1,4 @@
-package edu.brown.cs.api;
+package tinc.api;
 
 import static org.junit.Assert.assertTrue;
 

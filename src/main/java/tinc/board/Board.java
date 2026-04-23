@@ -1,12 +1,13 @@
-package edu.brown.cs.board;
+package tinc.board;
 
-import static edu.brown.cs.board.TileType.BRICK;
-import static edu.brown.cs.board.TileType.DESERT;
-import static edu.brown.cs.board.TileType.ORE;
-import static edu.brown.cs.board.TileType.SEA;
-import static edu.brown.cs.board.TileType.SHEEP;
-import static edu.brown.cs.board.TileType.WHEAT;
-import static edu.brown.cs.board.TileType.WOOD;
+
+import static tinc.board.TileType.BRICK;
+import static tinc.board.TileType.DESERT;
+import static tinc.board.TileType.ORE;
+import static tinc.board.TileType.SEA;
+import static tinc.board.TileType.SHEEP;
+import static tinc.board.TileType.WHEAT;
+import static tinc.board.TileType.WOOD;
 import static tinc.Settings.NUM_BRICK_TILE;
 import static tinc.Settings.NUM_DESERT_TILE;
 import static tinc.Settings.NUM_ORE_TILE;
