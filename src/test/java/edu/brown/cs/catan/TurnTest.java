@@ -13,8 +13,8 @@ import org.junit.Test;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 
-import edu.brown.cs.actions.ActionResponse;
-import edu.brown.cs.actions.FollowUpAction;
+import tinc.ActionResponse;
+import tinc.FollowUpAction;
 
 public class TurnTest {
 

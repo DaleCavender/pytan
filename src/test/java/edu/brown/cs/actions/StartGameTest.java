@@ -1,4 +1,4 @@
-package edu.brown.cs.actions;
+package tinc;
 
 public class StartGameTest {
 
