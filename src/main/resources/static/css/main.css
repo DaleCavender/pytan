@@ -690,3 +690,121 @@ body {
 	overflow-y: auto;
 	margin-bottom: 0px;
 }
+/* New Floating Layout Overrides */
+#top-players-container {
+    position: absolute;
+    top: 10px;
+    width: 100vw;
+    z-index: 10;
+    pointer-events: none; /* Allows clicking the board between cards */
+}
+
+.player-cards-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 0 20px;
+}
+
+.player-tab-pane {
+    pointer-events: auto;
+    width: 250px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    height: auto !important; /* Overrides old tab logic */
+}
+
+#build-menu-container {
+    position: absolute;
+    bottom: 90px; /* Floats just above the bottom navbar */
+    right: 20px;
+    z-index: 10;
+}
+
+.build-item-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 15px;
+}
+
+.build-btn {
+    margin-bottom: 0 !important; /* Override old spacing */
+    width: 40px;
+    height: 40px;
+}
+
+.build-cost-group {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 14px;
+    gap: 4px;
+}
+
+.build-cost-group .circle {
+    margin: 0 6px 0 2px; /* Spaces out the graphic from the number */
+}
+
+/* Stop right tabs from taking up the whole screen height */
+.right-tab-pane {
+    height: auto !important;
+    min-height: 400px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Ensure we don't accidentally block the board */
+.pointer-events-none { pointer-events: none; }
+.pointer-events-auto { pointer-events: auto; }
+
+/* Interplayer Trade Grid UI */
+.trade-grid {
+    padding: 15px 10px 0 10px;
+}
+.trade-resource-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.trade-resource-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+.trade-stepper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.stepper-label {
+    font-size: 12px;
+    font-weight: bold;
+    width: 35px;
+}
+.trade-val {
+    font-weight: bold;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+.trade-btn-step {
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+}
+
+/* Extras UI */
+.extras-menu-group {
+    margin-bottom: 15px;
+}
+.extras-menu-group .list-group-item {
+    font-weight: 500;
+}
+.extras-menu-group .glyphicon {
+    margin-right: 8px;
+    color: #666;
+}

@@ -289,8 +289,6 @@ $("#city-build-btn").click(enterCityMode);
 $("#road-build-btn").click(enterRoadMode);
 
 // Exit build mode on the following actions
-$("#players-tab-toggle").click(exitBuildMode);
-$("#trade-tab-toggle").click(exitBuildMode);
 $("#end-turn-btn").click(exitBuildMode);
 $("#buy-dev-card-modal-open").click(exitBuildMode);
 $("#knight-btn").click(exitBuildMode);
@@ -890,19 +888,67 @@ function hideDisconnectedUsersModal() {
 
 var currentTrade = {brick: 0, wood: 0, ore: 0, wheat: 0, sheep: 0};
 
-// Clear the current interplayer trade
+// Clear the current interplayer trade UI
 function clearInterplayerTrades() {
-	// Clear currently displayed trade
-	$(".interplayer-trade-input").val("");
-	$(".to-give-list-item").addClass("hidden");
-	$(".to-get-list-item").addClass("hidden");
-	$(".trade-number").text("");
-
-	currentTrade = {brick: 0, wood: 0, ore: 0, wheat: 0, sheep: 0};
-
-	// Disabled trade button 
-	$("#propose-interplayer-trade-btn").prop("disabled", true);
+    currentTrade = {brick: 0, wood: 0, ore: 0, wheat: 0, sheep: 0};
+    $(".trade-val").text("0");
+    $(".to-give-list-item").addClass("hidden");
+    $(".to-get-list-item").addClass("hidden");
+    $("#propose-interplayer-trade-btn").prop("disabled", true);
 }
+
+// Handle updates to the amount of a resource via the new +/- buttons
+$(".trade-btn-step").click(function(event) {
+    var res = $(this).data("res");
+    var type = $(this).data("type"); // 'give' or 'want'
+    var action = $(this).data("action"); // 'plus' or 'minus'
+    
+    var playerHand = playersById[playerId].hand;
+    var maxToGive = playerHand[res];
+    
+    var oldVal = currentTrade[res] || 0;
+    var newVal = oldVal;
+
+    // Server expects negative numbers for giving, positive for receiving
+    if (type === 'give') {
+        if (action === 'plus') {
+            // Giving more (value becomes more negative)
+            // Block giving if they already "want" it, or if they don't have enough cards
+            if (oldVal <= 0 && -newVal < maxToGive) newVal--;
+        } else if (action === 'minus') {
+            // Giving less (value gets closer to 0)
+            if (newVal < 0) newVal++;
+        }
+    } else if (type === 'want') {
+        if (action === 'plus') {
+            // Wanting more (value becomes more positive)
+            // Block wanting if they are already "giving" it
+            if (oldVal >= 0) newVal++;
+        } else if (action === 'minus') {
+            // Wanting less (value gets closer to 0)
+            if (newVal > 0) newVal--;
+        }
+    }
+
+    if (newVal !== oldVal) {
+        currentTrade[res] = newVal;
+        
+        // Update UI Text values 
+        $("#give-val-" + res).text(newVal < 0 ? Math.abs(newVal) : 0);
+        $("#want-val-" + res).text(newVal > 0 ? newVal : 0);
+        
+        // Call the old update function for the hidden list (keeps old functionality intact)
+        updateToGiveGetPanels(res, newVal, oldVal);
+        
+        // Check if trade is valid
+        if (canTrade()) {
+            $("#propose-interplayer-trade-btn").prop("disabled", false);
+        } else {
+            $("#propose-interplayer-trade-btn").prop("disabled", true);
+        }
+    }
+});
+
 
 /*
  * Determine whether an interplayer trade can be proposed.
@@ -949,40 +995,6 @@ function updateToGiveGetPanels(resource, newVal, oldVal) {
 		element.children(".trade-number").text(Math.abs(newVal));
 	}
 }
-
-// Handle updates to the amount of a resource to trade.
-$(".interplayer-trade-input").change(function(event) {
-	var resource = $(this).attr("res");
-	var playerHand = playersById[playerId].hand;
-	var maxToGive = playerHand[resource];
-
-	var newVal = parseFloat(formatNumber(parseFloat($(this).val())));
-	var oldVal = $(this).data("oldVal");
-
-	if (newVal < -maxToGive) {
-		if (oldVal === undefined) {
-			$(this).val(0);
-		} else {
-			$(this).val(oldVal);
-		}
-	} else if (isNaN(newVal)) {
-		$(this).data("oldVal", 0);
-		$(this).val(0);
-		currentTrade[resource] = 0;
-		updateToGiveGetPanels(resource, 0, parseFloat(oldVal));
-	} else {
-		$(this).data("oldVal", newVal);
-		$(this).val(newVal);
-		currentTrade[resource] = newVal;
-		updateToGiveGetPanels(resource, newVal, parseFloat(oldVal));
-	}
-
-	if (canTrade()) {
-		$("#propose-interplayer-trade-btn").prop("disabled", false);
-	} else {
-		$("#propose-interplayer-trade-btn").prop("disabled", true);
-	}
-});
 
 // When the propose trade button is clicked send a propose trade action.
 $("#propose-interplayer-trade-btn").click(function(event) {

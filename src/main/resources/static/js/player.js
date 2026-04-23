@@ -27,82 +27,50 @@ function Player(id, name, color) {
  * Adds a tab to the players tabs with all of this player's information.
  */
 Player.prototype.addPlayerTab = function() {
-	var tabTitle = (this.id === playerId) ? "You" : "P" + this.id;
+    var tabTitle = (this.id === playerId) ? "You" : "P" + this.id;
+    
+    // Injecting directly as a card instead of a hidden tab panel
+    $("#player-tabs-content").append("<div class='player-tab-pane' id='p" + this.id + "-tab'></div>");
+    var tab = $("#p" + this.id + "-tab");
+    
+    var victoryPointsToDisplay = this.victoryPoints;
+    if (this.hand.hasOwnProperty("victoryPoint")) {
+        victoryPointsToDisplay = victoryPointsToDisplay + this.hand.victoryPoint;
+    }
+    
+    tab.append("<div class='player-name text-center'><h4>" + this.name + " (" + tabTitle + ")</h4></div>");
+    tab.append("<h4 class='text-center player-victory-points'>" + victoryPointsToDisplay 
+            + "<img class='player-tab-vp-icon' src='images/icon-victory-point.svg' alt='Victory Point'></h4>"
+            + "<h5 class='text-center playing-to'>Playing to " + gameSettings.winningPointCount + "</h5>");
+    
+    tab.append("<div class='panel panel-default player-tab-panel'><div class='panel-heading'>"
+            + "<h5 class='panel-title-small'>Hand & Resources</h5></div><div class='panel-body'>"
+            + "<p><strong>Cards:</strong> " + formatNumber(this.resourceCards) + " | <strong>Dev:</strong> " + this.developmentCards + "</p>"
+            + "<p><strong>Knights:</strong> " + this.playedKnights + "</p></div></div>");
+            
+    tab.append("<div class='panel panel-default player-tab-panel'><div class='panel-heading'>"
+            + "<h5 class='panel-title-small'>Buildings Remaining</h5></div><div class='panel-body'>"
+            + "<p><strong>R:</strong> " + this.roads + " | <strong>S:</strong> " + this.settlements + " | <strong>C:</strong> " + this.cities + "</p></div></div>");
 
-	var active = (this.id === parseInt(openedPlayerTab)) ? "class='active'" : "";
+    if (this.longestRoad) {
+        tab.append("<div class='longest-road-banner text-center'><h4>Longest Road<img src='images/icon-road-building.svg' alt='Road Building'></h4></div>");
+    }
+    if (this.largestArmy) {
+        tab.append("<div class='largest-army-banner text-center'><h4>Largest Army<img src='images/icon-knight.svg' alt='Knight'></h4></div>");
+    }
 
-	$("#player-tabs").append("<li role='presentation' player='" + this.id + "' id='p" + this.id + "-tab-tab'><a href='#p" + this.id + "-tab' aria-controls='home' "
-			+ "role='tab' data-toggle='tab'>" + tabTitle + "</a></li>");
-	$("#player-tabs-content").append("<div role='tabpanel' class='tab-pane player-tab-pane' id='p" + this.id + "-tab'></div>");
-
-	// Select active tab, or the first tab if 
-	if (this.id === openedPlayerTab) {
-		$("#p" + this.id + "-tab-tab").addClass("active");
-		$("#p" + this.id + "-tab").addClass("active");
-	}
-
-	var tabTab = $("#p" + this.id + "-tab-tab");
-	tabTab.children().css("background-color", this.color);
-	if (this.id === playerId) {
-		tabTab.children().css("color", (playerId !== 3) ? "white" : "black");
-	} else {
-		tabTab.children().css("color", this.color);
-	}
-
-	var tab = $("#p" + this.id + "-tab");
-	tab.empty();
-
-	var victoryPointsToDisplay = this.victoryPoints;
-	if (this.hand.hasOwnProperty("victoryPoint")) {
-		victoryPointsToDisplay = victoryPointsToDisplay + this.hand.victoryPoint;
-	}
-	
-	tab.append("<div class='player-name text-center'><h4>" + this.name + "</h4></div>");
-	tab.append("<h4 class='text-center player-victory-points'>" + victoryPointsToDisplay 
-			+ "<img class='player-tab-vp-icon' src='images/icon-victory-point.svg' alt='Victory Point'></h4>"
-			+ "<h5 class='text-center playing-to'>Playing to " + gameSettings.winningPointCount + "</h5>");
-	tab.append("<div class='panel panel-default player-tab-panel'><div class='panel-heading'>"
-			+ "<h5 class='panel-title-small'>Hand</h5></div><div class='panel-body'>"
-			+ "<p><strong>Resource Cards:</strong> " + formatNumber(this.resourceCards) + "</p>"
-			+ "<p><strong>Development Cards:</strong> " + this.developmentCards + "</p>"
-			+ "<p><strong>Played Knights:</strong> " + this.playedKnights + "</p></div></div>");
-	tab.append("<div class='panel panel-default player-tab-panel'><div class='panel-heading'>"
-			+ "<h5 class='panel-title-small'>Remaining Buildings</h5></div><div class='panel-body'"
-			+ "<p><strong>Roads:</strong> " + this.roads + "</p>"
-			+ "<p><strong>Settlements:</strong> " + this.settlements + "</p>"
-			+ "<p><strong>Cities:</strong> " + this.cities + "</p></div></div>");
-
-	// Add longest road banner if applicable
-	if (this.longestRoad) {
-		tab.append("<div class='longest-road-banner text-center'><h4>Longest Road"
-				+ "<img src='images/icon-road-building.svg' alt='Road Building'></h4></div>");
-	}
-
-	// Add largest army banner if applicable
-	if (this.largestArmy) {
-		tab.append("<div class='largest-army-banner text-center'><h4>Largest Army"
-				+ "<img src='images/icon-knight.svg' alt='Knight'></h4></div>");
-	}
-
-	// Modify color scheme to fit this player's color
-	var rgb = this.rgbColor.r + "," + this.rgbColor.g + "," + this.rgbColor.b;
-	tab.css("background-color", "rgba(" + rgb + ",0.2)");
-
-	var panels = $("#p" + this.id + "-tab .panel");
-	panels.css("border-color", "rgba(" + rgb + ",0.6)");
-
-	var panelHeadings = panels.children(".panel-heading");
-	panelHeadings.css("background-color", "rgba(" + rgb + ",0.4)");
-	panelHeadings.css("border-color", "rgba(" + rgb + ",0.6)");
-
-	var longestRoad = $("#p" + this.id + "-tab .longest-road-banner");
-	longestRoad.css("background-color", "rgba(" + rgb  + ",0.4)");
-	longestRoad.css("border-color", "rgba(" + rgb + ",0.6)");
-
-	var largestArmy = $("#p" + this.id + "-tab .largest-army-banner");
-	largestArmy.css("background-color", "rgba(" + rgb + ",0.4)");
-	largestArmy.css("border-color", "rgba(" + rgb + ",0.6)");
+    // Modify color scheme to fit this player's color
+    var rgb = this.rgbColor.r + "," + this.rgbColor.g + "," + this.rgbColor.b;
+    tab.css("background-color", "rgba(" + rgb + ",0.85)"); // increased opacity so they pop over the board
+    
+    var panels = $("#p" + this.id + "-tab .panel");
+    panels.css("border-color", "rgba(" + rgb + ",0.6)");
+    
+    var panelHeadings = panels.children(".panel-heading");
+    panelHeadings.css("background-color", "rgba(" + rgb + ",0.4)");
+    panelHeadings.css("border-color", "rgba(" + rgb + ",0.6)");
 }
+
 
 /*
  * Fills the appropriate sections of the turn display for this player.
