@@ -8,9 +8,9 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Referee;
-import edu.brown.cs.catan.Resource;
+import tinc.Player;
+import tinc.Referee;
+import tinc.Resource;
 
 /**
  * Action responsible for trading with the bank.

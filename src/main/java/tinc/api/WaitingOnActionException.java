@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import tinc.ActionResponse;
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Referee;
+import tinc.Player;
+import tinc.Referee;
 
 public class WaitingOnActionException extends Exception {
 

@@ -113,7 +113,7 @@
                 </descriptorRefs>
                 <archive>
                     <manifest>
-                        <mainClass>edu.brown.cs.catan.Main</mainClass>
+                        <mainClass>tinc.Main</mainClass>
                     </manifest>
                 </archive>
             </configuration>

@@ -1,4 +1,4 @@
-package edu.brown.cs.catan;
+package tinc;
 
 import java.io.File;
 import java.io.IOException;

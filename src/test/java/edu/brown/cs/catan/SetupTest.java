@@ -1,4 +1,4 @@
-package edu.brown.cs.catan;
+package tinc;
 
 public class SetupTest {
 

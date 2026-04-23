@@ -1,4 +1,4 @@
-package edu.brown.cs.catan;
+package tinc;
 
 import tinc.BuildCity;
 import tinc.BuildRoad;

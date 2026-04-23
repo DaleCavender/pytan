@@ -1,4 +1,4 @@
-package edu.brown.cs.catan;
+package tinc;
 
 /**
  * Represents a Catan DevelopmentCard. This Enum currently contains the Standard

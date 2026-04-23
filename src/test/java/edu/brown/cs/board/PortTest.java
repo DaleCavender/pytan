@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import edu.brown.cs.catan.Resource;
+import tinc.Resource;
 
 public class PortTest {
 

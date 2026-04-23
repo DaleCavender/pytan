@@ -1,11 +1,11 @@
-package edu.brown.cs.catan;
+package tinc;
 
-import static edu.brown.cs.catan.Settings.CITY_POINT_VAL;
-import static edu.brown.cs.catan.Settings.INITIAL_CITIES;
-import static edu.brown.cs.catan.Settings.INITIAL_SETTLEMENTS;
-import static edu.brown.cs.catan.Settings.LARGEST_ARMY_POINT_VAL;
-import static edu.brown.cs.catan.Settings.LONGEST_ROAD_POINT_VAL;
-import static edu.brown.cs.catan.Settings.SETTLEMENT_POINT_VAL;
+import static tinc.Settings.CITY_POINT_VAL;
+import static tinc.Settings.INITIAL_CITIES;
+import static tinc.Settings.INITIAL_SETTLEMENTS;
+import static tinc.Settings.LARGEST_ARMY_POINT_VAL;
+import static tinc.Settings.LONGEST_ROAD_POINT_VAL;
+import static tinc.Settings.SETTLEMENT_POINT_VAL;
 
 import java.util.ArrayList;
 import java.util.Collection;

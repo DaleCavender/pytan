@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Setup;
+import tinc.Player;
+import tinc.Setup;
 
 /**
  * Class paths between intersection.

@@ -7,13 +7,13 @@ import static edu.brown.cs.board.TileType.SEA;
 import static edu.brown.cs.board.TileType.SHEEP;
 import static edu.brown.cs.board.TileType.WHEAT;
 import static edu.brown.cs.board.TileType.WOOD;
-import static edu.brown.cs.catan.Settings.NUM_BRICK_TILE;
-import static edu.brown.cs.catan.Settings.NUM_DESERT_TILE;
-import static edu.brown.cs.catan.Settings.NUM_ORE_TILE;
-import static edu.brown.cs.catan.Settings.NUM_SHEEP_TILE;
-import static edu.brown.cs.catan.Settings.NUM_WHEAT_TILE;
-import static edu.brown.cs.catan.Settings.NUM_WOOD_TILE;
-import static edu.brown.cs.catan.Settings.ROLL_NUMS;
+import static tinc.Settings.NUM_BRICK_TILE;
+import static tinc.Settings.NUM_DESERT_TILE;
+import static tinc.Settings.NUM_ORE_TILE;
+import static tinc.Settings.NUM_SHEEP_TILE;
+import static tinc.Settings.NUM_WHEAT_TILE;
+import static tinc.Settings.NUM_WOOD_TILE;
+import static tinc.Settings.ROLL_NUMS;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.brown.cs.catan.GameSettings;
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Settings;
+import tinc.GameSettings;
+import tinc.Player;
+import tinc.Settings;
 
 /**
  * Board Class. Functions as a container class for all of the board data.

@@ -3,7 +3,7 @@ package edu.brown.cs.board;
 import java.util.List;
 import java.util.Set;
 
-import edu.brown.cs.catan.Resource;
+import tinc.Resource;
 
 /**
  * Board Tile interface, for types of tiles on the board.

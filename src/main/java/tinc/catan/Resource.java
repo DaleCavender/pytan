@@ -1,4 +1,4 @@
-package edu.brown.cs.catan;
+package tinc;
 
 /**
  * Represents a Catan resource. The Wildcard resource is added for convenience

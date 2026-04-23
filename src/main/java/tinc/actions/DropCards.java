@@ -7,9 +7,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Referee;
-import edu.brown.cs.catan.Resource;
+import tinc.Player;
+import tinc.Referee;
+import tinc.Resource;
 
 /**
  * Action responsible fro discarding cards.

@@ -8,11 +8,11 @@ import org.junit.Test;
 
 import com.google.gson.JsonObject;
 
-import edu.brown.cs.catan.GameSettings;
-import edu.brown.cs.catan.MasterReferee;
-import edu.brown.cs.catan.Referee;
-import edu.brown.cs.catan.Referee.GameStatus;
-import edu.brown.cs.catan.Resource;
+import tinc.GameSettings;
+import tinc.MasterReferee;
+import tinc.Referee;
+import tinc.Referee.GameStatus;
+import tinc.Resource;
 
 public class BuyDevelopmentCardTest {
   

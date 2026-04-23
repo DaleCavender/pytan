@@ -2,7 +2,7 @@ package tinc;
 
 import com.google.gson.JsonObject;
 
-import edu.brown.cs.catan.Referee;
+import tinc.Referee;
 
 /**
  * Interface for how FollowUp actions should act.

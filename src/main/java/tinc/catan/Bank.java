@@ -1,4 +1,4 @@
-package edu.brown.cs.catan;
+package tinc;
 
 /**
  * Represents a Catan Bank. A Bank must give bank trade and port trade rates. A

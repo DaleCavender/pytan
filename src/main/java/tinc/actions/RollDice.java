@@ -11,10 +11,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 
 import edu.brown.cs.board.Tile;
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Referee;
-import edu.brown.cs.catan.Resource;
-import edu.brown.cs.catan.Settings;
+import tinc.Player;
+import tinc.Referee;
+import tinc.Resource;
+import tinc.Settings;
 
 /**
  * Action responsible for rolling the dice.

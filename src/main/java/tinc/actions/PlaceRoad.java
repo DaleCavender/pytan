@@ -10,9 +10,9 @@ import com.google.gson.JsonObject;
 import edu.brown.cs.board.HexCoordinate;
 import edu.brown.cs.board.IntersectionCoordinate;
 import edu.brown.cs.board.Path;
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Referee;
-import edu.brown.cs.catan.Referee.GameStatus;
+import tinc.Player;
+import tinc.Referee;
+import tinc.Referee.GameStatus;
 
 /**
  * Action responsible for Placing roads during game play.

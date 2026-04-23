@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Referee;
-import edu.brown.cs.catan.Referee.GameStatus;
-import edu.brown.cs.catan.Resource;
+import tinc.Player;
+import tinc.Referee;
+import tinc.Referee.GameStatus;
+import tinc.Resource;
 
 public class Intersection {
   private List<Path> _paths;

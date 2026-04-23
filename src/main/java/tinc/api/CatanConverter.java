@@ -22,12 +22,12 @@ import edu.brown.cs.board.Port;
 import edu.brown.cs.board.Road;
 import edu.brown.cs.board.Tile;
 import edu.brown.cs.board.TileType;
-import edu.brown.cs.catan.DevelopmentCard;
-import edu.brown.cs.catan.GameSettings;
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Referee;
-import edu.brown.cs.catan.Referee.GameStatus;
-import edu.brown.cs.catan.Resource;
+import tinc.DevelopmentCard;
+import tinc.GameSettings;
+import tinc.Player;
+import tinc.Referee;
+import tinc.Referee.GameStatus;
+import tinc.Resource;
 
 public class CatanConverter {
 

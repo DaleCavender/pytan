@@ -1,4 +1,4 @@
-package edu.brown.cs.catan;
+package tinc;
 
 import java.util.ArrayList;
 import java.util.Collection;

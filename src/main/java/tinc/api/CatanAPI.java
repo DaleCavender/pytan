@@ -8,10 +8,10 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 
 import tinc.ActionResponse;
-import edu.brown.cs.catan.GameSettings;
-import edu.brown.cs.catan.MasterReferee;
-import edu.brown.cs.catan.Referee;
-import edu.brown.cs.catan.Referee.GameStatus;
+import tinc.GameSettings;
+import tinc.MasterReferee;
+import tinc.Referee;
+import tinc.Referee.GameStatus;
 import edu.brown.cs.networking.API;
 
 public class CatanAPI implements API {

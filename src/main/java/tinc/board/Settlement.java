@@ -3,8 +3,8 @@ package edu.brown.cs.board;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Resource;
+import tinc.Player;
+import tinc.Resource;
 
 /**
  * Settlement implentation of the Building interface.

@@ -1,6 +1,6 @@
 package edu.brown.cs.board;
 
-import edu.brown.cs.catan.Resource;
+import tinc.Resource;
 
 /**
  * Enum for the different types of tiles.

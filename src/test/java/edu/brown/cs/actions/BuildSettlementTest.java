@@ -6,10 +6,10 @@ import org.junit.Test;
 
 import edu.brown.cs.board.HexCoordinate;
 import edu.brown.cs.board.IntersectionCoordinate;
-import edu.brown.cs.catan.MasterReferee;
-import edu.brown.cs.catan.Referee;
-import edu.brown.cs.catan.Resource;
-import edu.brown.cs.catan.Settings;
+import tinc.MasterReferee;
+import tinc.Referee;
+import tinc.Resource;
+import tinc.Settings;
 
 public class BuildSettlementTest {
 

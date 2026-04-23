@@ -1,4 +1,4 @@
-package edu.brown.cs.catan;
+package tinc;
 
 import com.google.gson.JsonObject;
 

@@ -5,8 +5,8 @@ import java.util.Map;
 
 import com.google.gson.JsonObject;
 
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Referee;
+import tinc.Player;
+import tinc.Referee;
 
 /**
  * Action responsible for determining what a player does at the beginning of

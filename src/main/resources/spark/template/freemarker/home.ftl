@@ -1,11 +1,8 @@
 <#assign content>
 
-<!-- "Fork me on GitHub" tag -->
-<a href="https://github.com/seansegal/tincisnotcatan"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
-
 <div class="text-center">
 <div class='row'>
-<h1><span style='color:#aa0000'>t</span>inc <span style='color:#aa0000'>i</span>s <span style='color:#aa0000'>n</span>ot <span style='color:#aa0000'>c</span>atan</h1>
+<h1><span style='color:#aa0000'>(definitely not) catan</span></h1>
 </div>
 	<div class="row" id="pre-name-container">
 		<div class="col-xs-10 col-xs-offset-1 col-sm-offset-3 col-sm-6 col-lg-offset-4 col-lg-4" style='margin-top:8%'>

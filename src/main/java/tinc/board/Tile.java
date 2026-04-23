@@ -12,7 +12,7 @@ import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 
-import edu.brown.cs.catan.Resource;
+import tinc.Resource;
 
 /**
  * Generic Tile implementation of the BoardTile interface.

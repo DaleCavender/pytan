@@ -9,10 +9,10 @@ import org.junit.Test;
 import edu.brown.cs.board.HexCoordinate;
 import edu.brown.cs.board.IntersectionCoordinate;
 import edu.brown.cs.board.PathCoordinate;
-import edu.brown.cs.catan.MasterReferee;
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Referee;
-import edu.brown.cs.catan.Resource;
+import tinc.MasterReferee;
+import tinc.Player;
+import tinc.Referee;
+import tinc.Resource;
 
 public class BuildRoadTest {
 

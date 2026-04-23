@@ -8,10 +8,10 @@ import java.util.Map;
 
 import com.google.gson.JsonObject;
 
-import edu.brown.cs.catan.Player;
-import edu.brown.cs.catan.Referee;
-import edu.brown.cs.catan.Resource;
-import edu.brown.cs.catan.Trade;
+import tinc.Player;
+import tinc.Referee;
+import tinc.Resource;
+import tinc.Trade;
 
 /**
  * Action responsible for proposing a trade.
