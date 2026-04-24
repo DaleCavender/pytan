@@ -128,25 +128,21 @@ body {
     height: 100%;
 }
 
-
-/* --- Side Panels (Left: Chat, Right: Trade/Extras) --- */
+/* 1. Force the side container to ignore Bootstrap's block-level tendencies */
 #side-controls-container {
-    top: 90px;   
-    bottom: 90px; 
-    left: 0;
-    width: 100vw;
     display: flex !important;
-	flex-direction: row !important;
+    flex-direction: row !important;
     justify-content: space-between;
-    align-items: flex-start; /* Keeps panels anchored to top */
-	flex-wrap: nowrap;
+    align-items: flex-start;
+    pointer-events: none;
+    width: 100vw;
 }
 
+/* 2. Hard-lock the panels so they CANNOT expand */
 #left-ui-panel {
-    padding-left: 20px;
-    width: 280px;
-	flex-shrink: 0;
-	min-width: 280px;
+    width: 280px !important;
+    flex: 0 0 280px !important; /* No grow, no shrink */
+    pointer-events: auto;
 }
 
 #turn-display-container {
@@ -164,22 +160,16 @@ body {
 .selected-turn-square { box-shadow: inset 0 0 7px black, 0 0 7px black; }
 
 #right-ui-panel {
-    padding-right: 20px;
-	flex: 0 0 380px;
-    max-width: 380px;
-	pointer-events: auto;
-	margin-left: auto;
+    width: 320px !important; /* Tightened from 380px to avoid the hand */
+    flex: 0 0 320px !important;
+    margin-left: auto; /* Keeps it pinned right */
+    pointer-events: auto;
 }
 
+/* 3. Ensure the trade content stays within the 320px box */
 #right-menu-container {
-    display: flex;
-    flex-direction: row;
-    background: white;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    width: 100%;
-    margin-bottom: 0;
+    width: 320px !important;
+    max-width: 320px !important;
 }
 
 #right-tab-tabs {
@@ -282,13 +272,11 @@ body {
 .trade-grid { padding: 15px 10px 0 10px; }
 
 .trade-resource-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #f0f0f0;
+    width: 100%;
+    max-width: 280px; /* Constrain the inner row so space-between doesn't explode */
+    margin: 0 auto;
 }
+
 .trade-resource-row:last-child { border-bottom: none; margin-bottom: 0; }
 
 .trade-stepper { display: flex; align-items: center; gap: 8px; }
