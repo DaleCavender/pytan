@@ -29,7 +29,7 @@
     <!-- RIGHT PANEL: Trade & Extras Tabs -->
     <div id="right-ui-panel">
         <div id="right-menu-container" class="panel panel-default">
-            <ul class="nav nav-pills nav-stacked col-xs-3" id="right-tab-tabs" role="tablist">
+            <ul class="nav nav-pills nav-stacked" id="right-tab-tabs" role="tablist">
                 <li role="presentation" class="active">
                     <a href="#trade-tab" data-toggle="tab" title="Trade"><span class="glyphicon glyphicon-transfer"></span></a>
                 </li>
@@ -38,7 +38,7 @@
                 </li>
             </ul>
             
-            <div class="tab-content right-tab-content col-xs-9">
+            <div class="tab-content right-tab-content">
                 <!-- Trade Tab -->
                 <div role="tabpanel" class="tab-pane active" id="trade-tab">
                     <ul class="nav nav-tabs right-inner-tabs" role="tablist">

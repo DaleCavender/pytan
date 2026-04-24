@@ -632,271 +632,53 @@ body {
 	margin-bottom: 5px;
 }
 
-.yop-circle > img, .discard-circle > img {
-	margin-top: 3.3px;
-	height: 100%;
-	width: 100%;
-}
+/* ---------------------------------------------------
+   UNIFIED OVERLAY & COMPACT UI STYLES
+   --------------------------------------------------- */
 
-.discard-circle {
-	height: 60px;
-	width: 60px;
-	margin-bottom: 5px;
-	margin-left: 10px;
-	margin-right: 10px;
-}
-
-.discard-resource-container {
-	display: inline-block;
-	width: 80px;
-	margin-left: 5px;
-}
-
-.welcome-inline-color {
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-	margin-right: 5px;
-}
-
-#welcome-turn-order-container {
-	font-size: 20px;
-}
-
-.review-to-give-list-item, .review-to-get-list-item {
-	margin-bottom: 5px;
-}
-
-.trade-responses-to-give-list-item, .trade-responses-to-get-list-item {
-	margin-bottom: 5px;
-}
-
-.modal-footer-center {
-	text-align: center;
-}
-
-#dice-distribution-container {
-	display: inline-block;
-	width: 300px;
-	height: 300px;
-}
-
-#game-settings-container {
-	margin-bottom: 10px;
-}
-
-#message-history-list {
-	max-height: 300px;
-	overflow-y: auto;
-	margin-bottom: 0px;
-}
-/* New Floating Layout Overrides */
-#top-players-container {
-    position: absolute;
-    top: 10px;
-    width: 100vw;
-    z-index: 10;
-    pointer-events: none; /* Allows clicking the board between cards */
-}
-
-.player-cards-wrapper {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    padding: 0 20px;
-}
-
-.player-tab-pane {
-    pointer-events: auto;
-    width: 250px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    height: auto !important; /* Overrides old tab logic */
-}
-
-#build-menu-container {
-    position: absolute;
-    bottom: 90px; /* Floats just above the bottom navbar */
-    right: 20px;
-    z-index: 10;
-}
-
-.build-item-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    gap: 15px;
-}
-
-.build-btn {
-    margin-bottom: 0 !important; /* Override old spacing */
-    width: 40px;
-    height: 40px;
-}
-
-.build-cost-group {
-    display: flex;
-    align-items: center;
-    font-weight: bold;
-    font-size: 14px;
-    gap: 4px;
-}
-
-.build-cost-group .circle {
-    margin: 0 6px 0 2px; /* Spaces out the graphic from the number */
-}
-
-/* Stop right tabs from taking up the whole screen height */
-.right-tab-pane {
-    height: auto !important;
-    min-height: 400px;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-/* Ensure we don't accidentally block the board */
-.pointer-events-none { pointer-events: none; }
-.pointer-events-auto { pointer-events: auto; }
-
-/* Interplayer Trade Grid UI */
-.trade-grid {
-    padding: 15px 10px 0 10px;
-}
-.trade-resource-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #f0f0f0;
-}
-.trade-resource-row:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-.trade-stepper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.stepper-label {
-    font-size: 12px;
-    font-weight: bold;
-    width: 35px;
-}
-.trade-val {
-    font-weight: bold;
-    font-size: 16px;
-    width: 20px;
-    text-align: center;
-}
-.trade-btn-step {
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    padding: 0;
-}
-
-/* Extras UI */
-.extras-menu-group {
-    margin-bottom: 15px;
-}
-.extras-menu-group .list-group-item {
-    font-weight: 500;
-}
-.extras-menu-group .glyphicon {
-    margin-right: 8px;
-    color: #666;
-}
-/* Core Overlay Settings */
+/* Core Overlay System */
 .ui-overlay {
     position: fixed;
     z-index: 100;
-    pointer-events: none; /* Let clicks pass to the board by default */
+    pointer-events: none; /* Allows clicking the board behind */
 }
-
 .ui-overlay > * {
-    pointer-events: auto; /* Re-enable clicks for the actual buttons/panels */
+    pointer-events: auto; /* Buttons/Panels remain clickable */
 }
 
-/* 1. Player Cards - Centered at top */
+/* 1. Top Player Cards */
 #top-players-container {
     top: 15px;
     left: 0;
     right: 0;
     display: flex;
     justify-content: center;
+    width: 100vw;
 }
-
 .player-cards-wrapper {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 15px;
 }
-
 .player-tab-pane {
-    width: 220px;
-    padding: 8px;
-    border-radius: 6px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-}
-
-/* 2. Side Panels (Chat and Trade) */
-#side-controls-container {
-    top: 100px;
-    bottom: 100px;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
-}
-
-#left-ui-panel {
-    padding-left: 15px;
-    width: 250px;
-}
-
-#right-ui-panel {
-    padding-right: 15px;
-    width: 350px;
-}
-
-/* 3. Build Menu - Explicitly fixed in the bottom right corner */
-#build-menu-container {
-    right: 20px;
-    bottom: 110px; /* Above the resource bar */
-}
-
-.build-panel-custom {
-    width: 240px;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
-}
-
-/* Compact Player Cards */
-.player-tab-pane {
-    width: 200px; /* Slimmer profile */
-    padding: 0 !important; /* Removes default padding to let header flush to edges */
+    width: 210px;
+    padding: 0 !important;
     border-radius: 6px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Ensures header background curves with the border radius */
-    pointer-events: auto;
+    overflow: hidden;
+    background-color: white;
 }
-
 .pc-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 6px 10px;
     color: white;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.6); /* Ensures readability regardless of player color */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
 }
-
-.pc-name small {
-    color: rgba(255, 255, 255, 0.85);
-}
-
+.pc-name small { color: rgba(255, 255, 255, 0.85); }
 .pc-body {
     padding: 8px 12px;
     display: flex;
@@ -904,7 +686,6 @@ body {
     gap: 8px;
     background-color: #fafafa;
 }
-
 .pc-row {
     display: flex;
     justify-content: space-between;
@@ -912,13 +693,7 @@ body {
     font-weight: bold;
     color: #333;
 }
-
-.pc-icon {
-    width: 14px;
-    height: 14px;
-    vertical-align: text-bottom;
-}
-
+.pc-icon { width: 14px; height: 14px; vertical-align: text-bottom; }
 .pc-badges {
     padding: 6px 10px;
     display: flex;
@@ -927,8 +702,95 @@ body {
     background-color: white;
     border-top: 1px solid #eee;
 }
+.pc-badges .label { font-size: 11px; padding: 4px 6px; }
 
-.pc-badges .label {
-    font-size: 11px;
-    padding: 4px 6px;
+/* 2. Side Panels (Chat & Right Menu) */
+#side-controls-container {
+    top: 100px;
+    bottom: 100px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 100vw;
 }
+#left-ui-panel {
+    padding-left: 15px;
+    width: 250px;
+}
+#right-ui-panel {
+    padding-right: 15px;
+    width: 350px;
+}
+
+/* Right Panel Layout Fix (Removes broken column floats) */
+#right-menu-container {
+    display: flex;
+    flex-direction: row;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    height: auto;
+    max-height: 70vh;
+}
+#right-tab-tabs {
+    width: 45px;
+    flex-shrink: 0;
+    border-right: 1px solid #ddd;
+    background-color: #f8f8f8;
+    padding-top: 5px;
+}
+#right-tab-tabs > li { width: 100%; }
+#right-tab-tabs > li > a { 
+    padding: 10px 0; 
+    text-align: center; 
+    border-radius: 0;
+}
+.right-tab-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    background: white;
+    padding: 0;
+}
+
+/* 3. Build Menu (Bottom Right) */
+#build-menu-container {
+    right: 20px;
+    bottom: 110px; 
+}
+.build-panel-custom {
+    width: 240px;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+}
+.build-item-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 15px;
+}
+.build-btn { width: 40px; height: 40px; padding: 0; }
+.build-cost-group {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 14px;
+    gap: 4px;
+}
+.build-cost-group .circle { margin: 0 6px 0 2px; }
+
+/* Trade & Extras Styling */
+.trade-grid { padding: 15px 10px 0 10px; }
+.trade-resource-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.trade-resource-row:last-child { border-bottom: none; margin-bottom: 0; }
+.trade-stepper { display: flex; align-items: center; gap: 8px; }
+.stepper-label { font-size: 12px; font-weight: bold; width: 35px; }
+.trade-val { font-weight: bold; font-size: 16px; width: 20px; text-align: center; }
+.trade-btn-step { border-radius: 50%; width: 24px; height: 24px; padding: 0; }
+.extras-menu-group { margin-bottom: 15px; }
+.extras-menu-group .list-group-item { font-weight: 500; }
+.extras-menu-group .glyphicon { margin-right: 8px; color: #666; }
