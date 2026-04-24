@@ -24,53 +24,73 @@ function Player(id, name, color) {
 }
 
 /*
- * Adds a tab to the players tabs with all of this player's information.
+ * Renders the compact player card at the top of the UI
  */
 Player.prototype.addPlayerTab = function() {
     var tabTitle = (this.id === playerId) ? "You" : "P" + this.id;
-    
-    // Injecting directly as a card instead of a hidden tab panel
+
+    // Injecting directly as a card
     $("#player-tabs-content").append("<div class='player-tab-pane' id='p" + this.id + "-tab'></div>");
     var tab = $("#p" + this.id + "-tab");
-    
+
     var victoryPointsToDisplay = this.victoryPoints;
     if (this.hand.hasOwnProperty("victoryPoint")) {
         victoryPointsToDisplay = victoryPointsToDisplay + this.hand.victoryPoint;
     }
-    
-    tab.append("<div class='player-name text-center'><h4>" + this.name + " (" + tabTitle + ")</h4></div>");
-    tab.append("<h4 class='text-center player-victory-points'>" + victoryPointsToDisplay 
-            + "<img class='player-tab-vp-icon' src='images/icon-victory-point.svg' alt='Victory Point'></h4>"
-            + "<h5 class='text-center playing-to'>Playing to " + gameSettings.winningPointCount + "</h5>");
-    
-    tab.append("<div class='panel panel-default player-tab-panel'><div class='panel-heading'>"
-            + "<h5 class='panel-title-small'>Hand & Resources</h5></div><div class='panel-body'>"
-            + "<p><strong>Cards:</strong> " + formatNumber(this.resourceCards) + " | <strong>Dev:</strong> " + this.developmentCards + "</p>"
-            + "<p><strong>Knights:</strong> " + this.playedKnights + "</p></div></div>");
-            
-    tab.append("<div class='panel panel-default player-tab-panel'><div class='panel-heading'>"
-            + "<h5 class='panel-title-small'>Buildings Remaining</h5></div><div class='panel-body'>"
-            + "<p><strong>R:</strong> " + this.roads + " | <strong>S:</strong> " + this.settlements + " | <strong>C:</strong> " + this.cities + "</p></div></div>");
 
-    if (this.longestRoad) {
-        tab.append("<div class='longest-road-banner text-center'><h4>Longest Road<img src='images/icon-road-building.svg' alt='Road Building'></h4></div>");
-    }
-    if (this.largestArmy) {
-        tab.append("<div class='largest-army-banner text-center'><h4>Largest Army<img src='images/icon-knight.svg' alt='Knight'></h4></div>");
-    }
-
-    // Modify color scheme to fit this player's color
+    // Color styling
     var rgb = this.rgbColor.r + "," + this.rgbColor.g + "," + this.rgbColor.b;
-    tab.css("background-color", "rgba(" + rgb + ",0.85)"); // increased opacity so they pop over the board
+    var hdrColor = "rgba(" + rgb + ", 0.9)";
     
-    var panels = $("#p" + this.id + "-tab .panel");
-    panels.css("border-color", "rgba(" + rgb + ",0.6)");
+    var html = "";
     
-    var panelHeadings = panels.children(".panel-heading");
-    panelHeadings.css("background-color", "rgba(" + rgb + ",0.4)");
-    panelHeadings.css("border-color", "rgba(" + rgb + ",0.6)");
-}
+    // Header: Name and Victory Points
+    html += "<div class='pc-header' style='background-color:" + hdrColor + ";'>";
+    html += "  <span class='pc-name'><strong>" + this.name + "</strong> <small>(" + tabTitle + ")</small></span>";
+    html += "  <span class='pc-vp'><strong>" + victoryPointsToDisplay + "</strong> <img src='images/icon-victory-point.svg' class='pc-icon' style='width:18px; margin-top:-4px;'></span>";
+    html += "</div>";
 
+    // Body: Two compact rows of stats using icons
+    html += "<div class='pc-body'>";
+    
+    // Row 1: Current Hand Items (Resource Cards, Dev Cards, Played Knights)
+    html += "  <div class='pc-row' title='Hand Info'>";
+    html += "    <span title='Resource Cards'><span class='glyphicon glyphicon-file text-muted'></span> " + formatNumber(this.resourceCards) + "</span>";
+    html += "    <span title='Development Cards'><span class='glyphicon glyphicon-credit-card text-muted'></span> " + this.developmentCards + "</span>";
+    html += "    <span title='Played Knights'><img src='images/icon-knight.svg' class='pc-icon'> " + this.playedKnights + "</span>";
+    html += "  </div>";
+    
+    // Row 2: Remaining Buildings (Roads, Settlements, Cities)
+    html += "  <div class='pc-row' title='Buildings Remaining'>";
+    html += "    <span title='Roads Remaining'><span class='glyphicon glyphicon-road text-muted'></span> " + this.roads + "</span>";
+    html += "    <span title='Settlements Remaining'><span class='glyphicon glyphicon-home text-muted'></span> " + this.settlements + "</span>";
+    html += "    <span title='Cities Remaining'><span class='glyphicon glyphicon-tower text-muted'></span> " + this.cities + "</span>";
+    html += "  </div>";
+    
+    html += "</div>";
+
+    // Footer: Special Achievement Badges
+    if (this.longestRoad || this.largestArmy) {
+        html += "<div class='pc-badges'>";
+        if (this.longestRoad) {
+            var roadText = this.longestRoadLength ? " (" + this.longestRoadLength + ")" : "";
+            html += "<span class='label label-danger' title='Longest Road'><span class='glyphicon glyphicon-road'></span> Longest Road" + roadText + "</span> ";
+        }
+        if (this.largestArmy) {
+            html += "<span class='label label-primary' title='Largest Army'><img src='images/icon-knight.svg' style='width:12px;'> Largest Army</span>";
+        }
+        html += "</div>";
+    }
+
+    tab.append(html);
+    
+    // Apply border matching player color
+    tab.css({
+        "background-color": "white",
+        "border": "2px solid " + hdrColor,
+        "padding": "0"
+    });
+}
 
 /*
  * Fills the appropriate sections of the turn display for this player.
@@ -94,31 +114,28 @@ Player.prototype.fillTurnDisplay = function() {
 
 /*
  * Creates a new player from the given player data.
- * @param playersData - the player data
- * @return the new player object
  */
 function parsePlayers(playersData) {
-	var players = [];
-
-	for (var i = 0; i < playersData.length; i++) {
-		var playerData = playersData[i];
-
-		// Construct player from playerData object
-		var player = new Player(playerData.id, playerData.name, playerData.color);
-		player.victoryPoints = playerData.victoryPoints;
-		player.playedKnights = playerData.numPlayedKnights;
-		player.roads = playerData.numRoads;
-		player.settlements = playerData.numSettlements;
-		player.cities = playerData.numCities;
-		player.largestArmy = playerData.largestArmy;
-		player.longestRoad = playerData.longestRoad;
-		player.resourceCards = playerData.numResourceCards;
-		player.developmentCards = playerData.numDevelopmentCards;
-
-		players.push(player);
-	}
-
-	return players;
+    var players = [];
+    for (var i = 0; i < playersData.length; i++) {
+        var playerData = playersData[i];
+        var player = new Player(playerData.id, playerData.name, playerData.color);
+        
+        player.victoryPoints = playerData.victoryPoints;
+        player.playedKnights = playerData.numPlayedKnights;
+        player.roads = playerData.numRoads;
+        player.settlements = playerData.numSettlements;
+        player.cities = playerData.numCities;
+        player.largestArmy = playerData.largestArmy;
+        player.longestRoad = playerData.longestRoad;
+        // If the server ever sends the length, we capture it here:
+        player.longestRoadLength = playerData.longestRoadLength || ""; 
+        player.resourceCards = playerData.numResourceCards;
+        player.developmentCards = playerData.numDevelopmentCards;
+        
+        players.push(player);
+    }
+    return players;
 }
 
 /*

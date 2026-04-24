@@ -1,183 +1,183 @@
 <#assign content>
 
+<!-- The Game Board (Full Screen Background) -->
 <div id="board-viewport" class="sea-color unselectable"></div>
 
-<div class="above-board" id="top-players-container">
-    <!-- Player cards will be injected here side-by-side -->
-    <div id="player-tabs-content" class="player-cards-wrapper"></div>
-</div>
-
-<div class="above-board" id="build-menu-container">
-    <!-- Floating Build Menu (Bottom Right) -->
-    <div class="panel panel-default">
-        <div class="panel-heading text-center"><h5 class="panel-title-small">Build</h5></div>
-        <div class="panel-body">
-            <div class="build-item-row">
-                <button class="btn btn-default build-btn" id="settlement-build-btn" title="Build Settlement">
-                    <span class="glyphicon glyphicon-home"></span>
-                </button>
-                <div class="build-cost-group">
-                    1<div class="circle build-circle brick-color"><img src="images/icon-brick.svg" alt="Brick"></div>
-                    1<div class="circle build-circle wood-color"><img src="images/icon-wood.svg" alt="Wood"></div>
-                    1<div class="circle build-circle wheat-color"><img src="images/icon-wheat.svg" alt="Wheat"></div>
-                    1<div class="circle build-circle sheep-color"><img src="images/icon-sheep.svg" alt="Sheep"></div>
-                </div>
-            </div>
-            <div class="build-item-row">
-                <button class="btn btn-default build-btn" id="city-build-btn" title="Build City">
-                    <span class="glyphicon glyphicon-tower"></span>
-                </button>
-                <div class="build-cost-group">
-                    3<div class="circle build-circle ore-color"><img src="images/icon-ore.svg" alt="Ore"></div>
-                    2<div class="circle build-circle wheat-color"><img src="images/icon-wheat.svg" alt="Wheat"></div>
-                </div>
-            </div>
-            <div class="build-item-row">
-                <button class="btn btn-default build-btn" id="road-build-btn" title="Build Road">
-                    <span class="glyphicon glyphicon-road"></span>
-                </button>
-                <div class="build-cost-group">
-                    1<div class="circle build-circle brick-color"><img src="images/icon-brick.svg" alt="Brick"></div>
-                    1<div class="circle build-circle wood-color"><img src="images/icon-wood.svg" alt="Wood"></div>
-                </div>
-            </div>
-            <div class="build-item-row">
-                <button class="btn btn-default build-btn" id="buy-dev-card-modal-open" data-toggle="modal" data-target="#buy-dev-card-modal" title="Buy Development Card">
-                    <span class="glyphicon glyphicon-credit-card"></span>
-                </button>
-                <div class="build-cost-group">
-                    1<div class="circle build-circle ore-color"><img src="images/icon-ore.svg" alt="Ore"></div>
-                    1<div class="circle build-circle wheat-color"><img src="images/icon-wheat.svg" alt="Wheat"></div>
-                    1<div class="circle build-circle sheep-color"><img src="images/icon-sheep.svg" alt="Sheep"></div>
-                </div>
-            </div>
-        </div>
+<!-- 1. TOP OVERLAY: Player Information Cards -->
+<div id="top-players-container" class="ui-overlay">
+    <div id="player-tabs-content" class="player-cards-wrapper">
+        <!-- player.js dynamically injects Player Cards here -->
     </div>
 </div>
 
-<div class="row above-board pointer-events-none">
-    <div class="col-xs-3 pointer-events-auto">
+<!-- 2. SIDE OVERLAY: Game Controls (Left) and Trade/Extras (Right) -->
+<div id="side-controls-container" class="ui-overlay">
+    
+    <!-- LEFT PANEL: Chat & End Turn -->
+    <div id="left-ui-panel">
         <div id="turn-display-container"></div>
-        <input type="button" class="btn btn-primary" id="end-turn-btn" value="End Turn"><br>
+        <input type="button" class="btn btn-primary btn-block" id="end-turn-btn" value="End Turn">
+        
         <div id="chat-container">
             <div id="chat"></div>
             <div id="chatControls">
-                <input id="message" placeholder="Type your message">
+                <input id="message" class="form-control" placeholder="Type a message...">
             </div>
         </div>
     </div>
-    
-    <div class="col-xs-6"></div>
-    
-    <!-- Right Menu Container (Trade and Extras) -->
-    <div class="col-xs-3 pointer-events-auto" id="right-menu-container">
-        <ul class="nav nav-pills nav-stacked col-xs-3" id="right-tab-tabs" role="tablist">
-            <li role="presentation" id="trade-tab-toggle" class="active right-tab"><a href="#trade-tab" aria-controls="trade-tab" role="tab" data-toggle="tab">Trade</a></li>
-            <li role="presentation" id="extras-tab-toggle" class="right-tab"><a href="#extras-tab" aria-controls="extras-tab" role="tab" data-toggle="tab">Extras</a></li>
-        </ul>
-        <div class="tab-content right-tab-content col-xs-9">
-		    <!-- Trade Tab -->
-            <div role="tabpanel" class="tab-pane active right-tab-pane" id="trade-tab">
-                <ul class="nav nav-tabs right-inner-tabs" role="tablist">
-                    <li role="presentation" class="active" id="interplayer-trade-tab-toggle">
-                        <a href="#player-trade-tab" aria-controls="home" role="tab" data-toggle="tab">Interplayer</a>
-                    </li>
-                    <li role="presentation" id="bank-trade-tab-toggle">
-                        <a href="#bank-trade-tab" aria-controls="profile" role="tab" data-toggle="tab">Bank</a>
-                    </li>
-                </ul>
-                <div class="tab-content">
+
+    <!-- RIGHT PANEL: Trade & Extras Tabs -->
+    <div id="right-ui-panel">
+        <div id="right-menu-container" class="panel panel-default">
+            <ul class="nav nav-pills nav-stacked col-xs-3" id="right-tab-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#trade-tab" data-toggle="tab" title="Trade"><span class="glyphicon glyphicon-transfer"></span></a>
+                </li>
+                <li role="presentation">
+                    <a href="#extras-tab" data-toggle="tab" title="Settings"><span class="glyphicon glyphicon-cog"></span></a>
+                </li>
+            </ul>
+            
+            <div class="tab-content right-tab-content col-xs-9">
+                <!-- Trade Tab -->
+                <div role="tabpanel" class="tab-pane active" id="trade-tab">
+                    <ul class="nav nav-tabs right-inner-tabs" role="tablist">
+                        <li role="presentation" class="active" id="interplayer-trade-tab-toggle">
+                            <a href="#player-trade-tab" role="tab" data-toggle="tab">Players</a>
+                        </li>
+                        <li role="presentation" id="bank-trade-tab-toggle">
+                            <a href="#bank-trade-tab" role="tab" data-toggle="tab">Bank</a>
+                        </li>
+                    </ul>
                     
-                    <!-- Interplayer Trade -->
-                    <div role="tabpanel" class="tab-pane active" id="player-trade-tab">
-                        <div class="trade-grid">
-                            <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
-                            <div class="trade-resource-row">
-                                <div class="circle trade-circle ${res}-color"><img src="images/icon-${res}.svg" alt="${res?cap_first}"></div>
-                                
-                                <div class="trade-stepper give-stepper">
-                                    <span class="stepper-label text-danger">Give</span>
-                                    <button class="btn btn-xs btn-default trade-btn-step" data-res="${res}" data-type="give" data-action="minus"><span class="glyphicon glyphicon-minus"></span></button>
-                                    <span class="trade-val text-danger" id="give-val-${res}">0</span>
-                                    <button class="btn btn-xs btn-default trade-btn-step" data-res="${res}" data-type="give" data-action="plus"><span class="glyphicon glyphicon-plus"></span></button>
+                    <div class="tab-content">
+                        <!-- Interplayer Trade with +/- Buttons -->
+                        <div role="tabpanel" class="tab-pane active" id="player-trade-tab">
+                            <div class="trade-grid">
+                                <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
+                                <div class="trade-resource-row">
+                                    <div class="circle trade-circle ${res}-color">
+                                        <img src="images/icon-${res}.svg" alt="${res}">
+                                    </div>
+                                    <div class="trade-stepper">
+                                        <button class="btn btn-xs btn-default trade-btn-step" data-res="${res}" data-type="give" data-action="plus"><span class="glyphicon glyphicon-plus"></span></button>
+                                        <span class="trade-val text-danger" id="give-val-${res}">0</span>
+                                        <button class="btn btn-xs btn-default trade-btn-step" data-res="${res}" data-type="give" data-action="minus"><span class="glyphicon glyphicon-minus"></span></button>
+                                        <small class="text-muted">Give</small>
+                                    </div>
+                                    <div class="trade-stepper">
+                                        <button class="btn btn-xs btn-default trade-btn-step" data-res="${res}" data-type="want" data-action="plus"><span class="glyphicon glyphicon-plus"></span></button>
+                                        <span class="trade-val text-success" id="want-val-${res}">0</span>
+                                        <button class="btn btn-xs btn-default trade-btn-step" data-res="${res}" data-type="want" data-action="minus"><span class="glyphicon glyphicon-minus"></span></button>
+                                        <small class="text-muted">Want</small>
+                                    </div>
                                 </div>
-                                
-                                <div class="trade-stepper want-stepper">
-                                    <span class="stepper-label text-success">Want</span>
-                                    <button class="btn btn-xs btn-default trade-btn-step" data-res="${res}" data-type="want" data-action="minus"><span class="glyphicon glyphicon-minus"></span></button>
-                                    <span class="trade-val text-success" id="want-val-${res}">0</span>
-                                    <button class="btn btn-xs btn-default trade-btn-step" data-res="${res}" data-type="want" data-action="plus"><span class="glyphicon glyphicon-plus"></span></button>
+                                </#list>
+                            </div>
+                            <div class="text-center" style="padding: 10px;">
+                                <input type="button" id="propose-interplayer-trade-btn" class="btn btn-primary btn-sm" value="Propose Trade" disabled="disabled">
+                            </div>
+                        </div>
+
+                        <!-- Bank Trade -->
+                        <div role="tabpanel" class="tab-pane text-center" id="bank-trade-tab">
+                            <!-- Existing Bank Trade logic goes here (as seen in your original file) -->
+                            <div id="bank-trade-container" style="padding: 10px;">
+                                <label>Give:</label>
+                                <div class="bank-resources-grid">
+                                    <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
+                                        <div class="to-give-circle-container circle" res="${res}">
+                                            <div class="circle trade-circle ${res}-color pointer"><img src="images/icon-${res}.svg"></div>
+                                        </div>
+                                    </#list>
+                                </div>
+                                <hr style="margin: 10px 0;">
+                                <label>Receive:</label>
+                                <div class="bank-resources-grid">
+                                    <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
+                                        <div class="to-get-circle-container circle" res="${res}">
+                                            <div class="circle trade-circle ${res}-color pointer"><img src="images/icon-${res}.svg"></div>
+                                        </div>
+                                    </#list>
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <input id="bank-trade-amount-input" class="form-control input-sm" type="number" value="1" style="width: 60px; display: inline-block;">
+                                    <input type="button" class="btn btn-primary btn-sm" value="Trade" id="bank-trade-btn">
                                 </div>
                             </div>
-                            </#list>
-                        </div>
-                        
-                        <div class="text-center" style="margin-top: 15px;">
-                            <input type="button" id="propose-interplayer-trade-btn" class="btn btn-primary" value="Propose Trade" disabled="disabled">
-                        </div>
-
-                        <!-- We still need these containers for JS updates, but we can hide them or style them compactly -->
-                        <div class="row hidden">
-                            <div class="col-xs-6" id="to-give-panel"><div id="to-give-container">
-                                <p class="to-give-list-item hidden" res="brick"><strong class="trade-number"></strong></p>
-                                <p class="to-give-list-item hidden" res="wood"><strong class="trade-number"></strong></p>
-                                <p class="to-give-list-item hidden" res="ore"><strong class="trade-number"></strong></p>
-                                <p class="to-give-list-item hidden" res="wheat"><strong class="trade-number"></strong></p>
-                                <p class="to-give-list-item hidden" res="sheep"><strong class="trade-number"></strong></p>
-                            </div></div>
-                            <div class="col-xs-6" id="to-get-panel"><div id="to-get-container">
-                                <p class="to-get-list-item hidden" res="brick"><strong class="trade-number"></strong></p>
-                                <p class="to-get-list-item hidden" res="wood"><strong class="trade-number"></strong></p>
-                                <p class="to-get-list-item hidden" res="ore"><strong class="trade-number"></strong></p>
-                                <p class="to-get-list-item hidden" res="wheat"><strong class="trade-number"></strong></p>
-                                <p class="to-get-list-item hidden" res="sheep"><strong class="trade-number"></strong></p>
-                            </div></div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Bank Trade (Kept original logic, just spacing improvements) -->
-                    <div role="tabpanel" class="tab-pane text-center" id="bank-trade-tab">
-                        <!-- (Keep your exact Bank trade HTML here, it wasn't the main issue) -->
+                <!-- Extras Tab -->
+                <div role="tabpanel" class="tab-pane" id="extras-tab" style="padding: 10px;">
+                    <div class="list-group">
+                        <div class="list-group-item active">Settings & Info</div>
+                        <div class="list-group-item" id="game-settings-container"></div>
+                        <button id="mute-btn" type="button" class="list-group-item" data-toggle="button"><span class="glyphicon glyphicon-volume-off"></span> Mute</button>
+                        <button id="show-stats-btn" class="list-group-item" data-toggle="modal" data-target="#stats-modal"><span class="glyphicon glyphicon-stats"></span> Statistics</button>
+                        <button id="message-history-btn" class="list-group-item" data-toggle="modal" data-target="#message-history-modal"><span class="glyphicon glyphicon-list-alt"></span> History</button>
+                        <button class="list-group-item btn-danger text-white" data-toggle="modal" data-target="#exit-game-modal">Leave Game</button>
                     </div>
                 </div>
             </div>
-
-            <!-- Extras Tab (Redone UI) -->
-            <div role="tabpanel" class="tab-pane right-tab-pane" id="extras-tab" style="padding: 15px;">
-                <div class="panel panel-default extras-menu-group">
-                    <div class="panel-heading"><h5 class="panel-title-small">Game Settings</h5></div>
-                    <div class="panel-body" id="game-settings-container" style="padding: 10px;"></div>
-                    <div class="list-group" style="margin-bottom: 0;">
-                        <button id="mute-btn" type="button" class="list-group-item" data-toggle="button" aria-pressed="false">
-                            <span class="glyphicon glyphicon-volume-off"></span> Mute Audio
-                        </button>
-                    </div>
-                </div>
-
-                <div class="panel panel-default extras-menu-group">
-                    <div class="panel-heading"><h5 class="panel-title-small">Info & Stats</h5></div>
-                    <div class="panel-body" id="game-stats-container" style="padding: 10px;"></div>
-                    <div class="list-group" style="margin-bottom: 0;">
-                        <button type="button" id="show-stats-btn" class="list-group-item" data-toggle="modal" data-target="#stats-modal">
-                            <span class="glyphicon glyphicon-stats"></span> Roll Distribution
-                        </button>
-                        <button type="button" id="message-history-btn" class="list-group-item" data-toggle="modal" data-target="#message-history-modal">
-                            <span class="glyphicon glyphicon-comment"></span> Message History
-                        </button>
-                        <a href="http://www.catan.com/service/game-rules" target="_blank" class="list-group-item">
-                            <span class="glyphicon glyphicon-book"></span> Official Game Rules
-                        </a>
-                    </div>
-                </div>
-
-                <button type="button" id="exit-game-toggle-btn" class="btn btn-danger btn-block" data-toggle="modal" data-target="#exit-game-modal">
-                    <span class="glyphicon glyphicon-log-out"></span> Leave Game
-                </button>
-            </div>
-       </div>
+        </div>
     </div>
 </div>
 
+<!-- 3. BOTTOM RIGHT OVERLAY: Build Menu -->
+<div id="build-menu-container" class="ui-overlay">
+    <div class="panel panel-default build-panel-custom">
+        <div class="panel-heading text-center"><h5 class="panel-title-small">Build</h5></div>
+        <div class="panel-body">
+            <!-- Settlement -->
+            <div class="build-item-row">
+                <button class="btn btn-default build-btn" id="settlement-build-btn" title="Settlement"><span class="glyphicon glyphicon-home"></span></button>
+                <div class="build-cost-group">
+                    1<div class="circle build-circle brick-color"><img src="images/icon-brick.svg"></div>
+                    1<div class="circle build-circle wood-color"><img src="images/icon-wood.svg"></div>
+                    1<div class="circle build-circle wheat-color"><img src="images/icon-wheat.svg"></div>
+                    1<div class="circle build-circle sheep-color"><img src="images/icon-sheep.svg"></div>
+                </div>
+            </div>
+            <!-- City -->
+            <div class="build-item-row">
+                <button class="btn btn-default build-btn" id="city-build-btn" title="City"><span class="glyphicon glyphicon-tower"></span></button>
+                <div class="build-cost-group">
+                    3<div class="circle build-circle ore-color"><img src="images/icon-ore.svg"></div>
+                    2<div class="circle build-circle wheat-color"><img src="images/icon-wheat.svg"></div>
+                </div>
+            </div>
+            <!-- Road -->
+            <div class="build-item-row">
+                <button class="btn btn-default build-btn" id="road-build-btn" title="Road"><span class="glyphicon glyphicon-road"></span></button>
+                <div class="build-cost-group">
+                    1<div class="circle build-circle brick-color"><img src="images/icon-brick.svg"></div>
+                    1<div class="circle build-circle wood-color"><img src="images/icon-wood.svg"></div>
+                </div>
+            </div>
+            <!-- Dev Card -->
+            <div class="build-item-row">
+                <button class="btn btn-default build-btn" id="buy-dev-card-modal-open" data-toggle="modal" data-target="#buy-dev-card-modal"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                <div class="build-cost-group">
+                    1<div class="circle build-circle ore-color"><img src="images/icon-ore.svg"></div>
+                    1<div class="circle build-circle wheat-color"><img src="images/icon-wheat.svg"></div>
+                    1<div class="circle build-circle sheep-color"><img src="images/icon-sheep.svg"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden legacy elements for JS compatibility -->
+<div class="hidden">
+    <div id="to-give-container">
+        <#list ["brick", "wood", "ore", "wheat", "sheep"] as res><p class="to-give-list-item" res="${res}"><span class="trade-number"></span></p></#list>
+    </div>
+    <div id="to-get-container">
+        <#list ["brick", "wood", "ore", "wheat", "sheep"] as res><p class="to-get-list-item" res="${res}"><span class="trade-number"></span></p></#list>
+    </div>
+</div>
 
 <div class="navbar navbar-fixed-bottom above-board">
 	<div class="col-xs-3"></div>
