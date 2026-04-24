@@ -141,40 +141,55 @@
 <div id="build-menu-container" class="ui-overlay">
     <div class="panel panel-default build-panel-custom">
         <div class="panel-heading text-center"><h5 class="panel-title-small">Build</h5></div>
-        <div class="panel-body">
+            <div class="panel-body" style="padding: 10px;">
             <!-- Settlement -->
-            <div class="build-item-row">
-                <button class="btn btn-default build-btn" id="settlement-build-btn" title="Build Settlement"><span class="glyphicon glyphicon-home"></span></button>
-                <div class="build-cost-group">
-                    1<div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
-                    1<div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
-                    1<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
-                    1<div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
+            <div class="build-item-container" style="margin-bottom: 10px;">
+                <div style="font-weight: bold; font-size: 12px; text-transform: uppercase;">Settlement</div>
+                <div class="build-item-row" style="display: flex; align-items: center;">
+                    <button class="btn btn-default build-btn" id="settlement-build-btn" title="Build Settlement" disabled><span class="glyphicon glyphicon-home"></span></button>
+                    <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
+                        1<div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
+                        1<div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
+                        1<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                        1<div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
+                    </div>
                 </div>
             </div>
+            
             <!-- City -->
-            <div class="build-item-row">
-                <button class="btn btn-default build-btn" id="city-build-btn" title="Build City"><span class="glyphicon glyphicon-tower"></span></button>
-                <div class="build-cost-group">
-                    3<div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
-                    2<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+            <div class="build-item-container" style="margin-bottom: 10px;">
+                <div style="font-weight: bold; font-size: 12px; text-transform: uppercase;">City</div>
+                <div class="build-item-row" style="display: flex; align-items: center;">
+                    <button class="btn btn-default build-btn" id="city-build-btn" title="Build City" disabled><span class="glyphicon glyphicon-tower"></span></button>
+                    <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
+                        3<div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                        2<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                    </div>
                 </div>
             </div>
+            
             <!-- Road -->
-            <div class="build-item-row">
-                <button class="btn btn-default build-btn" id="road-build-btn" title="Build Road"><span class="glyphicon glyphicon-road"></span></button>
-                <div class="build-cost-group">
-                    1<div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
-                    1<div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
+            <div class="build-item-container" style="margin-bottom: 10px;">
+                <div style="font-weight: bold; font-size: 12px; text-transform: uppercase;">Road</div>
+                <div class="build-item-row" style="display: flex; align-items: center;">
+                    <button class="btn btn-default build-btn" id="road-build-btn" title="Build Road" disabled><span class="glyphicon glyphicon-road"></span></button>
+                    <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
+                        1<div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
+                        1<div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
+                    </div>
                 </div>
             </div>
+            
             <!-- Dev Card -->
-            <div class="build-item-row">
-                <button class="btn btn-default build-btn" id="buy-dev-card-modal-open" data-toggle="modal" data-target="#buy-dev-card-modal" title="Buy Development Card"><span class="glyphicon glyphicon-credit-card"></span></button>
-                <div class="build-cost-group">
-                    1<div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
-                    1<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
-                    1<div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
+            <div class="build-item-container">
+                <div style="font-weight: bold; font-size: 12px; text-transform: uppercase;">Development Card</div>
+                <div class="build-item-row" style="display: flex; align-items: center;">
+                    <button class="btn btn-default build-btn" id="buy-dev-card-modal-open" data-toggle="modal" data-target="#buy-dev-card-modal" title="Buy Development Card" disabled><span class="glyphicon glyphicon-credit-card"></span></button>
+                    <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
+                        1<div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                        1<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                        1<div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
+                    </div>
                 </div>
             </div>
         </div>
