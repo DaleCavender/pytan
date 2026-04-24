@@ -25,10 +25,11 @@
             </div>
         </div>
     </div>
-
     <!-- RIGHT PANEL: Trade & Extras Tabs -->
     <div id="right-ui-panel">
         <div id="right-menu-container" class="panel panel-default">
+            
+            <!-- Removed col-xs-3 -->
             <ul class="nav nav-pills nav-stacked" id="right-tab-tabs" role="tablist">
                 <li role="presentation" class="active">
                     <a href="#trade-tab" data-toggle="tab" title="Trade"><span class="glyphicon glyphicon-transfer"></span></a>
@@ -38,6 +39,7 @@
                 </li>
             </ul>
             
+            <!-- Removed col-xs-9 -->
             <div class="tab-content right-tab-content">
                 <!-- Trade Tab -->
                 <div role="tabpanel" class="tab-pane active" id="trade-tab">
@@ -51,7 +53,7 @@
                     </ul>
                     
                     <div class="tab-content">
-                        <!-- Interplayer Trade with +/- Buttons -->
+                        <!-- Interplayer Trade -->
                         <div role="tabpanel" class="tab-pane active" id="player-trade-tab">
                             <div class="trade-grid">
                                 <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
@@ -81,7 +83,6 @@
 
                         <!-- Bank Trade -->
                         <div role="tabpanel" class="tab-pane text-center" id="bank-trade-tab">
-                            <!-- Existing Bank Trade logic goes here (as seen in your original file) -->
                             <div id="bank-trade-container" style="padding: 10px;">
                                 <label>Give:</label>
                                 <div class="bank-resources-grid">
@@ -120,9 +121,9 @@
                         <button class="list-group-item btn-danger text-white" data-toggle="modal" data-target="#exit-game-modal">Leave Game</button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+            </div> <!-- end tab-content -->
+        </div> <!-- end right-menu-container -->
+    </div> <!-- end right-ui-panel --> 
 </div>
 
 <!-- 3. BOTTOM RIGHT OVERLAY: Build Menu -->
