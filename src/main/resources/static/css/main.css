@@ -245,7 +245,7 @@ img[src$=".svg"] {
     margin: 0 auto; 
     position: relative;
     z-index: 1;
-    background-color: inherit;
+    /* NOTE: NO background-color: inherit here, or it overrides the tile colors! */
 }
 
 /* The top and bottom points of the hexagon */
@@ -256,11 +256,19 @@ img[src$=".svg"] {
     left: 0;
     height: 100%;
     width: 100%;
-    background-color: inherit;
+    background-color: inherit; /* This correctly inherits from .wheat-color, etc. */
     z-index: -1;
 }
 .hexagon:before { transform: rotateZ(60deg); }
 .hexagon:after { transform: rotateZ(-60deg); }
+
+/* Tile Colors */
+.brick-color  { background-color: #945D3F; }
+.wood-color   { background-color: #408754; }
+.wheat-color  { background-color: #EAC932; }
+.ore-color    { background-color: #A1AFDA; }
+.sheep-color  { background-color: #83B94E; }
+.desert-color { background-color: #D2B48C; }
 
 /* Number Circles (The tokens on the board) */
 .number-circle {
@@ -307,3 +315,10 @@ img[src$=".svg"] {
     height: 75%;
     object-fit: contain;
 }
+
+/* Base positioning for Paths and Intersections */
+.path, .path-select, .intersection, .intersection-select {
+    position: absolute;
+    z-index: 15;
+}
+.intersection, .intersection-select { z-index: 20; }
