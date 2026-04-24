@@ -231,38 +231,37 @@ img[src$=".svg"] {
    8. BOARD TILE RENDERING (HEXAGONS & TOKENS)
    ========================================================================== */
 
-/* The wrapper must be absolute so JS can translate/move it mathematically */
-.hexagon-wrapper {
-    position: absolute;
-    z-index: 1;
-    display: inline-block;
-}
-
-/* The core hexagon shape */
-.hexagon {
-    height: 100%;
-    width: 57.735%; /* Mathematical ratio for a perfect hexagon */
-    margin: 0 auto; 
-    position: relative;
-    z-index: 1;
-    /* NOTE: NO background-color: inherit here, or it overrides the tile colors! */
-}
-
-/* The top and bottom points of the hexagon */
-.hexagon:before, .hexagon:after {
-    content: '';
+/* 
+ * CRITICAL FIX: Everything moved by JS translate() MUST start at top:0, left:0.
+ * Otherwise, the browser stacks them invisibly down the page!
+ */
+.hexagon-wrapper, .number-circle, .dots-container, .port-circle, .path, .path-select, .intersection, .intersection-select {
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: inherit; /* This correctly inherits from .wheat-color, etc. */
-    z-index: -1;
 }
-.hexagon:before { transform: rotateZ(60deg); }
-.hexagon:after { transform: rotateZ(-60deg); }
 
-/* Tile Colors */
+.hexagon-wrapper {
+    z-index: 5;
+}
+
+/* 
+ * The Magic Clip-Path! 
+ * Uses the flat-topped hexagon coordinates to match your tile.js math perfectly.
+ */
+.hexagon {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    
+    /* Ready for your custom images later */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Tile Styles (Colors for now, swap to background-image: url(...) later!) */
 .brick-color  { background-color: #945D3F; }
 .wood-color   { background-color: #408754; }
 .wheat-color  { background-color: #EAC932; }
@@ -270,10 +269,9 @@ img[src$=".svg"] {
 .sheep-color  { background-color: #83B94E; }
 .desert-color { background-color: #D2B48C; }
 
-/* Number Circles (The tokens on the board) */
+/* Number Circles & Dots */
 .number-circle {
-    position: absolute;
-    background-color: #ffebd6; /* Parchment color */
+    background-color: #ffebd6;
     border: 1px solid #333;
     z-index: 10;
     text-align: center;
@@ -283,15 +281,11 @@ img[src$=".svg"] {
     justify-content: center;
     align-items: center;
 }
-
 .desert-circle, .sea-circle {
     background-color: transparent !important;
     border: none !important;
 }
-
-/* The probability dots under the numbers */
 .dots-container {
-    position: absolute;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -300,25 +294,12 @@ img[src$=".svg"] {
     background-color: #000;
     border-radius: 50%;
 }
-
-/* Red tokens for 6 and 8 */
 .red-number { color: #d70206; font-weight: bold; }
 .red-number-dot { background-color: #d70206; }
 
-/* Ports */
-.port-circle {
-    position: absolute;
-    z-index: 5;
-}
-.robber-icon, .port-icon {
-    width: 75%;
-    height: 75%;
-    object-fit: contain;
-}
+/* Ports, Paths, and Intersections */
+.port-circle { z-index: 6; }
+.robber-icon, .port-icon { width: 75%; height: 75%; object-fit: contain; }
 
-/* Base positioning for Paths and Intersections */
-.path, .path-select, .intersection, .intersection-select {
-    position: absolute;
-    z-index: 15;
-}
+.path, .path-select, .intersection, .intersection-select { z-index: 15; }
 .intersection, .intersection-select { z-index: 20; }
