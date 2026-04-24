@@ -94,11 +94,29 @@
                                 </div>
                                 <label>Give:</label>
                                 <div class="bank-resources-grid">
-                                    <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
-                                        <div class="to-give-circle-container circle" res="${res}">
-                                            <div class="circle trade-circle ${res}-color pointer"><img src="/images/icon-${res}.svg"></div>
+                                    <div class="bank-resources-grid">
+                                        <div class="to-give-circle-container circle" res="brick" style="position:relative;">
+                                            <div class="circle trade-circle brick-color pointer"><img src="/images/icon-brick.svg"></div>
+                                            <span class="badge" id="brick-trade-rate" style="position:absolute; bottom:-5px; right:-5px; background-color:#d9534f; font-size:11px; border:1px solid white;">4:1</span>
                                         </div>
-                                    </#list>
+                                        <div class="to-give-circle-container circle" res="wood" style="position:relative;">
+                                            <div class="circle trade-circle wood-color pointer"><img src="/images/icon-wood.svg"></div>
+                                            <span class="badge" id="wood-trade-rate" style="position:absolute; bottom:-5px; right:-5px; background-color:#d9534f; font-size:11px; border:1px solid white;">4:1</span>
+                                        </div>
+                                        <div class="to-give-circle-container circle" res="ore" style="position:relative;">
+                                            <div class="circle trade-circle ore-color pointer"><img src="/images/icon-ore.svg"></div>
+                                            <span class="badge" id="ore-trade-rate" style="position:absolute; bottom:-5px; right:-5px; background-color:#d9534f; font-size:11px; border:1px solid white;">4:1</span>
+                                        </div>
+                                        <div class="to-give-circle-container circle" res="wheat" style="position:relative;">
+                                            <div class="circle trade-circle wheat-color pointer"><img src="/images/icon-wheat.svg"></div>
+                                            <span class="badge" id="wheat-trade-rate" style="position:absolute; bottom:-5px; right:-5px; background-color:#d9534f; font-size:11px; border:1px solid white;">4:1</span>
+                                        </div>
+                                        <div class="to-give-circle-container circle" res="sheep" style="position:relative;">
+                                            <div class="circle trade-circle sheep-color pointer"><img src="/images/icon-sheep.svg"></div>
+                                            <span class="badge" id="sheep-trade-rate" style="position:absolute; bottom:-5px; right:-5px; background-color:#d9534f; font-size:11px; border:1px solid white;">4:1</span>
+                                        </div>
+                                    </div>
+
                                 </div>
                                 <hr style="margin: 10px 0;">
                                 <label>Receive:</label>
@@ -222,6 +240,21 @@
                 <li class="navbar-btn"><div class="circle card-circle ore-color" title="Ore"><img src="/images/icon-ore.svg"></div><div class="card-number" id="ore-number">0</div></li>
                 <li class="navbar-btn"><div class="circle card-circle wheat-color" title="Wheat"><img src="/images/icon-wheat.svg"></div><div class="card-number" id="wheat-number">0</div></li>
                 <li class="navbar-btn"><div class="circle card-circle sheep-color" title="Sheep"><img src="/images/icon-sheep.svg"></div><div class="card-number" id="sheep-number">0</div></li>
+            </ul>
+            <!-- Player Color & Remaining Buildings -->
+            <ul class="nav navbar-nav navbar-left" id="hand-buildings" style="margin-right: 15px; border-right: 2px solid #ddd; padding-right: 15px;">
+                <li class="navbar-btn" title="Roads Left">
+                    <div class="circle card-circle player-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-road" style="color:white; line-height:30px; font-size: 16px;"></span></div>
+                    <div class="card-number" id="hand-roads-count">15</div>
+                </li>
+                <li class="navbar-btn" title="Settlements Left">
+                    <div class="circle card-circle player-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-home" style="color:white; line-height:30px; font-size: 16px;"></span></div>
+                    <div class="card-number" id="hand-settlements-count">5</div>
+                </li>
+                <li class="navbar-btn" title="Cities Left">
+                    <div class="circle card-circle player-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-tower" style="color:white; line-height:30px; font-size: 16px;"></span></div>
+                    <div class="card-number" id="hand-cities-count">4</div>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="hand-dev-cards">
                 <li class="navbar-btn"><div class="circle card-circle pointer" id="knight-btn" title="Knight"><img src="/images/icon-knight.svg"></div><div class="card-number" id="knight-number">0</div></li>
@@ -468,13 +501,13 @@
 <@simpleModal id="duplicate-tab-modal" title="Multiple Tabs Open" body="<p>You already have an active game open in another tab.</p>" buttons='' />
 <@simpleModal id="user-exited-modal" title="Game Over" body='<p><strong id="user-exited-name"></strong> left the game.</p>' buttons='<button type="button" class="btn btn-danger btn-block" data-dismiss="modal" id="user-exited-go-home-btn">Return Home</button>' />
 
-<script src="/js/player.js"></script>
-<script src="/js/tile.js"></script>
-<script src="/js/intersection.js"></script>
-<script src="/js/path.js"></script>
-<script src="/js/board.js"></script>
-<script src="/js/websocket.js"></script>
-<script src="/js/main.js"></script>
+<script src="/js/player.js?v=1"></script>
+<script src="/js/tile.js?v=1"></script>
+<script src="/js/intersection.js?v=1"></script>
+<script src="/js/path.js?v=1"></script>
+<script src="/js/board.js?v=1"></script>
+<script src="/js/websocket.js?v=1"></script>
+<script src="/js/main.js?v=1"></script>
 <script src="/js/chartist.min.js"></script>
 <script src="/js/moment.min.js"></script>
 

@@ -23,9 +23,7 @@ function Player(id, name, color) {
 	this.hand = {};
 }
 
-/*
- * Renders the compact player card at the top of the UI
- */
+
 /**
  * Renders the prominent player card at the top of the UI
  */
@@ -179,6 +177,11 @@ function fillplayerhand(handdata) {
 
 	$("#victory-point-number").text(handdata.devcards["victory point"]);
 	player.hand.victorypoint = handdata.devcards["victory point"];
+        // Update player color swatches and remaining buildings
+    $(".player-swatch").css("background-color", player.color);
+    $("#hand-roads-count").text(player.roads);
+    $("#hand-settlements-count").text(player.settlements);
+    $("#hand-cities-count").text(player.cities);
 }
 
 /*
@@ -211,16 +214,16 @@ function fillplayerbuyoptions(handdata) {
 	}
 }
 
-/*
- * fills the player's bank trade rates in the gui.
+/**
+ * Fills the player's bank trade rates in the gui.
  * @param rates - the player's trade rates
  */
-function fillplayertraderates(rates) {
-	$("#brick-trade-rate").text(rates.brick);
-	$("#wood-trade-rate").text(rates.wood);
-	$("#ore-trade-rate").text(rates.ore);
-	$("#wheat-trade-rate").text(rates.wheat);
-	$("#sheep-trade-rate").text(rates.sheep);
+function fillPlayerTradeRates(rates) {
+    $("#brick-trade-rate").text(rates.brick + ":1");
+    $("#wood-trade-rate").text(rates.wood + ":1");
+    $("#ore-trade-rate").text(rates.ore + ":1");
+    $("#wheat-trade-rate").text(rates.wheat + ":1");
+    $("#sheep-trade-rate").text(rates.sheep + ":1");
 }
 
 /*

@@ -11,7 +11,7 @@
     <!-- Core Global CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/chartist.min.css">
-    <link rel="stylesheet" href="css/main.css?v=4">
+    <link rel="stylesheet" href="css/main.css?v=5">
     <link rel="stylesheet" href="css/chat.css?v=1">
     
     <!-- Dynamic Page-Specific CSS -->

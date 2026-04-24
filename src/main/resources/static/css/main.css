@@ -388,3 +388,40 @@ img[src$=".svg"] {
     background-color: #fffae6 !important; /* Extremely light golden background */
     z-index: 100 !important; /* Pops it to the front */
 }
+
+/* Fix Massive Trade Icons in Modals */
+.inline-trade-icon {
+    display: inline-block;
+    width: 28px !important;
+    height: 28px !important;
+    vertical-align: middle;
+    margin-left: 8px;
+}
+.inline-trade-icon img { width: 18px; height: 18px; margin-top: 4px; }
+
+/* Highlight the selected Bank Trade Resource */
+.highlighted-to-give-get-circle .trade-circle {
+    box-shadow: 0 0 0 4px #00A8FF, 0 0 12px #00A8FF !important;
+    transform: scale(1.15);
+    border: 2px solid #fff;
+    transition: all 0.2s;
+}
+
+/* Fix Road & Settlement Glow (Neon Green & Shrink Size) */
+.path.highlighted, .path-select.highlighted {
+    background-color: #00ff00 !important; 
+    box-shadow: 0 0 10px 4px #00ff00 !important;
+    border: 1px solid white;
+    z-index: 100 !important;
+}
+.intersection.highlighted, .intersection-select.highlighted {
+    background-color: #00ff00 !important;
+    box-shadow: 0 0 10px 4px #00ff00 !important;
+    border: 2px solid white;
+    /* Shrink the 32px hit-box to a 16px visible circle */
+    width: 16px !important; 
+    height: 16px !important;
+    margin-left: 8px; 
+    margin-top: 8px;
+    z-index: 100 !important;
+}
