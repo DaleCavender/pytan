@@ -115,11 +115,14 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start; /* Keeps panels anchored to top */
+	flex-wrap: nowrap;
 }
 
 #left-ui-panel {
     padding-left: 20px;
     width: 280px;
+	flex-shrink: 0;
+	min-width: 280px;
 }
 
 #turn-display-container {
@@ -139,6 +142,8 @@ body {
 #right-ui-panel {
     padding-right: 20px;
     width: 380px;
+	flex-shrink: 0;
+	min-width: 380px;
 }
 
 #right-menu-container {
@@ -173,7 +178,9 @@ body {
     flex-grow: 1;
     max-height: 65vh;
     overflow-y: auto;
+	overflow-x: hidden;
     padding: 0;
+	min-width: 0;
 }
 
 /* --- Build Menu (Bottom Right) --- */
