@@ -39,7 +39,7 @@ $(document).on("mousedown", "#board-viewport", function(event) {
 
 // When mouse is moved, translate the board from last position
 function onMouseMove(event) {
-	if (dragging) {
+	if (dragging && board) {
 		board.translate(event.pageX - lastX, event.pageY - lastY);
 		lastX = event.pageX;
 		lastY = event.pageY
@@ -57,6 +57,7 @@ $(document).on("mouseup mouseleave", "#board-viewport", function(event) {
 
 // When mouse is scrolled, scale board
 $(document).on("wheel", "#board-viewport", function(event) {
+	if (!board) return;
 	if (Math.abs(event.originalEvent.deltaY) > 0.01) {
 		var deltaScale = event.originalEvent.deltaY > 0 ? 10 : -10;
 		board.scale(deltaScale);
