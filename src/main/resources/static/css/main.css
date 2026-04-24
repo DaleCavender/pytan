@@ -106,13 +106,37 @@ body {
 
 .pc-badges .label { font-size: 11px; padding: 4px 6px; }
 
+/* 1. Strictly limit ALL images inside the player cards */
+.player-tab-pane img {
+    width: 16px !important;  /* Adjust this up or down (16px to 24px) based on your preference */
+    height: 16px !important;
+    object-fit: contain;     /* Ensures the icon doesn't get stretched/squished */
+    vertical-align: text-bottom;
+}
+
+/* 2. If the JS wraps the image in the .pc-icon class */
+.pc-icon { 
+    display: inline-block;
+    width: 16px; 
+    height: 16px; 
+    vertical-align: text-bottom; 
+    text-align: center;
+}
+
+.pc-icon img {
+    width: 100%;
+    height: 100%;
+}
+
+
 /* --- Side Panels (Left: Chat, Right: Trade/Extras) --- */
 #side-controls-container {
     top: 90px;   
     bottom: 90px; 
     left: 0;
     width: 100vw;
-    display: flex;
+    display: flex !important;
+	flex-direction: row !important;
     justify-content: space-between;
     align-items: flex-start; /* Keeps panels anchored to top */
 	flex-wrap: nowrap;
@@ -141,9 +165,10 @@ body {
 
 #right-ui-panel {
     padding-right: 20px;
-    width: 380px;
-	flex-shrink: 0;
-	min-width: 380px;
+	flex: 0 0 380px;
+    max-width: 380px;
+	pointer-events: auto;
+	margin-left: auto;
 }
 
 #right-menu-container {
