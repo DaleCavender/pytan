@@ -19,7 +19,6 @@
     
     <!-- LEFT PANEL: Chat & End Turn -->
     <div id="left-ui-panel">
-        <div id="turn-display-container"></div>
         <input type="button" class="btn btn-primary btn-block" id="end-turn-btn" value="End Turn" style="margin: 10px 0;">
         
         <div id="chat-container">
@@ -90,6 +89,9 @@
                         <!-- Bank Trade -->
                         <div role="tabpanel" class="tab-pane text-center" id="bank-trade-tab">
                             <div id="bank-trade-container" style="padding: 10px;">
+                                <div class="alert alert-warning" style="padding: 5px; margin-bottom: 10px;">
+                                    <strong>Current Rate: </strong><span id="bank-exchange-rate-text">4 to 1</span>
+                                </div>
                                 <label>Give:</label>
                                 <div class="bank-resources-grid">
                                     <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
@@ -356,8 +358,6 @@
             <div class="modal-header text-center"><h4 class="modal-title">Welcome to Catan</h4></div>
             <div class="modal-body">
                 <div id="dynamic-rates-welcome-message" class="alert alert-info hidden"></div>
-                <p class="text-center"><strong>Turn Order:</strong></p>
-                <ol id="welcome-turn-order-container" class="list-group" style="font-size:16px;"></ol>
             </div>
             <div class="modal-footer" style="text-align:center;">
                 <button type="button" id="welcome-start-btn" class="btn btn-success btn-lg" data-dismiss="modal">Ready</button>

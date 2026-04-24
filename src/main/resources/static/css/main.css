@@ -311,3 +311,58 @@ img[src$=".svg"] {
 
 .path, .path-select, .intersection, .intersection-select { z-index: 15; }
 .intersection, .intersection-select { z-index: 20; }
+
+/* ==========================================================================
+   9. FINAL UI POLISH & FIXES
+   ========================================================================== */
+
+/* Send Ports behind the Hexagons */
+.hexagon-wrapper { z-index: 5 !important; }
+.port-circle     { z-index: 2 !important; }
+
+/* Fix dots overlapping numbers (Overrides the inline JS transform) */
+.dots-container {
+    transform: none !important;
+    bottom: 12%; 
+}
+
+/* Restore Port Icon Colors */
+.sea-circle[class*="-color"] {
+    border: 2px solid #333 !important; 
+    background-color: #deb887 !important; /* Gives the port dock a wooden color */
+}
+
+/* Breathing Room for Icons */
+.build-cost-group .circle, .trade-stepper .circle, .navbar-btn .circle { margin: 0 4px; }
+#hand-resources li, #hand-dev-cards li { margin-left: 10px; }
+.pc-row .pc-icon { margin: 0 4px; }
+
+/* Yellow Glow for Road and Settlement Placement */
+/* Targets the classes added by tile.js/intersection.js */
+.highlighted {
+    background-color: rgba(255, 255, 0, 0.7) !important;
+    box-shadow: 0 0 15px 8px yellow !important;
+    cursor: pointer;
+    z-index: 25 !important;
+}
+
+/* White Background for the Updates/Roll Messages */
+#message-container {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 8px 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Active Player Turn Highlight */
+.active-turn-highlight {
+    box-shadow: 0 0 15px 4px #EAC932 !important;
+    border: 3px solid #EAC932 !important;
+    transform: scale(1.02);
+    transition: all 0.2s ease-in-out;
+}

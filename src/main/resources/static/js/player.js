@@ -92,25 +92,19 @@ Player.prototype.addPlayerTab = function() {
     });
 }
 
-/*
- * Fills the appropriate sections of the turn display for this player.
+/**
+ * Highlights the active player's tab instead of using the old turn squares.
  */
 Player.prototype.fillTurnDisplay = function() {
-	var displayContainer = $("#turn-display-container");
-	displayContainer.append("<div id='" + this.id + "-turn-square' class='turn-square'></div>");
-
-	var width = $("#end-turn-btn").outerWidth() / players.length;
-	var height = $("#end-turn-btn").outerWidth() / 4;
-
-	var turnSquare = $("#" + this.id + "-turn-square");
-	turnSquare.css("width", width);
-	turnSquare.css("height", height);
-	turnSquare.css("background-color", this.color);
-
-	if (currentPlayerTurn === this.id) {
-		turnSquare.addClass("selected-turn-square");
-	}
+    var tab = $("#p" + this.id + "-tab");
+    
+    if (currentPlayerTurn === this.id) {
+        tab.addClass("active-turn-highlight");
+    } else {
+        tab.removeClass("active-turn-highlight");
+    }
 }
+
 
 /*
  * Creates a new player from the given player data.

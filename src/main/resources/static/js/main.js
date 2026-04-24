@@ -614,25 +614,32 @@ var selectedToGetResource  = null;
 
 // Handle a to give circle being clicked
 $(".to-give-circle-container").click(function(event) {
-	var element = $(this);
-
-	// Unhighlight previously selected resource, if one was previously selected
-	if (selectedToGiveElement) {
-		selectedToGiveElement.removeClass("highlighted-to-give-get-circle");
-	}
-
-	// Highlight this resource
-	selectedToGiveElement = element;
-	selectedToGiveElement.addClass("highlighted-to-give-get-circle");
-	var amount = parseFloat($(this).val());
-
-	selectedToGiveResource = selectedToGiveElement.attr("res");
-	if (selectedToGiveResource !== null && selectedToGetResource !== null && amount > 0) {
-		$("#bank-trade-btn").prop("disabled", false);
-		var rate = getExchangeRate(selectedToGiveResource, selectedToGetResource);
-		$("#bank-give-amount").text(formatNumber(rate * amount));
-	}
+    var element = $(this);
+    // Unhighlight previously selected resource
+    if (selectedToGiveElement) {
+        selectedToGiveElement.removeClass("highlighted-to-give-get-circle");
+    }
+    // Highlight this resource
+    selectedToGiveElement = element;
+    selectedToGiveElement.addClass("highlighted-to-give-get-circle");
+    
+    selectedToGiveResource = selectedToGiveElement.attr("res");
+    
+    // --- NEW: Update Exchange Rate UI ---
+    var rate = tradeRates[selectedToGiveResource]; 
+    if (rate) {
+        $("#bank-exchange-rate-text").text(rate + " to 1");
+        $("#bank-trade-amount-input").val(rate); // Auto-fill the input box
+    }
+    
+    var amount = parseFloat($("#bank-trade-amount-input").val());
+    if (selectedToGiveResource !== null && selectedToGetResource !== null && amount > 0) {
+        $("#bank-trade-btn").prop("disabled", false);
+        var calculatedRate = getExchangeRate(selectedToGiveResource, selectedToGetResource);
+        $("#bank-give-amount").text(formatNumber(calculatedRate * amount));
+    }
 });
+
 
 // Handle a to get circle being clicked
 $(".to-get-circle-container").click(function(event) {
@@ -690,40 +697,35 @@ $("#bank-trade-btn").click(function(event) {
 // Start Game Dialog
 //////////////////////////////////////////
 
-/*
- * Creates and displays the game start modal.
- * @param content - the game start data
+/**
+ * Creates and displays the game start modal and sorts player tabs.
  */
 function showStartGameDialogue(content) {
-	var turnOrder = content.data.turnOrder;
-	var isFirst = content.data.isFirst;
+    var turnOrder = content.data.turnOrder;
+    var isFirst = content.data.isFirst;
+    if (isFirst) {
+        $("#welcome-start-btn").text("Place First Settlements");
+        $("#welcome-start-btn").click(startSetupAction);
+    } else {
+        $("#welcome-start-btn").text("Ready");
+    }
 
-	if (isFirst) {
-		$("#welcome-start-btn").text("Place First Settlements");
-		$("#welcome-start-btn").click(startSetupAction);
-	} else {
-		$("#welcome-start-btn").text("Ready");
-	}
+    // Sort the Player Cards at the top of the screen to match the turn order!
+    var tabsContent = $("#player-tabs-content");
+    for (var i = 0; i < turnOrder.length; i++) {
+        tabsContent.append($("#p" + turnOrder[i] + "-tab"));
+    }
 
-	var container = $("#welcome-turn-order-container");
-	container.empty();
-
-	if (gameSettings.isDynamic) {
-		$("#dynamic-rates-welcome-message").text("You are playing a game with Dynamic Exchange rates. "
-				+ "Bank and port rates will change dynamically based on the supply of resources in "
-				+ "the game. Acquiring ports still give you the same relative advantage as they do in "
-				+ "the classic game of Catan.");
-	}
-
-	for (var i = 0; i < turnOrder.length; i++) {
-		var player = playersById[turnOrder[i]];
-		container.append("<li><span class='welcome-list-item'>"
-				+ "<div class='welcome-inline-color' style='background-color: " + player.color + "'></div>"
-				+ player.name + "</li>");
-	}
-
-	$("#welcome-modal").modal("show");
+    if (gameSettings.isDynamic) {
+        $("#dynamic-rates-welcome-message").text("You are playing a game with Dynamic Exchange rates. "
+                + "Bank and port rates will change dynamically based on the supply of resources in "
+                + "the game. Acquiring ports still give you the same relative advantage as they do in "
+                + "the classic game of Catan.");
+    }
+    
+    $("#welcome-modal").modal("show");
 }
+
 
 //////////////////////////////////////////
 // Roll Dice and Knight or Dice Modal
