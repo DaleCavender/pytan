@@ -226,3 +226,84 @@ img[src$=".svg"] {
 
 .trade-circle { height: 30px; width: 30px; }
 .build-circle { height: 18px; width: 18px; }
+
+/* ==========================================================================
+   8. BOARD TILE RENDERING (HEXAGONS & TOKENS)
+   ========================================================================== */
+
+/* The wrapper must be absolute so JS can translate/move it mathematically */
+.hexagon-wrapper {
+    position: absolute;
+    z-index: 1;
+    display: inline-block;
+}
+
+/* The core hexagon shape */
+.hexagon {
+    height: 100%;
+    width: 57.735%; /* Mathematical ratio for a perfect hexagon */
+    margin: 0 auto; 
+    position: relative;
+    z-index: 1;
+    background-color: inherit;
+}
+
+/* The top and bottom points of the hexagon */
+.hexagon:before, .hexagon:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: inherit;
+    z-index: -1;
+}
+.hexagon:before { transform: rotateZ(60deg); }
+.hexagon:after { transform: rotateZ(-60deg); }
+
+/* Number Circles (The tokens on the board) */
+.number-circle {
+    position: absolute;
+    background-color: #ffebd6; /* Parchment color */
+    border: 1px solid #333;
+    z-index: 10;
+    text-align: center;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.desert-circle, .sea-circle {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+/* The probability dots under the numbers */
+.dots-container {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.number-dot {
+    background-color: #000;
+    border-radius: 50%;
+}
+
+/* Red tokens for 6 and 8 */
+.red-number { color: #d70206; font-weight: bold; }
+.red-number-dot { background-color: #d70206; }
+
+/* Ports */
+.port-circle {
+    position: absolute;
+    z-index: 5;
+}
+.robber-icon, .port-icon {
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
+}
