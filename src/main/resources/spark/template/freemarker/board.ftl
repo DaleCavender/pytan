@@ -65,7 +65,7 @@
                                 <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
                                 <div class="trade-resource-row">
                                     <div class="circle trade-circle ${res}-color">
-                                        <img src="images/icon-${res}.svg" alt="${res}">
+                                        <img src="/images/icon-${res}.svg" alt="${res}">
                                     </div>
                                     <div class="trade-stepper">
                                         <button class="btn btn-xs btn-default trade-btn-step" data-res="${res}" data-type="give" data-action="plus"><span class="glyphicon glyphicon-plus"></span></button>
@@ -94,7 +94,7 @@
                                 <div class="bank-resources-grid">
                                     <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
                                         <div class="to-give-circle-container circle" res="${res}">
-                                            <div class="circle trade-circle ${res}-color pointer"><img src="images/icon-${res}.svg"></div>
+                                            <div class="circle trade-circle ${res}-color pointer"><img src="/images/icon-${res}.svg"></div>
                                         </div>
                                     </#list>
                                 </div>
@@ -103,7 +103,7 @@
                                 <div class="bank-resources-grid">
                                     <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
                                         <div class="to-get-circle-container circle" res="${res}">
-                                            <div class="circle trade-circle ${res}-color pointer"><img src="images/icon-${res}.svg"></div>
+                                            <div class="circle trade-circle ${res}-color pointer"><img src="/images/icon-${res}.svg"></div>
                                         </div>
                                     </#list>
                                 </div>
@@ -144,35 +144,35 @@
             <div class="build-item-row">
                 <button class="btn btn-default build-btn" id="settlement-build-btn" title="Build Settlement"><span class="glyphicon glyphicon-home"></span></button>
                 <div class="build-cost-group">
-                    1<div class="circle build-circle brick-color"><img src="images/icon-brick.svg"></div>
-                    1<div class="circle build-circle wood-color"><img src="images/icon-wood.svg"></div>
-                    1<div class="circle build-circle wheat-color"><img src="images/icon-wheat.svg"></div>
-                    1<div class="circle build-circle sheep-color"><img src="images/icon-sheep.svg"></div>
+                    1<div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
+                    1<div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
+                    1<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                    1<div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
                 </div>
             </div>
             <!-- City -->
             <div class="build-item-row">
                 <button class="btn btn-default build-btn" id="city-build-btn" title="Build City"><span class="glyphicon glyphicon-tower"></span></button>
                 <div class="build-cost-group">
-                    3<div class="circle build-circle ore-color"><img src="images/icon-ore.svg"></div>
-                    2<div class="circle build-circle wheat-color"><img src="images/icon-wheat.svg"></div>
+                    3<div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                    2<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
                 </div>
             </div>
             <!-- Road -->
             <div class="build-item-row">
                 <button class="btn btn-default build-btn" id="road-build-btn" title="Build Road"><span class="glyphicon glyphicon-road"></span></button>
                 <div class="build-cost-group">
-                    1<div class="circle build-circle brick-color"><img src="images/icon-brick.svg"></div>
-                    1<div class="circle build-circle wood-color"><img src="images/icon-wood.svg"></div>
+                    1<div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
+                    1<div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
                 </div>
             </div>
             <!-- Dev Card -->
             <div class="build-item-row">
                 <button class="btn btn-default build-btn" id="buy-dev-card-modal-open" data-toggle="modal" data-target="#buy-dev-card-modal" title="Buy Development Card"><span class="glyphicon glyphicon-credit-card"></span></button>
                 <div class="build-cost-group">
-                    1<div class="circle build-circle ore-color"><img src="images/icon-ore.svg"></div>
-                    1<div class="circle build-circle wheat-color"><img src="images/icon-wheat.svg"></div>
-                    1<div class="circle build-circle sheep-color"><img src="images/icon-sheep.svg"></div>
+                    1<div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                    1<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                    1<div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
                 </div>
             </div>
         </div>
@@ -200,18 +200,18 @@
         <div id="message-container" class="text-center"></div>
         <div class="panel panel-default col-xs-12">
             <ul class="nav navbar-nav navbar-left" id="hand-resources">
-                <li class="navbar-btn"><div class="circle card-circle brick-color" title="Brick"><img src="images/icon-brick.svg"></div><div class="card-number" id="brick-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle wood-color" title="Wood"><img src="images/icon-wood.svg"></div><div class="card-number" id="wood-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle ore-color" title="Ore"><img src="images/icon-ore.svg"></div><div class="card-number" id="ore-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle wheat-color" title="Wheat"><img src="images/icon-wheat.svg"></div><div class="card-number" id="wheat-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle sheep-color" title="Sheep"><img src="images/icon-sheep.svg"></div><div class="card-number" id="sheep-number">0</div></li>
+                <li class="navbar-btn"><div class="circle card-circle brick-color" title="Brick"><img src="/images/icon-brick.svg"></div><div class="card-number" id="brick-number">0</div></li>
+                <li class="navbar-btn"><div class="circle card-circle wood-color" title="Wood"><img src="/images/icon-wood.svg"></div><div class="card-number" id="wood-number">0</div></li>
+                <li class="navbar-btn"><div class="circle card-circle ore-color" title="Ore"><img src="/images/icon-ore.svg"></div><div class="card-number" id="ore-number">0</div></li>
+                <li class="navbar-btn"><div class="circle card-circle wheat-color" title="Wheat"><img src="/images/icon-wheat.svg"></div><div class="card-number" id="wheat-number">0</div></li>
+                <li class="navbar-btn"><div class="circle card-circle sheep-color" title="Sheep"><img src="/images/icon-sheep.svg"></div><div class="card-number" id="sheep-number">0</div></li>
             </ul>
             <ul class="nav navbar-nav navbar-right" id="hand-dev-cards">
-                <li class="navbar-btn"><div class="circle card-circle pointer" id="knight-btn" title="Knight"><img src="images/icon-knight.svg"></div><div class="card-number" id="knight-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle pointer" id="year-of-plenty-btn" title="Year of Plenty"><img src="images/icon-year-of-plenty.svg"></div><div class="card-number" id="year-of-plenty-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle pointer" id="monopoly-btn" title="Monopoly"><img src="images/icon-monopoly.svg"></div><div class="card-number" id="monopoly-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle pointer" id="road-building-btn" title="Road Building"><img src="images/icon-road-building.svg"></div><div class="card-number" id="road-building-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle" title="Victory Point"><img src="images/icon-victory-point.svg"></div><div class="card-number" id="victory-point-number">0</div></li>
+                <li class="navbar-btn"><div class="circle card-circle pointer" id="knight-btn" title="Knight"><img src="/images/icon-knight.svg"></div><div class="card-number" id="knight-number">0</div></li>
+                <li class="navbar-btn"><div class="circle card-circle pointer" id="year-of-plenty-btn" title="Year of Plenty"><img src="/images/icon-year-of-plenty.svg"></div><div class="card-number" id="year-of-plenty-number">0</div></li>
+                <li class="navbar-btn"><div class="circle card-circle pointer" id="monopoly-btn" title="Monopoly"><img src="/images/icon-monopoly.svg"></div><div class="card-number" id="monopoly-number">0</div></li>
+                <li class="navbar-btn"><div class="circle card-circle pointer" id="road-building-btn" title="Road Building"><img src="/images/icon-road-building.svg"></div><div class="card-number" id="road-building-number">0</div></li>
+                <li class="navbar-btn"><div class="circle card-circle" title="Victory Point"><img src="/images/icon-victory-point.svg"></div><div class="card-number" id="victory-point-number">0</div></li>
             </ul>
         </div>
     </div>
@@ -244,9 +244,9 @@
             <div class="modal-body text-center">
                 <p>Purchase a Development Card for:</p>
                 <div class="build-cost-group" style="justify-content: center; font-size: 16px; margin-top: 15px;">
-                    1<div class="circle build-circle ore-color"><img src="images/icon-ore.svg"></div>
-                    1<div class="circle build-circle wheat-color"><img src="images/icon-wheat.svg"></div>
-                    1<div class="circle build-circle sheep-color"><img src="images/icon-sheep.svg"></div>
+                    1<div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                    1<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                    1<div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
                 </div>
             </div>
             <div class="modal-footer" style="text-align: center;">
@@ -266,7 +266,7 @@
                 <div class="bank-resources-grid" style="margin-top: 20px;">
                     <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
                     <div class="discard-resource-container" style="display:flex; flex-direction:column; align-items:center; gap:8px;">
-                        <div class="circle discard-circle ${res}-color" style="margin:0;"><img src="images/icon-${res}.svg"></div>
+                        <div class="circle discard-circle ${res}-color" style="margin:0;"><img src="/images/icon-${res}.svg"></div>
                         <small class="text-muted">Have: <span id="discard-hand-number-${res}"></span></small>
                         <div class="trade-stepper">
                             <button class="btn btn-xs btn-default discard-btn-step" data-res="${res}" data-action="minus"><span class="glyphicon glyphicon-minus"></span></button>
@@ -294,7 +294,7 @@
                 <div class="bank-resources-grid" style="margin-top: 20px;">
                     <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
                     <div class="yop-resource-container" style="display:flex; flex-direction:column; align-items:center; gap:8px; margin:0;">
-                        <div class="circle yop-circle ${res}-color" style="margin:0;"><img src="images/icon-${res}.svg"></div>
+                        <div class="circle yop-circle ${res}-color" style="margin:0;"><img src="/images/icon-${res}.svg"></div>
                         <div class="trade-stepper">
                             <button class="btn btn-xs btn-default yop-btn-step" data-res="${res}" data-action="minus"><span class="glyphicon glyphicon-minus"></span></button>
                             <span class="trade-val text-success" id="yop-val-${res}">0</span>
@@ -324,7 +324,7 @@
                 <div class="bank-resources-grid" style="margin-top: 15px;">
                     <#list ["brick", "wood", "ore", "wheat", "sheep"] as res>
                     <div class="circle monopoly-circle-container" res="${res}" style="margin:0;">
-                        <div class="circle monopoly-circle ${res}-color pointer"><img src="images/icon-${res}.svg"></div>
+                        <div class="circle monopoly-circle ${res}-color pointer"><img src="/images/icon-${res}.svg"></div>
                     </div>
                     </#list>
                 </div>
@@ -376,13 +376,13 @@
                     <div class="col-xs-6">
                         <h5 class="text-danger">Give</h5>
                         <div id="review-to-give-container" class="bank-resources-grid">
-                            <#list ["brick", "wood", "ore", "wheat", "sheep"] as res><p class="review-to-give-list-item hidden" res="${res}"><strong class="review-trade-number"></strong><span class="inline-trade-icon circle ${res}-color"><img src="images/icon-${res}.svg"></span></p></#list>
+                            <#list ["brick", "wood", "ore", "wheat", "sheep"] as res><p class="review-to-give-list-item hidden" res="${res}"><strong class="review-trade-number"></strong><span class="inline-trade-icon circle ${res}-color"><img src="/images/icon-${res}.svg"></span></p></#list>
                         </div>
                     </div>
                     <div class="col-xs-6" style="border-left: 1px solid #eee;">
                         <h5 class="text-success">Receive</h5>
                         <div id="review-to-get-container" class="bank-resources-grid">
-                            <#list ["brick", "wood", "ore", "wheat", "sheep"] as res><p class="review-to-get-list-item hidden" res="${res}"><strong class="review-trade-number"></strong><span class="inline-trade-icon circle ${res}-color"><img src="images/icon-${res}.svg"></span></p></#list>
+                            <#list ["brick", "wood", "ore", "wheat", "sheep"] as res><p class="review-to-get-list-item hidden" res="${res}"><strong class="review-trade-number"></strong><span class="inline-trade-icon circle ${res}-color"><img src="/images/icon-${res}.svg"></span></p></#list>
                         </div>
                     </div>
                 </div>
@@ -404,13 +404,13 @@
                     <div class="col-xs-6">
                         <h5 class="text-danger">Give</h5>
                         <div id="trade-responses-to-give-container" class="bank-resources-grid">
-                            <#list ["brick", "wood", "ore", "wheat", "sheep"] as res><p class="trade-responses-to-give-list-item hidden" res="${res}"><strong class="trade-responses-trade-number"></strong><span class="inline-trade-icon circle ${res}-color"><img src="images/icon-${res}.svg"></span></p></#list>
+                            <#list ["brick", "wood", "ore", "wheat", "sheep"] as res><p class="trade-responses-to-give-list-item hidden" res="${res}"><strong class="trade-responses-trade-number"></strong><span class="inline-trade-icon circle ${res}-color"><img src="/images/icon-${res}.svg"></span></p></#list>
                         </div>
                     </div>
                     <div class="col-xs-6" style="border-left: 1px solid #eee;">
                         <h5 class="text-success">Receive</h5>
                         <div id="trade-responses-to-get-container" class="bank-resources-grid">
-                            <#list ["brick", "wood", "ore", "wheat", "sheep"] as res><p class="trade-responses-to-get-list-item hidden" res="${res}"><strong class="trade-responses-trade-number"></strong><span class="inline-trade-icon circle ${res}-color"><img src="images/icon-${res}.svg"></span></p></#list>
+                            <#list ["brick", "wood", "ore", "wheat", "sheep"] as res><p class="trade-responses-to-get-list-item hidden" res="${res}"><strong class="trade-responses-trade-number"></strong><span class="inline-trade-icon circle ${res}-color"><img src="/images/icon-${res}.svg"></span></p></#list>
                         </div>
                     </div>
                 </div>
@@ -453,15 +453,16 @@
 <@simpleModal id="duplicate-tab-modal" title="Multiple Tabs Open" body="<p>You already have an active game open in another tab.</p>" buttons='' />
 <@simpleModal id="user-exited-modal" title="Game Over" body='<p><strong id="user-exited-name"></strong> left the game.</p>' buttons='<button type="button" class="btn btn-danger btn-block" data-dismiss="modal" id="user-exited-go-home-btn">Return Home</button>' />
 
+<script src="/js/player.js"></script>
+<script src="/js/tile.js"></script>
+<script src="/js/intersection.js"></script>
+<script src="/js/path.js"></script>
+<script src="/js/board.js"></script>
+<script src="/js/websocket.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/chartist.min.js"></script>
+<script src="/js/moment.min.js"></script>
+
 </#assign>
 
 <#include "main.ftl">
-<script src="js/player.js"></script>
-<script src="js/tile.js"></script>
-<script src="js/intersection.js"></script>
-<script src="js/path.js"></script>
-<script src="js/board.js"></script>
-<script src="js/websocket.js"></script>
-<script src="js/main.js"></script>
-<script src="js/chartist.min.js"></script>
-<script src="js/moment.min.js"></script>

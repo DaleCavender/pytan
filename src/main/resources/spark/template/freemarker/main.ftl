@@ -12,12 +12,14 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/chartist.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="/css/chat.css">
     
     <!-- Dynamic Page-Specific CSS -->
     ${extra_css!""}
 
     <script src="js/jquery-2.1.1.js"></script>
     <script src="js/bootstrap.min.js"></script>
+
   </head>
   <body>
     ${content}
