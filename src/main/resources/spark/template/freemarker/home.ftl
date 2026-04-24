@@ -1,3 +1,7 @@
+<#assign extra_css>
+    <link rel="stylesheet" href="css/home.css">
+</#assign>
+
 <#assign content>
 
 <div class="text-center">
