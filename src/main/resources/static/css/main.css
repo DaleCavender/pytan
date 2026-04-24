@@ -228,40 +228,39 @@ img[src$=".svg"] {
 .build-circle { height: 18px; width: 18px; }
 
 /* ==========================================================================
-   8. BOARD TILE RENDERING (HEXAGONS & TOKENS)
+   8. BOARD TILE RENDERING (CACHE-BUSTED)
    ========================================================================== */
 
-/* 
- * CRITICAL FIX: Everything moved by JS translate() MUST start at top:0, left:0.
- * Otherwise, the browser stacks them invisibly down the page!
- */
-.hexagon-wrapper, .number-circle, .dots-container, .port-circle, .path, .path-select, .intersection, .intersection-select {
+/* The wrapper MUST be absolute so JS can translate it across the board */
+.hexagon-wrapper {
+    position: absolute;
+    z-index: 1;
+}
+
+/* The core hexagon shape */
+.hexagon {
+    height: 100%;
+    width: 57.735%; /* Perfect mathematical hex ratio */
+    margin: 0 auto; 
+    position: relative;
+    z-index: 1;
+}
+
+/* The top and bottom points of the hexagon */
+.hexagon:before, .hexagon:after {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
-}
-
-.hexagon-wrapper {
-    z-index: 5;
-}
-
-/* 
- * The Magic Clip-Path! 
- * Uses the flat-topped hexagon coordinates to match your tile.js math perfectly.
- */
-.hexagon {
-    width: 100%;
     height: 100%;
-    position: relative;
-    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-    
-    /* Ready for your custom images later */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    width: 100%;
+    background-color: inherit; /* This pulls the color from .brick-color, etc. */
+    z-index: -1;
 }
+.hexagon:before { transform: rotateZ(60deg); }
+.hexagon:after { transform: rotateZ(-60deg); }
 
-/* Tile Styles (Colors for now, swap to background-image: url(...) later!) */
+/* Tile Colors */
 .brick-color  { background-color: #945D3F; }
 .wood-color   { background-color: #408754; }
 .wheat-color  { background-color: #EAC932; }
@@ -269,17 +268,13 @@ img[src$=".svg"] {
 .sheep-color  { background-color: #83B94E; }
 .desert-color { background-color: #D2B48C; }
 
-/* Number Circles & Dots */
+/* Tokens (MUST be position: static so tile.js negative Y math works) */
 .number-circle {
     background-color: #ffebd6;
     border: 1px solid #333;
     z-index: 10;
     text-align: center;
     border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 .desert-circle, .sea-circle {
     background-color: transparent !important;
@@ -287,19 +282,22 @@ img[src$=".svg"] {
 }
 .dots-container {
     width: 100%;
-    display: flex;
-    justify-content: center;
+    text-align: center;
 }
 .number-dot {
     background-color: #000;
     border-radius: 50%;
+    display: inline-block;
 }
 .red-number { color: #d70206; font-weight: bold; }
 .red-number-dot { background-color: #d70206; }
 
 /* Ports, Paths, and Intersections */
-.port-circle { z-index: 6; }
+.port-circle { position: absolute; z-index: 6; }
 .robber-icon, .port-icon { width: 75%; height: 75%; object-fit: contain; }
 
-.path, .path-select, .intersection, .intersection-select { z-index: 15; }
+.path, .path-select, .intersection, .intersection-select {
+    position: absolute;
+    z-index: 15;
+}
 .intersection, .intersection-select { z-index: 20; }
