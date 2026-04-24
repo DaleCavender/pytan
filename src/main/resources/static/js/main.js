@@ -359,200 +359,98 @@ $("#monopoly-btn").click(function(event) {
 });
 
 //////////////////////////////////////////
-// Year of Plenty Modal
+// Year of Plenty Modal (Updated for +/-)
 //////////////////////////////////////////
+var currentYOP = {brick: 0, wood: 0, ore: 0, wheat: 0, sheep: 0};
 
-// Calculate the currently input resources.
 function calcYearOfPlentyResources() {
-	var inputs = $(".yop-number");
-	var num = 0;
-
-	inputs.each(function(indx) {
-		var text = $(this).val();
-		num = num + ((text === "") ? 0 : parseFloat(text));
-	});
-
-	return num;
+    return currentYOP.brick + currentYOP.wood + currentYOP.ore + currentYOP.wheat + currentYOP.sheep;
 }
 
-// When a number is input for year of plenty, change displayed values and possible cap input number.
-$(".yop-number").change(function(event) {
-	var oldVal = $(this).data("oldVal");
-	var newVal = parseFloat(formatNumber(parseFloat($(this).val())));
-
-	if (oldVal === undefined && calcYearOfPlentyResources() > 2) {
-		$(this).val("0");
-		$(this).data("oldVal", 0);
-		return;
-	}
-
-	if (isNaN(newVal) || newVal < 0 || calcYearOfPlentyResources() > 2) {
-		$(this).val(oldVal);
-	} else {
-		$(this).data("oldVal", newVal);
-		$(this).val(newVal);
-	}
-
-	if (calcYearOfPlentyResources() === 2) {
-		$("#play-yop-btn").prop("disabled", false);
-	} else {
-		$("#play-yop-btn").prop("disabled", true);
-	}
+$(".yop-btn-step").click(function() {
+    var res = $(this).data("res");
+    var action = $(this).data("action");
+    var totalSelected = calcYearOfPlentyResources();
+    
+    if (action === "plus" && totalSelected < 2) {
+        currentYOP[res]++;
+    } else if (action === "minus" && currentYOP[res] > 0) {
+        currentYOP[res]--;
+    }
+    
+    $("#yop-val-" + res).text(currentYOP[res]);
+    $("#play-yop-btn").prop("disabled", calcYearOfPlentyResources() !== 2);
 });
 
-// When year of plenty confirm button is clicked, check current selected resources and send request.
-$("#play-yop-btn").click(function(event) {
-	var resourcesSelected = calcYearOfPlentyResources();
-	if (resourcesSelected === 2) {
-		var foundFirst = false;
-		var inputs = $(".yop-number");
-		var resources = {};
-
-		inputs.each(function(idx) {
-			var num = parseFloat($(this).val());
-			num = (num === num) ? num : 0;
-
-			var res = $(this).attr("res");
-			resources[res] = num;
-		});
-
-		sendPlayYearOfPlentyAction(resources);
-		$("#year-of-plenty-modal").modal("hide");
-	}
+$("#play-yop-btn").click(function() {
+    if (calcYearOfPlentyResources() === 2) {
+        sendPlayYearOfPlentyAction(currentYOP);
+        $("#year-of-plenty-modal").modal("hide");
+    }
 });
 
-// When year of plenty card button is clicked, show year of plenty modal only if card is in hand.
-$("#year-of-plenty-btn").click(function(event) {
-	// Check that player actually year of plenty card to play
-	if (playersById[playerId].hand.yearOfPlenty <= 0) {
-		addMessage("You don't have Year of Plenty");
-		return;
-	}
-
-	$("#year-of-plenty-modal").modal("show");
+$("#year-of-plenty-btn").click(function() {
+    if (playersById[playerId].hand.yearOfPlenty <= 0) {
+        addMessage("You don't have a Year of Plenty card.");
+        return;
+    }
+    $("#year-of-plenty-modal").modal("show");
 });
 
-// When year of plenty modal is hidden, reset number inputs
 $("#year-of-plenty-modal").on("hide.bs.modal", function() {
-	$(".yop-number").val("");
+    currentYOP = {brick: 0, wood: 0, ore: 0, wheat: 0, sheep: 0};
+    $("[id^='yop-val-']").text("0");
+    $("#play-yop-btn").prop("disabled", true);
 });
 
-//////////////////////////////////////////
-// Discard Modal
-//////////////////////////////////////////
 
-// Calculate the current number of discarded cards in the input fields.
+//////////////////////////////////////////
+// Discard Modal (Updated for +/-)
+//////////////////////////////////////////
+var currentDiscard = {brick: 0, wood: 0, ore: 0, wheat: 0, sheep: 0};
+
 function calcNumDiscards() {
-	var inputs = $(".discard-number");
-	var num = 0;
-
-	inputs.each(function(indx) {
-		var text = $(this).val();
-		num = num + ((text === "") ? 0 : parseFloat(text));
-	});
-
-	return -num;
+    return currentDiscard.brick + currentDiscard.wood + currentDiscard.ore + currentDiscard.wheat + currentDiscard.sheep;
 }
 
-/*
- * Enter the discard modal, setting up click handlers.
- * @param numToDiscard - the number of cards to discard
- */
- function enterDiscardModal(numToDiscard) {
-	$("#discard-modal").modal("show");
-	$("#num-resources-to-discard").text(numToDiscard);
-	$("#discard-btn").prop("disabled", true);
+function enterDiscardModal(numToDiscard) {
+    $("#discard-modal").modal("show");
+    $("#num-resources-to-discard").text(numToDiscard);
+    $("#discard-btn").prop("disabled", true);
+    
+    var ph = playersById[playerId].hand;
+    var currHand = {brick: ph.brick, wood: ph.wood, ore: ph.ore, wheat: ph.wheat, sheep: ph.sheep};
 
-	$("#discard-number").data("oldVal", undefined);
+    // Initialize counts
+    for(var res in currHand) {
+        $("#discard-hand-number-" + res).text(currHand[res]);
+        $("#discard-val-" + res).text("0");
+    }
+    currentDiscard = {brick: 0, wood: 0, ore: 0, wheat: 0, sheep: 0};
 
-	var playerHand = playersById[playerId].hand;
-	var currHand = {brick: playerHand.brick, 
-					wood: playerHand.wood, 
-					ore: playerHand.ore, 
-					wheat: playerHand.wheat, 
-					sheep: playerHand.sheep};
-	redrawHand();
+    $(".discard-btn-step").off("click").click(function() {
+        var res = $(this).data("res");
+        var action = $(this).data("action");
+        var totalDiscarded = calcNumDiscards();
+        
+        if (action === "plus" && totalDiscarded < numToDiscard && currentDiscard[res] < currHand[res]) {
+            currentDiscard[res]++;
+        } else if (action === "minus" && currentDiscard[res] > 0) {
+            currentDiscard[res]--;
+        }
+        
+        $("#discard-val-" + res).text(currentDiscard[res]);
+        $("#num-resources-to-discard").text(numToDiscard - calcNumDiscards());
+        $("#discard-btn").prop("disabled", calcNumDiscards() !== numToDiscard);
+    });
 
-	function redrawHand() {
-		$("#num-resources-to-discard").text(formatNumber(numToDiscard - calcNumDiscards()));
-		$("#discard-hand-number-brick").text(formatNumber(currHand.brick));
-		$("#discard-hand-number-wood").text(formatNumber(currHand.wood));
-		$("#discard-hand-number-ore").text(formatNumber(currHand.ore));
-		$("#discard-hand-number-wheat").text(formatNumber(currHand.wheat));
-		$("#discard-hand-number-sheep").text(formatNumber(currHand.sheep));
-	}
-
-	$(".discard-number").change(function(event) {
-		var oldVal = ($(this).data("oldVal") === undefined) ? 0 : $(this).data("oldVal");
-		var newVal = parseFloat(formatNumber(parseFloat($(this).val())));
-		var res = $(this).attr("res");
-
-		var numDiscards = calcNumDiscards();
-
-		// Handle case where you selected more of a resource than you hold
-		if (newVal - oldVal < -currHand[res]) {
-			// Handle potential case where more resource than held selected, and too many resources selected
-			if (currHand[res] > numToDiscard - numDiscards - newVal) {
-				var cappedVal = parseFloat(formatNumber(newVal + numDiscards - numToDiscard));
-				$(this).data("oldVal", cappedVal);
-				currHand[res] = currHand[res] + (cappedVal - oldVal);
-				$(this).val(cappedVal);
-			} else {
-				var cappedVal = parseFloat(formatNumber(oldVal - currHand[res]));
-				$(this).data("oldVal", cappedVal);
-				currHand[res] = currHand[res] + (cappedVal - oldVal);
-				$(this).val(cappedVal);
-			}
-		// Handle cases where you select too many resources
-		} else if (numDiscards > numToDiscard) {
-			var cappedVal = parseFloat(formatNumber(newVal + numDiscards - numToDiscard));
-			$(this).data("oldVal", cappedVal);
-			currHand[res] = currHand[res] + (cappedVal - oldVal);
-			$(this).val(cappedVal);
-		// Handle case where number is positive or input is not a number
-		} else if (isNaN(newVal) || newVal > 0) {
-			$(this).val(oldVal);
-		// Regular, non-capped case
-		} else {
-			$(this).data("oldVal", newVal);
-			currHand[res] = currHand[res] + (newVal - oldVal);
-			$(this).val(newVal);
-		}
-
-		redrawHand();
-
-		if (calcNumDiscards() === numToDiscard) {
-			$("#discard-btn").prop("disabled", false);
-		} else {
-			$("#discard-btn").prop("disabled", true);
-		}
-	});
-
-	$("#discard-btn").click(function(event) {
-		if (calcNumDiscards() === numToDiscard) {
-			var toDiscard = {};
-			var inputs = $(".discard-number");
-
-			inputs.each(function(indx) {
-				var text = $(this).val();
-				var num = ((text === "") ? 0 : parseFloat(text));
-				var res = $(this).attr("res");
-				toDiscard[res] = num < 0 ? -num : num;
-			});
-
-			sendDropCardsAction(toDiscard);
-			$(".discard-number").off("change");
-			$("#discard-btn").off("click");
-			$(".discard-number").data("oldVal", 0);
-			$("#discard-modal").modal("hide");
-		}
-	});
+    $("#discard-btn").off("click").click(function() {
+        if (calcNumDiscards() === numToDiscard) {
+            sendDropCardsAction(currentDiscard);
+            $("#discard-modal").modal("hide");
+        }
+    });
 }
-
-// When discard modal is hidden, reset number inputs.
-$("#discard-modal").on("hide.bs.modal", function() {
-	$(".discard-number").val("");
-});
 
 //////////////////////////////////////////
 // Moving the Robber
