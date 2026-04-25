@@ -227,46 +227,59 @@
 </div>
 
 <!-- ==========================================
-     5. BOTTOM NAVBAR (Hand & Dev Cards)
+     5. BOTTOM NAVBAR (Hand, Inventory, Dev Cards)
      ========================================== -->
 <div class="navbar navbar-fixed-bottom above-board">
-    <div class="col-xs-3"></div>
-    <div class="col-xs-6 text-center">
-        <div id="message-container" class="text-center"></div>
-        <div class="panel panel-default col-xs-12">
-            <ul class="nav navbar-nav navbar-left" id="hand-resources">
-                <li class="navbar-btn"><div class="circle card-circle brick-color" title="Brick"><img src="/images/icon-brick.svg"></div><div class="card-number" id="brick-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle wood-color" title="Wood"><img src="/images/icon-wood.svg"></div><div class="card-number" id="wood-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle ore-color" title="Ore"><img src="/images/icon-ore.svg"></div><div class="card-number" id="ore-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle wheat-color" title="Wheat"><img src="/images/icon-wheat.svg"></div><div class="card-number" id="wheat-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle sheep-color" title="Sheep"><img src="/images/icon-sheep.svg"></div><div class="card-number" id="sheep-number">0</div></li>
-            </ul>
-            <!-- Player Color & Remaining Buildings -->
-            <ul class="nav navbar-nav navbar-left" id="hand-buildings" style="margin-right: 15px; border-right: 2px solid #ddd; padding-right: 15px;">
-                <li class="navbar-btn" title="Roads Left">
-                    <div class="circle card-circle player-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-road" style="color:white; line-height:30px; font-size: 16px;"></span></div>
-                    <div class="card-number" id="hand-roads-count">15</div>
-                </li>
-                <li class="navbar-btn" title="Settlements Left">
-                    <div class="circle card-circle player-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-home" style="color:white; line-height:30px; font-size: 16px;"></span></div>
-                    <div class="card-number" id="hand-settlements-count">5</div>
-                </li>
-                <li class="navbar-btn" title="Cities Left">
-                    <div class="circle card-circle player-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-tower" style="color:white; line-height:30px; font-size: 16px;"></span></div>
-                    <div class="card-number" id="hand-cities-count">4</div>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right" id="hand-dev-cards">
-                <li class="navbar-btn"><div class="circle card-circle pointer" id="knight-btn" title="Knight"><img src="/images/icon-knight.svg"></div><div class="card-number" id="knight-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle pointer" id="year-of-plenty-btn" title="Year of Plenty"><img src="/images/icon-year-of-plenty.svg"></div><div class="card-number" id="year-of-plenty-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle pointer" id="monopoly-btn" title="Monopoly"><img src="/images/icon-monopoly.svg"></div><div class="card-number" id="monopoly-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle pointer" id="road-building-btn" title="Road Building"><img src="/images/icon-road-building.svg"></div><div class="card-number" id="road-building-number">0</div></li>
-                <li class="navbar-btn"><div class="circle card-circle" title="Victory Point"><img src="/images/icon-victory-point.svg"></div><div class="card-number" id="victory-point-number">0</div></li>
-            </ul>
+    <div class="col-xs-12 text-center">
+        <div id="message-container-wrapper" class="text-center"><div id="message-container"></div></div>
+        
+        <div class="panel panel-default" style="display: inline-flex; justify-content: center; align-items: center; padding: 5px 20px; margin-bottom: 5px;">
+            
+            <!-- LEFT: Resource Hand -->
+            <div class="hand-section">
+                <ul class="nav navbar-nav" id="hand-resources">
+                    <li class="navbar-btn"><div class="circle card-circle brick-color" title="Brick"><img src="/images/icon-brick.svg"></div><div class="card-number" id="brick-number">0</div></li>
+                    <li class="navbar-btn"><div class="circle card-circle wood-color" title="Wood"><img src="/images/icon-wood.svg"></div><div class="card-number" id="wood-number">0</div></li>
+                    <li class="navbar-btn"><div class="circle card-circle ore-color" title="Ore"><img src="/images/icon-ore.svg"></div><div class="card-number" id="ore-number">0</div></li>
+                    <li class="navbar-btn"><div class="circle card-circle wheat-color" title="Wheat"><img src="/images/icon-wheat.svg"></div><div class="card-number" id="wheat-number">0</div></li>
+                    <li class="navbar-btn"><div class="circle card-circle sheep-color" title="Sheep"><img src="/images/icon-sheep.svg"></div><div class="card-number" id="sheep-number">0</div></li>
+                </ul>
+            </div>
+
+            <!-- CENTER: Building Inventory (Player Color Swatches) -->
+            <div class="hand-section inventory-divider">
+                <ul class="nav navbar-nav" id="hand-inventory">
+                    <li class="navbar-btn" title="Roads Remaining">
+                        <div class="circle card-circle player-building-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-road" style="color:white; line-height:32px; font-size:16px;"></span></div>
+                        <div class="card-number" id="hand-roads-count">0</div>
+                    </li>
+                    <li class="navbar-btn" title="Settlements Remaining">
+                        <div class="circle card-circle player-building-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-home" style="color:white; line-height:32px; font-size:16px;"></span></div>
+                        <div class="card-number" id="hand-settlements-count">0</div>
+                    </li>
+                    <li class="navbar-btn" title="Cities Remaining">
+                        <div class="circle card-circle player-building-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-tower" style="color:white; line-height:32px; font-size:16px;"></span></div>
+                        <div class="card-number" id="hand-cities-count">0</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- RIGHT: Dev Card Hand -->
+            <div class="hand-section">
+                <ul class="nav navbar-nav" id="hand-dev-cards">
+                    <li class="navbar-btn"><div class="circle card-circle pointer" id="knight-btn" title="Knight"><img src="/images/icon-knight.svg"></div><div class="card-number" id="knight-number">0</div></li>
+                    <li class="navbar-btn"><div class="circle card-circle pointer" id="year-of-plenty-btn" title="Year of Plenty"><img src="/images/icon-year-of-plenty.svg"></div><div class="card-number" id="year-of-plenty-number">0</div></li>
+                    <li class="navbar-btn"><div class="circle card-circle pointer" id="monopoly-btn" title="Monopoly"><img src="/images/icon-monopoly.svg"></div><div class="card-number" id="monopoly-number">0</div></li>
+                    <li class="navbar-btn"><div class="circle card-circle pointer" id="road-building-btn" title="Road Building"><img src="/images/icon-road-building.svg"></div><div class="card-number" id="road-building-number">0</div></li>
+                    <li class="navbar-btn"><div class="circle card-circle" title="Victory Point"><img src="/images/icon-victory-point.svg"></div><div class="card-number" id="victory-point-number">0</div></li>
+                </ul>
+            </div>
+
         </div>
     </div>
-    <div class="col-xs-3"></div>
+    <div class="col-xs-1"></div>
 </div>
+
 
 <!-- ==========================================
      6. MODALS
@@ -491,25 +504,59 @@
     </div>
 </div>
 
+<div class="modal fade" id="winner-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"><span id="winnerLabel"></span></h4>
+            </div>
+            <div class="modal-body text-center">
+                <p>The game is over!</p>
+            </div>
+            <div class="modal-footer" style="text-align:center;">
+                <button type="button" class="btn btn-default" data-dismiss="modal">View Board</button>
+                <button type="button" id="return-home-btn" class="btn btn-success">Return Home</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="disconnected-user-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title">Player Offline</h4>
+            </div>
+            <div class="modal-body text-center">
+                <p><strong id="disconnected-user-name"></strong> has disconnected.</p>
+                <p class="text-muted">The game will continue. If it is their turn, it will be skipped.</p>
+            </div>
+            <div class="modal-footer" style="text-align:center;">
+                <button type="button" class="btn btn-success btn-block" data-dismiss="modal">Continue Playing</button>
+                <button type="button" class="btn btn-link leave-game-btn" style="color: #999;">Leave Game</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Macro simple modals -->
 <@simpleModal id="roll-dice-modal" title="It's your turn!" buttons='<button type="button" id="roll-dice-btn" class="btn btn-success btn-block" data-dismiss="modal">Roll Dice</button>' />
 <@simpleModal id="knight-or-dice-modal" title="Start Turn" buttons='<button type="button" id="knight-dice-play-knight-btn" class="btn btn-primary" data-dismiss="modal">Play Knight</button> <button type="button" id="knight-dice-roll-dice-btn" class="btn btn-success" data-dismiss="modal">Roll Dice</button>' />
-<@simpleModal id="disconnected-user-modal" title="Player Disconnected" body='<p><strong id="disconnected-user-name"></strong> disconnected.</p><p class="text-danger">Exiting in <span id="disconnected-user-time"></span>s...</p>' buttons='<button type="button" class="btn btn-danger leave-game-btn btn-block" data-dismiss="modal">Exit Game</button>' />
-<@simpleModal id="winner-modal" title='<span id="winnerLabel"></span>' body='<p>The game is over.</p>' buttons='<button type="button" id="return-home-btn" class="btn btn-success btn-block" data-dismiss="modal">Return Home</button>' />
 <@simpleModal id="exit-game-modal" title="Exit Game" body="<p>Are you sure you want to leave?</p>" buttons='<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button> <button type="button" class="leave-game-btn btn btn-danger" data-dismiss="modal">Exit Game</button>' />
 <@simpleModal id="full-game-modal" title="Game Full" body="<p>Sorry, this game is full.</p>" buttons='<button type="button" id="accept-full-game-btn" class="btn btn-success btn-block" data-dismiss="modal">Find Another Game</button>' />
 <@simpleModal id="duplicate-tab-modal" title="Multiple Tabs Open" body="<p>You already have an active game open in another tab.</p>" buttons='' />
 <@simpleModal id="user-exited-modal" title="Game Over" body='<p><strong id="user-exited-name"></strong> left the game.</p>' buttons='<button type="button" class="btn btn-danger btn-block" data-dismiss="modal" id="user-exited-go-home-btn">Return Home</button>' />
 
-<script src="/js/player.js?v=8"></script>
-<script src="/js/tile.js?v=8"></script>
-<script src="/js/intersection.js?v=8"></script>
-<script src="/js/path.js?v=8"></script>
-<script src="/js/board.js?v=8"></script>
-<script src="/js/websocket.js?v=8"></script>
-<script src="/js/chartist.min.js?v=8"></script>
-<script src="/js/moment.min.js?v=8"></script>
-<script src="/js/main.js?v=8"></script>
+<script src="/js/player.js?v=15"></script>
+<script src="/js/tile.js?v=15"></script>
+<script src="/js/intersection.js?v=15"></script>
+<script src="/js/path.js?v=15"></script>
+<script src="/js/board.js?v=15"></script>
+<script src="/js/websocket.js?v=15"></script>
+<script src="/js/chartist.min.js?v=15"></script>
+<script src="/js/moment.min.js?v=15"></script>
+<script src="/js/main.js?v=15"></script>
 
 </#assign>
 

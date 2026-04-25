@@ -630,7 +630,7 @@ $(".to-give-circle-container").click(function(event) {
     var rate = tradeRates[selectedToGiveResource]; 
     if (rate) {
         $("#bank-exchange-rate-text").text(rate + " to 1");
-        $("#bank-trade-amount-input").val(rate); // Auto-fill the input box
+        $("#bank-trade-amount-input").val(1); // Auto-fill the input box
     }
     
     var amount = parseFloat($("#bank-trade-amount-input").val());
@@ -760,27 +760,33 @@ function showKnightOrDiceModal() {
 
 var timeoutInterval;
 
-/*
- * Create and display the disconnected users modal.
- * @param disconnectData - data about the users that have disconnected
- */
 function showDisconnectedUsersModal(disconnectData) {
-	clearInterval(timeoutInterval);
-	timeoutInterval = setInterval(function() {
-		var millisLeft = disconnectData.expiresAt - Date.now();
-		var secondsLeft = Math.round(millisLeft / 1000);
+    // Stop any existing exit timers
+    clearInterval(timeoutInterval);
+    
+    // Find the player who left
+    var offlinePlayerId = disconnectData.users[0].id; // Assuming the JSON has the ID
+    var offlinePlayerName = disconnectData.users[0].userName;
 
-		$("#disconnected-user-name").text(disconnectData.users[0].userName);
-		$("#disconnected-user-time").text(secondsLeft);
-	}, 1000);
+    // Apply the "Offline" visual style to their player card
+    $("#p" + offlinePlayerId + "-tab").addClass("player-disconnected");
 
-	$("#disconnected-user-modal").modal("show");
+    // Show the notice to other players
+    $("#disconnected-user-name").text(offlinePlayerName);
+    $("#disconnected-user-modal").modal("show");
+    
+    // Optional: Log it in the chat
+    addMessage(offlinePlayerName + " has left the game.");
 }
 
-// Hide the disconnected users modal
-function hideDisconnectedUsersModal() {
-	clearInterval(timeoutInterval);
-	$("#disconnected-user-modal").modal("hide");
+function hideDisconnectedUsersModal(reconnectedId) {
+    clearInterval(timeoutInterval);
+    $("#disconnected-user-modal").modal("hide");
+    
+    // Remove the offline look if we know who came back
+    if (reconnectedId !== undefined) {
+        $("#p" + reconnectedId + "-tab").removeClass("player-disconnected");
+    }
 }
 
 //////////////////////////////////////////

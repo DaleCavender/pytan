@@ -1,28 +1,25 @@
-/*
+/**
  * Constructs a new Player object.
  * @param id - the id of this player
  * @param name - the name of this player
  * @param color - the color of this player
  */
 function Player(id, name, color) {
-	this.id = id;
-	this.name = name;
-	this.color = color;
-	this.rgbColor = hexToRgb(color);
-
-	this.victoryPoints = 0;
-	this.resourceCards = 0;
-	this.developmentCards = 0;
-	this.playedKnights = 0;
-	this.roads = 0;
-	this.settlements = 0;
-	this.cities = 0;
-	this.largestArmy = false;
-	this.longestRoad = false;
-
-	this.hand = {};
+    this.id = id;
+    this.name = name;
+    this.color = color;
+    this.rgbColor = hexToRgb(color);
+    this.victoryPoints = 0;
+    this.resourceCards = 0;
+    this.developmentCards = 0;
+    this.playedKnights = 0;
+    this.roads = 0;
+    this.settlements = 0;
+    this.cities = 0;
+    this.largestArmy = false;
+    this.longestRoad = false;
+    this.hand = {};
 }
-
 
 /**
  * Renders the prominent player card at the top of the UI
@@ -98,123 +95,109 @@ Player.prototype.addPlayerTab = function() {
     });
 }
 
-
 /**
- * highlights the active player's tab instead of using the old turn squares.
+ * Highlights the active player's tab instead of using the old turn squares.
  */
-Player.prototype.fillturndisplay = function() {
+Player.prototype.fillTurnDisplay = function() {
     var tab = $("#p" + this.id + "-tab");
     
-    if (currentplayerturn === this.id) {
-        tab.addclass("active-turn-highlight");
+    if (currentPlayerTurn === this.id) {
+        tab.addClass("active-turn-highlight");
     } else {
-        tab.removeclass("active-turn-highlight");
+        tab.removeClass("active-turn-highlight");
     }
 }
 
-
-/*
- * creates a new player from the given player data.
+/**
+ * Creates a new player from the given player data.
  */
-function parsePlayers(playersdata) {
+function parsePlayers(playersData) {
     var players = [];
-    for (var i = 0; i < playersdata.length; i++) {
-        var playerdata = playersdata[i];
-        var player = new Player(playerdata.id, playerdata.name, playerdata.color);
+    for (var i = 0; i < playersData.length; i++) {
+        var playerData = playersData[i];
+        var player = new Player(playerData.id, playerData.name, playerData.color);
         
-        player.victorypoints = playerdata.victorypoints;
-        player.playedknights = playerdata.numplayedknights;
-        player.roads = playerdata.numroads;
-        player.settlements = playerdata.numsettlements;
-        player.cities = playerdata.numcities;
-        player.largestarmy = playerdata.largestarmy;
-        player.longestroad = playerdata.longestroad;
-        // if the server ever sends the length, we capture it here:
-        player.longestroadlength = playerdata.longestroadlength || ""; 
-        player.resourcecards = playerdata.numresourcecards;
-        player.developmentcards = playerdata.numdevelopmentcards;
+        player.victoryPoints = playerData.victoryPoints;
+        player.playedKnights = playerData.numPlayedKnights;
+        player.roads = playerData.numRoads;
+        player.settlements = playerData.numSettlements;
+        player.cities = playerData.numCities;
+        player.largestArmy = playerData.largestArmy;
+        player.longestRoad = playerData.longestRoad;
+        player.longestRoadLength = playerData.longestRoadLength || ""; 
+        player.resourceCards = playerData.numResourceCards;
+        player.developmentCards = playerData.numDevelopmentCards;
         
         players.push(player);
     }
     return players;
 }
 
-/*
- * fills this player's hand from the given hand data.
- * @param handdata - the number of each card that the player possesses
+/**
+ * Fills this player's hand from the given hand data.
+ * @param handData - the number of each card that the player possesses
  */
-function fillplayerhand(handdata) {
-	var player = playersbyid[playerid];
+function fillPlayerHand(handData) {
+    var player = playersById[playerId];
+    // Add resource cards to this player's hand
+    $("#brick-number").text(formatNumber(handData.resources.brick));
+    player.hand.brick = handData.resources.brick;
+    $("#wood-number").text(formatNumber(handData.resources.wood));
+    player.hand.wood = handData.resources.wood;
+    $("#ore-number").text(formatNumber(handData.resources.ore));
+    player.hand.ore = handData.resources.ore;
+    $("#wheat-number").text(formatNumber(handData.resources.wheat));
+    player.hand.wheat = handData.resources.wheat;
+    $("#sheep-number").text(formatNumber(handData.resources.sheep));
+    player.hand.sheep = handData.resources.sheep;
+    // Add dev cards to this player's hand
+    $("#knight-number").text(handData.devCards["Knight"]);
+    player.hand.knight = handData.devCards["Knight"];
+    $("#year-of-plenty-number").text(handData.devCards["Year of Plenty"]);
+    player.hand.yearOfPlenty = handData.devCards["Year of Plenty"];
+    $("#monopoly-number").text(handData.devCards["Monopoly"]);
+    player.hand.monopoly = handData.devCards["Monopoly"];
+    $("#road-building-number").text(handData.devCards["Road Building"]);
+    player.hand.roadBuilding = handData.devCards["Road Building"];
+    $("#victory-point-number").text(handData.devCards["Victory Point"]);
+    player.hand.victoryPoint = handData.devCards["Victory Point"];
 
-	// add resource cards to this player's hand
-	$("#brick-number").text(formatnumber(handdata.resources.brick));
-	player.hand.brick = handdata.resources.brick;
-
-	$("#wood-number").text(formatnumber(handdata.resources.wood));
-	player.hand.wood = handdata.resources.wood;
-
-	$("#ore-number").text(formatnumber(handdata.resources.ore));
-	player.hand.ore = handdata.resources.ore;
-
-	$("#wheat-number").text(formatnumber(handdata.resources.wheat));
-	player.hand.wheat = handdata.resources.wheat;
-
-	$("#sheep-number").text(formatnumber(handdata.resources.sheep));
-	player.hand.sheep = handdata.resources.sheep;
-
-	// add dev cards to this player's hand
-	$("#knight-number").text(handdata.devcards["knight"]);
-	player.hand.knight = handdata.devcards["knight"];
-
-	$("#year-of-plenty-number").text(handdata.devcards["year of plenty"]);
-	player.hand.yearofplenty = handdata.devcards["year of plenty"];
-
-	$("#monopoly-number").text(handdata.devcards["monopoly"]);
-	player.hand.monopoly = handdata.devcards["monopoly"];
-
-	$("#road-building-number").text(handdata.devcards["road building"]);
-	player.hand.roadbuilding = handdata.devcards["road building"];
-
-	$("#victory-point-number").text(handdata.devcards["victory point"]);
-	player.hand.victorypoint = handdata.devcards["victory point"];
-        // Update player color swatches and remaining buildings
-    $(".player-swatch").css("background-color", player.color);
     $("#hand-roads-count").text(player.roads);
     $("#hand-settlements-count").text(player.settlements);
     $("#hand-cities-count").text(player.cities);
+    
+    // Set the building icons to the player's actual color
+    $(".player-building-swatch").css("background-color", player.color);
 }
 
-/*
- * displays the player's options to buy buildings if they possess the correct resources.
- * @param handdata - the player's hand data
+/**
+ * Displays the player's options to buy buildings if they possess the correct resources.
+ * @param handData - the player's hand data
  */
-function fillplayerbuyoptions(handdata) {
-	if (handdata.canbuildsettlement) {
-		$("#settlement-build-btn").prop("disabled", false);
-	} else {
-		$("#settlement-build-btn").prop("disabled", true);
-	}
-
-	if (handdata.canbuildcity) {
-		$("#city-build-btn").prop("disabled", false);
-	} else {
-		$("#city-build-btn").prop("disabled", true);
-	}
-
-	if (handdata.canbuildroad) {
-		$("#road-build-btn").prop("disabled", false);
-	} else {
-		$("#road-build-btn").prop("disabled", true);
-	}
-
-	if (handdata.canbuydevcard) {
-		$("#buy-dev-card-modal-open").prop("disabled", false);
-	} else {
-		$("#buy-dev-card-modal-open").prop("disabled", true);
-	}
+function fillPlayerBuyOptions(handData) {
+    if (handData.canBuildSettlement) {
+        $("#settlement-build-btn").prop("disabled", false);
+    } else {
+        $("#settlement-build-btn").prop("disabled", true);
+    }
+    if (handData.canBuildCity) {
+        $("#city-build-btn").prop("disabled", false);
+    } else {
+        $("#city-build-btn").prop("disabled", true);
+    }
+    if (handData.canBuildRoad) {
+        $("#road-build-btn").prop("disabled", false);
+    } else {
+        $("#road-build-btn").prop("disabled", true);
+    }
+    if (handData.canBuyDevCard) {
+        $("#buy-dev-card-modal-open").prop("disabled", false);
+    } else {
+        $("#buy-dev-card-modal-open").prop("disabled", true);
+    }
 }
 
-/*
+/**
  * Fills the player's bank trade rates in the gui.
  * @param rates - the player's trade rates
  */
@@ -226,16 +209,15 @@ function fillPlayerTradeRates(rates) {
     $("#sheep-trade-rate").text(rates.sheep + ":1");
 }
 
-/*
- * converts a color in hex to a rgb object.
+/**
+ * Converts a color in hex to a rgb object.
  * @param hex - the hexadecimal representation of the color
  * @return the rgb color
  */
-function hextorgb(hex) {
+function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    var r = parseint(result[1], 16);
-    var g = parseint(result[2], 16);
-    var b = parseint(result[3], 16);
+    var r = parseInt(result[1], 16);
+    var g = parseInt(result[2], 16);
+    var b = parseInt(result[3], 16);
     return { r: r, g: g, b: b };
 }
-
