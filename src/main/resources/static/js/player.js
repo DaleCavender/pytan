@@ -116,7 +116,7 @@ Player.prototype.fillturndisplay = function() {
 /*
  * creates a new player from the given player data.
  */
-function parseplayers(playersdata) {
+function parsePlayers(playersdata) {
     var players = [];
     for (var i = 0; i < playersdata.length; i++) {
         var playerdata = playersdata[i];

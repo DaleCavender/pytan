@@ -501,15 +501,15 @@
 <@simpleModal id="duplicate-tab-modal" title="Multiple Tabs Open" body="<p>You already have an active game open in another tab.</p>" buttons='' />
 <@simpleModal id="user-exited-modal" title="Game Over" body='<p><strong id="user-exited-name"></strong> left the game.</p>' buttons='<button type="button" class="btn btn-danger btn-block" data-dismiss="modal" id="user-exited-go-home-btn">Return Home</button>' />
 
-<script src="/js/player.js?v=7"></script>
-<script src="/js/tile.js?v=7"></script>
-<script src="/js/intersection.js?v=7"></script>
-<script src="/js/path.js?v=7"></script>
-<script src="/js/board.js?v=7"></script>
-<script src="/js/websocket.js?v=7"></script>
-<script src="/js/chartist.min.js?v=7"></script>
-<script src="/js/moment.min.js?v=7"></script>
-<script src="/js/main.js?v=7"></script>
+<script src="/js/player.js?v=8"></script>
+<script src="/js/tile.js?v=8"></script>
+<script src="/js/intersection.js?v=8"></script>
+<script src="/js/path.js?v=8"></script>
+<script src="/js/board.js?v=8"></script>
+<script src="/js/websocket.js?v=8"></script>
+<script src="/js/chartist.min.js?v=8"></script>
+<script src="/js/moment.min.js?v=8"></script>
+<script src="/js/main.js?v=8"></script>
 
 </#assign>
 
