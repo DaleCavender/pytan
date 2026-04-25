@@ -102,7 +102,7 @@ Player.prototype.addPlayerTab = function() {
 /**
  * highlights the active player's tab instead of using the old turn squares.
  */
-player.prototype.fillturndisplay = function() {
+Player.prototype.fillturndisplay = function() {
     var tab = $("#p" + this.id + "-tab");
     
     if (currentplayerturn === this.id) {
@@ -214,7 +214,7 @@ function fillplayerbuyoptions(handdata) {
 	}
 }
 
-/**
+/*
  * Fills the player's bank trade rates in the gui.
  * @param rates - the player's trade rates
  */
