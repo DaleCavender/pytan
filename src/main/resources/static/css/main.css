@@ -457,11 +457,41 @@ img[src$=".svg"] {
 }
 
 /* ==========================================================================
-   10. MODAL SIZING & STRUCTURE BORDERS (v12)
+   10. MODAL LAYOUTS, SIZING & SVG BORDERS (v18)
    ========================================================================== */
 
-/* Fix massive icons in Discard, Year of Plenty, and Monopoly modals */
-.discard-circle, .yop-circle, .monopoly-circle-container .circle {
+/* --- NEW: Force Modal Resource Grids to be Horizontal --- */
+.bank-resources-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 15px !important; /* Space between each resource column */
+}
+
+/* Ensure the resource items inside (Icon + Label + Stepper) stay vertical */
+.discard-resource-container, 
+.yop-resource-container, 
+.monopoly-circle-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 70px !important; /* Fixed width keeps them uniformly aligned */
+}
+
+/* Fix Trade Review Modal labels (so the Number stays above the Icon) */
+.review-to-give-list-item, 
+.review-to-get-list-item,
+.trade-responses-to-get-list-item,
+.trade-responses-to-give-list-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    margin: 5px 10px !important;
+}
+
+/* --- EXISTING: Fix massive icons in Discard, Year of Plenty, and Monopoly modals --- */
+.discard-circle, .yop-circle, .monopoly-circle-container .circle, .monopoly-circle {
     width: 45px !important;
     height: 45px !important;
     display: flex;
@@ -469,29 +499,29 @@ img[src$=".svg"] {
     align-items: center;
     margin: 0 auto;
 }
-.discard-circle img, .yop-circle img, .monopoly-circle-container .circle img {
+.discard-circle img, .yop-circle img, .monopoly-circle-container .circle img, .monopoly-circle img {
     width: 24px !important;
     height: 24px !important;
 }
 
-/* 
- * Make Settlements and Cities POP!
- * This clever selector only applies the border/shadow IF the JavaScript 
- * has applied a background-color (meaning it's actually been built).
- */
-.intersection[style*="background-color"] {
-    border: 2px solid white !important;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.8) !important;
-    z-index: 30 !important; /* Forces them above roads */
+/* --- EXISTING: Make Settlements and Cities POP! --- */
+/* We use stroke for the border and filter for the shadow because these are SVGs. */
+svg.settlement-icon, svg.city-icon {
+    stroke: white !important;
+    stroke-width: 1.5px !important;
+    filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.8)) !important;
+    overflow: visible !important;
+    z-index: 50 !important;
 }
 
-/* Give roads a subtle border so they don't blend in */
-.path[style*="background-color"] {
-    border: 1px solid #444 !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
+/* Give roads a crisp border so they don't blend in */
+.path[style*="background"] {
+    border: 1.5px solid white !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.8) !important;
+    z-index: 30 !important;
 }
 
-/* Styling for a player who has left the game */
+/* --- EXISTING: Styling for a player who has left the game --- */
 .player-tab-pane.player-disconnected {
     filter: grayscale(100%);
     opacity: 0.6;
@@ -499,11 +529,9 @@ img[src$=".svg"] {
     background-color: #f0f0f0 !important;
     animation: none !important; /* Stop the turn-pulse if they were active */
 }
-
 .player-disconnected .pc-header {
     background-color: #777 !important;
 }
-
 .player-disconnected::after {
     content: "OFFLINE";
     position: absolute;
