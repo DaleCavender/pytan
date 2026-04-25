@@ -120,7 +120,7 @@ function parsePlayers(playersdata) {
     var players = [];
     for (var i = 0; i < playersdata.length; i++) {
         var playerdata = playersdata[i];
-        var player = new player(playerdata.id, playerdata.name, playerdata.color);
+        var player = new Player(playerdata.id, playerdata.name, playerdata.color);
         
         player.victorypoints = playerdata.victorypoints;
         player.playedknights = playerdata.numplayedknights;
