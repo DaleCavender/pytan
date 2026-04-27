@@ -484,93 +484,92 @@ function handleFollowUp(action) {
 	}
 }
 
-/*
+/**
  * Handles a get games state response. Redraws the board and resets all internal data.
  * @param gameStateData - the game state data
  */
 function handleGetGameState(gameStateData) {
-	// Set global data
-	playerId = gameStateData.playerID;
-	currentPlayerTurn = gameStateData.currentTurn;
-	gameSettings = gameStateData.settings;
-	tradeRates = gameStateData.players[playerId].rates;
-	gameStats = gameStateData.stats;
-
-	var activePlayerTab = $("#player-tabs .active").attr("player");
-	openedPlayerTab = (activePlayerTab == undefined) ? 0
-			: parseInt(activePlayerTab);
-
-	// Create players
-	playersById = {};
-	players = parsePlayers(gameStateData.players);
-	for (var i = 0; i < players.length; i++) {
-		playersById[players[i].id] = players[i];
-	}
-
-	// Parse and draw hand
-	fillPlayerHand(gameStateData.hand);
-
-	// Create player tabs and turn counter
-	$("#player-tabs").empty();
-	$("#player-tabs-content").empty();
-	$("#turn-display-container").empty();
-
-	for (var i = 0; i < players.length; i++) {
-		players[i].addPlayerTab();
-	}
-
-	// Draw turn counter
-	if (gameStateData.hasOwnProperty("turnOrder")) {
-		var turnOrder = gameStateData.turnOrder;
-		for (var i = 0; i < turnOrder.length; i++) {
-			playersById[turnOrder[i]].fillTurnDisplay();
-		}
-	}
-
-	if (currentPlayerTurn === playerId) {
-		$("#end-turn-btn").prop("disabled", false);
-	} else {
-		$("#end-turn-btn").prop("disabled", true);
-	}
-
-	// Show what buildings player can currently buy
-	fillPlayerBuyOptions(gameStateData.hand);
-
-	// Draw trade rates
-	fillPlayerTradeRates(tradeRates);
-
-	// Handle decimal trade rates
-	setDecimalTradeRates(gameSettings.isDecimal);
-
-	// Build current extras tab
-	buildExtrasTab();
-
-	// Create board
-	board = new Board();
-	board.createBoard(gameStateData.board);
-	board.draw();
-
-	// If in place road mode, enter build rode mode
-	if (inPlaceRoadMode) {
-		enterPlaceRoadMode();
-	}
-
-	// If in place settlment mode, enter place settlement mode
-	if (inPlaceSettlementMode) {
-		enterPlaceSettlementMode();
-	}
-
-	// Handle win game
-	if (gameStateData.hasOwnProperty("winner")) {
-		var winner = gameStateData.winner;
-		showWinnerModal(winner);
-	}
-
-	// Handle follow up action
-	if (gameStateData.hasOwnProperty("followUp")) {
-		handleFollowUp(gameStateData.followUp);
-	}
+    // Set global data
+    playerId = gameStateData.playerID;
+    currentPlayerTurn = gameStateData.currentTurn;
+    gameSettings = gameStateData.settings;
+    tradeRates = gameStateData.players[playerId].rates;
+    gameStats = gameStateData.stats;
+    var activePlayerTab = $("#player-tabs .active").attr("player");
+    openedPlayerTab = (activePlayerTab == undefined) ? 0 : parseInt(activePlayerTab);
+    
+    // Create players
+    playersById = {};
+    players = parsePlayers(gameStateData.players);
+    for (var i = 0; i < players.length; i++) {
+        playersById[players[i].id] = players[i];
+    }
+    
+    // Parse and draw hand
+    fillPlayerHand(gameStateData.hand);
+    
+    // Create player tabs and turn counter
+    $("#player-tabs").empty();
+    $("#player-tabs-content").empty();
+    $("#turn-display-container").empty();
+    
+    // Draw all the player tabs first
+    for (var i = 0; i < players.length; i++) {
+        players[i].addPlayerTab();
+    }
+    
+    // Draw turn counter / Handle Sorting & Highlights
+    if (gameStateData.hasOwnProperty("turnOrder")) {
+        var turnOrder = gameStateData.turnOrder;
+        for (var i = 0; i < turnOrder.length; i++) {
+            // Apply the active highlight
+            playersById[turnOrder[i]].fillTurnDisplay();
+            
+            // SORTING FIX: Re-append the tab in the exact order of the array
+            // This physically moves the HTML element so Flexbox lays it out left-to-right correctly!
+            var playerTab = $("#p" + turnOrder[i] + "-tab");
+            $("#player-tabs-content").append(playerTab);
+        }
+    }
+    
+    if (currentPlayerTurn === playerId) {
+        $("#end-turn-btn").prop("disabled", false);
+    } else {
+        $("#end-turn-btn").prop("disabled", true);
+    }
+    
+    // Show what buildings player can currently buy
+    fillPlayerBuyOptions(gameStateData.hand);
+    // Draw trade rates
+    fillPlayerTradeRates(tradeRates);
+    // Handle decimal trade rates
+    setDecimalTradeRates(gameSettings.isDecimal);
+    // Build current extras tab
+    buildExtrasTab();
+    // Create board
+    board = new Board();
+    board.createBoard(gameStateData.board);
+    board.draw();
+    
+    // If in place road mode, enter build rode mode
+    if (inPlaceRoadMode) {
+        enterPlaceRoadMode();
+    }
+    // If in place settlment mode, enter place settlement mode
+    if (inPlaceSettlementMode) {
+        enterPlaceSettlementMode();
+    }
+    // Handle win game
+    if (gameStateData.hasOwnProperty("winner")) {
+        var winner = gameStateData.winner;
+        showWinnerModal(winner);
+    }
+    // Handle follow up action
+    if (gameStateData.hasOwnProperty("followUp")) {
+        handleFollowUp(gameStateData.followUp);
+    }
 }
+
 
 // Send message if enter is pressed in the input field
 id("message").addEventListener("keypress", function(e) {

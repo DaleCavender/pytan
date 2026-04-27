@@ -515,3 +515,12 @@ svg.settlement-icon, svg.city-icon {
     border: 1.5px solid white !important;
     box-shadow: 0 2px 5px rgba(0,0,0,0.8) !important;
 }
+
+/* 
+ * CRITICAL BUG FIX: 
+ * This MUST be at the very bottom of the file! 
+ * It forces elements to hide, overriding any 'display: flex !important' rules above it.
+ */
+.hidden, *.hidden, .hidden[class] { 
+    display: none !important; 
+}
