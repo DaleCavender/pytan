@@ -511,24 +511,18 @@ function handleGetGameState(gameStateData) {
     // Create player tabs and turn counter
     $("#player-tabs").empty();
     $("#player-tabs-content").empty();
-    $("#turn-display-container").empty();
     
-    // Draw all the player tabs first
-    for (var i = 0; i < players.length; i++) {
-        players[i].addPlayerTab();
-    }
-    
-    // Draw turn counter / Handle Sorting & Highlights
     if (gameStateData.hasOwnProperty("turnOrder")) {
         var turnOrder = gameStateData.turnOrder;
         for (var i = 0; i < turnOrder.length; i++) {
-            // Apply the active highlight
-            playersById[turnOrder[i]].fillTurnDisplay();
-            
-            // SORTING FIX: Re-append the tab in the exact order of the array
-            // This physically moves the HTML element so Flexbox lays it out left-to-right correctly!
-            var playerTab = $("#p" + turnOrder[i] + "-tab");
-            $("#player-tabs-content").append(playerTab);
+            var pId = turnOrder[i];
+            playersById[pId].addPlayerTab(); // This appends it to the screen
+            playersById[pId].fillTurnDisplay(); // This applies the highlight/pulse
+        }
+    } else {
+        // Fallback if turnOrder isn't sent yet
+        for (var i = 0; i < players.length; i++) {
+            players[i].addPlayerTab();
         }
     }
     
