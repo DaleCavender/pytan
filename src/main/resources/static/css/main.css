@@ -475,10 +475,10 @@ img[src$=".svg"] {
 .discard-resource-container, 
 .yop-resource-container, 
 .monopoly-circle-container,
-.review-to-give-list-item, 
-.review-to-get-list-item,
-.trade-responses-to-get-list-item,
-.trade-responses-to-give-list-item {
+.review-to-give-list-item:not(.hidden), 
+.review-to-get-list-item:not(.hidden),
+.trade-responses-to-get-list-item:not(.hidden),
+.trade-responses-to-give-list-item:not(.hidden) {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
