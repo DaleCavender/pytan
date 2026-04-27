@@ -455,31 +455,26 @@ img[src$=".svg"] {
     justify-content: center;
     align-items: center;
 }
-
 /* ==========================================================================
-   10. MODAL LAYOUTS, SIZING & SVG BORDERS (v18)
+   10. MODAL LAYOUTS, SIZING & SVG BORDERS (v19)
    ========================================================================== */
 
-/* --- NEW: Force Modal Resource Grids to be Horizontal --- */
+/* CRITICAL: Ensure hidden elements stay hidden even if we apply flex! */
+.hidden { display: none !important; }
+
+/* Force Modal Resource Grids to be Horizontal */
 .bank-resources-grid {
     display: flex !important;
     flex-direction: row !important;
     justify-content: center !important;
     flex-wrap: wrap !important;
-    gap: 15px !important; /* Space between each resource column */
+    gap: 15px !important;
 }
 
-/* Ensure the resource items inside (Icon + Label + Stepper) stay vertical */
+/* Modal Internal Containers */
 .discard-resource-container, 
 .yop-resource-container, 
-.monopoly-circle-container {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    width: 70px !important; /* Fixed width keeps them uniformly aligned */
-}
-
-/* Fix Trade Review Modal labels (so the Number stays above the Icon) */
+.monopoly-circle-container,
 .review-to-give-list-item, 
 .review-to-get-list-item,
 .trade-responses-to-get-list-item,
@@ -487,61 +482,36 @@ img[src$=".svg"] {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    margin: 5px 10px !important;
+    width: 70px !important;
+    margin: 5px 0 !important;
 }
 
-/* --- EXISTING: Fix massive icons in Discard, Year of Plenty, and Monopoly modals --- */
+/* Fix massive modal icons */
 .discard-circle, .yop-circle, .monopoly-circle-container .circle, .monopoly-circle {
-    width: 45px !important;
-    height: 45px !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 45px !important; height: 45px !important;
+    display: flex; justify-content: center; align-items: center;
     margin: 0 auto;
 }
 .discard-circle img, .yop-circle img, .monopoly-circle-container .circle img, .monopoly-circle img {
-    width: 24px !important;
-    height: 24px !important;
+    width: 24px !important; height: 24px !important;
 }
 
-/* --- EXISTING: Make Settlements and Cities POP! --- */
-/* We use stroke for the border and filter for the shadow because these are SVGs. */
-svg.settlement-icon, svg.city-icon {
+/* Make Settlements and Cities POP (Consistent border regardless of SVG size) */
+.intersection { z-index: 40 !important; } /* Keeps buildings above roads */
+.path { z-index: 30 !important; }
+
+svg.settlement-icon path, svg.city-icon path {
+    vector-effect: non-scaling-stroke !important; /* Forces consistent border size */
     stroke: white !important;
-    stroke-width: 1.5px !important;
+    stroke-width: 2px !important; 
+}
+svg.settlement-icon, svg.city-icon {
     filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.8)) !important;
     overflow: visible !important;
-    z-index: 50 !important;
 }
 
-/* Give roads a crisp border so they don't blend in */
+/* Give roads a crisp border */
 .path[style*="background"] {
     border: 1.5px solid white !important;
     box-shadow: 0 2px 5px rgba(0,0,0,0.8) !important;
-    z-index: 30 !important;
-}
-
-/* --- EXISTING: Styling for a player who has left the game --- */
-.player-tab-pane.player-disconnected {
-    filter: grayscale(100%);
-    opacity: 0.6;
-    border: 2px dashed #999 !important;
-    background-color: #f0f0f0 !important;
-    animation: none !important; /* Stop the turn-pulse if they were active */
-}
-.player-disconnected .pc-header {
-    background-color: #777 !important;
-}
-.player-disconnected::after {
-    content: "OFFLINE";
-    position: absolute;
-    top: 40%;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    font-weight: bold;
-    color: red;
-    font-size: 20px;
-    transform: rotate(-15deg);
-    pointer-events: none;
 }

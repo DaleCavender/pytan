@@ -714,7 +714,7 @@ function showStartGameDialogue(content) {
     // Sort the Player Cards at the top of the screen to match the turn order!
     var tabsContent = $("#player-tabs-content");
     for (var i = 0; i < turnOrder.length; i++) {
-        tabsContent.append($("#p" + turnOrder[i] + "-tab"));
+        tabsContent.append($("#p" + turnOrder[i] + "-tab").css("order", i));
     }
 
     if (gameSettings.isDynamic) {
@@ -804,8 +804,8 @@ function clearInterplayerTrades() {
     $("#propose-interplayer-trade-btn").prop("disabled", true);
 }
 
-// Handle updates to the amount of a resource via the new +/- buttons
-$(".trade-btn-step").click(function(event) {
+// Handle updates to the amount of a resource via the +/- buttons
+$(".trade-btn-step").off("click").click(function(event) {
     var res = $(this).data("res");
     var type = $(this).data("type"); // 'give' or 'want'
     var action = $(this).data("action"); // 'plus' or 'minus'
@@ -815,28 +815,28 @@ $(".trade-btn-step").click(function(event) {
     
     var oldVal = currentTrade[res] || 0;
     var newVal = oldVal;
-
-    // Server expects negative numbers for giving, positive for receiving
+    
+    // Server expects NEGATIVE numbers for giving, POSITIVE for receiving
     if (type === 'give') {
-        if (action === 'plus') {
-            // Giving more (value becomes more negative)
-            // Block giving if they already "want" it, or if they don't have enough cards
-            if (oldVal <= 0 && -newVal < maxToGive) newVal--;
-        } else if (action === 'minus') {
-            // Giving less (value gets closer to 0)
-            if (newVal < 0) newVal++;
+        // Block giving if they already "want" it
+        if (oldVal > 0) return; 
+        
+        if (action === 'plus' && -newVal < maxToGive) {
+            newVal--; // Giving more (becomes more negative)
+        } else if (action === 'minus' && newVal < 0) {
+            newVal++; // Giving less (gets closer to 0)
         }
     } else if (type === 'want') {
+        // Block wanting if they are already "giving" it
+        if (oldVal < 0) return; 
+        
         if (action === 'plus') {
-            // Wanting more (value becomes more positive)
-            // Block wanting if they are already "giving" it
-            if (oldVal >= 0) newVal++;
-        } else if (action === 'minus') {
-            // Wanting less (value gets closer to 0)
-            if (newVal > 0) newVal--;
+            newVal++; // Wanting more (becomes more positive)
+        } else if (action === 'minus' && newVal > 0) {
+            newVal--; // Wanting less (gets closer to 0)
         }
     }
-
+    
     if (newVal !== oldVal) {
         currentTrade[res] = newVal;
         
@@ -844,15 +844,11 @@ $(".trade-btn-step").click(function(event) {
         $("#give-val-" + res).text(newVal < 0 ? Math.abs(newVal) : 0);
         $("#want-val-" + res).text(newVal > 0 ? newVal : 0);
         
-        // Call the old update function for the hidden list (keeps old functionality intact)
+        // Call the update function for the hidden list
         updateToGiveGetPanels(res, newVal, oldVal);
         
         // Check if trade is valid
-        if (canTrade()) {
-            $("#propose-interplayer-trade-btn").prop("disabled", false);
-        } else {
-            $("#propose-interplayer-trade-btn").prop("disabled", true);
-        }
+        $("#propose-interplayer-trade-btn").prop("disabled", !canTrade());
     }
 });
 

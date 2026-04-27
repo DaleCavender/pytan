@@ -11,7 +11,7 @@
 	<div class="row" id="pre-name-container">
 		<div class="col-xs-10 col-xs-offset-1 col-sm-offset-3 col-sm-6 col-lg-offset-4 col-lg-4" style='margin-top:8%'>
 			<div class="input-group">
-		    	<input type="text" id="nameEntry" class="form-control input-lg" placeholder="Enter a username to begin">
+		    	<input type="text" id="nameEntry" class="form-control input-lg" placeholder="Enter a username to begin" maxlength="10">
 		    	<span class="input-group-btn">
 		    		<button class="btn btn-success input-lg" type="button" id="enter-name-begin-btn">Play</button>
 		    	</span>
@@ -27,7 +27,7 @@
 				</div>
 				<div id="game-options-panel" class="panel-body row">
 					<form action="/board" method="get" id="inputForm">
-						<input id="game-name-entry" class="form-control" placeholder="Lobby name">
+						<input id="game-name-entry" class="form-control" placeholder="Lobby name" maxlength="10">
 							<div class="col-xs-6">
 								<div class="form-group">
 									<label for="numPlayersDesired">Number of Players</label>
