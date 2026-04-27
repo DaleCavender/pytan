@@ -929,7 +929,7 @@ function showReviewTradeModal(tradeData) {
 	// Clear previously shown resources
 	$("#review-to-give-container [res]").addClass("hidden");
 	$("#review-to-get-container [res]").addClass("hidden");
-	$(".review-trade-number").text("0");
+	$(".review-trade-number").text("");
 	
 	// Add resources in trade to review modal
 	for (var res in resources) {
@@ -976,7 +976,7 @@ function showTradeResponseModal(tradeData) {
 	// Clear previously shown resources
 	$("#trade-responses-to-give-container [res]").addClass("hidden");
 	$("#trade-responses-to-get-container [res]").addClass("hidden");
-	$(".trade-responses-trade-number").text("0");
+	$(".trade-responses-trade-number").text("");
 
 	// Add resources in trade to trade responses modal
 	for (var res in resources) {
