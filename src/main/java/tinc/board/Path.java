@@ -85,49 +85,73 @@ public class Path {
     Collection<Path> visited = new ArrayList<>();
     List<Path> queue = new ArrayList<>();
     Map<Path, Integer> counts = new HashMap<>();
+
     queue.add(this);
     counts.put(this, 0);
+
     while (!queue.isEmpty()) {
-      Path toVisit = queue.remove(0);
-      visited.add(toVisit);
-      int curr = counts.get(toVisit) + 1;
-      for (Path p : toVisit.getStart().getPaths()) {
-        if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
-          if (!visited.contains(p)) {
-            visited.add(p);
-            counts.put(p, curr);
-            queue.add(0, p);
-          } else {
-            if (curr - counts.get(p) == 5) {
-              counts.put(p, curr);
-            }
-          }
+        Path toVisit = queue.remove(0);
+        visited.add(toVisit);
+        int curr = counts.get(toVisit) + 1;
+
+        // 1. Check if the START intersection is blocked by an opponent
+        boolean startBlocked = false;
+        if (toVisit.getStart().getPlayer() != null && !toVisit.getStart().getPlayer().equals(player)) {
+            startBlocked = true;
         }
-      }
-      for (Path p : toVisit.getEnd().getPaths()) {
-        if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
-          if (!visited.contains(p)) {
-            visited.add(p);
-            counts.put(p, curr);
-            queue.add(0, p);
-          } else {
-            if (curr - counts.get(p) == 5) {
-              counts.put(p, curr);
+
+        // Only traverse through the start intersection if it's NOT blocked
+        if (!startBlocked) {
+            for (Path p : toVisit.getStart().getPaths()) {
+                if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
+                    if (!visited.contains(p)) {
+                        visited.add(p);
+                        counts.put(p, curr);
+                        queue.add(0, p);
+                    } else {
+                        if (curr - counts.get(p) == 5) {
+                            counts.put(p, curr);
+                        }
+                    }
+                }
             }
-          }
         }
-      }
+
+        // 2. Check if the END intersection is blocked by an opponent
+        boolean endBlocked = false;
+        if (toVisit.getEnd().getPlayer() != null && !toVisit.getEnd().getPlayer().equals(player)) {
+            endBlocked = true;
+        }
+
+        // Only traverse through the end intersection if it's NOT blocked
+        if (!endBlocked) {
+            for (Path p : toVisit.getEnd().getPaths()) {
+                if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
+                    if (!visited.contains(p)) {
+                        visited.add(p);
+                        counts.put(p, curr);
+                        queue.add(0, p);
+                    } else {
+                        if (curr - counts.get(p) == 5) {
+                            counts.put(p, curr);
+                        }
+                    }
+                }
+            }
+        }
     }
+
     int max = 0;
     for (Path p : visited) {
-      int longest = counts.get(p);
-      if (longest > max) {
-        max = longest;
-      }
+        int longest = counts.get(p);
+        if (longest > max) {
+            max = longest;
+        }
     }
+    
     return max;
   }
-
+  
   /**
    * States whether or not a road can be placed in this location during setup.
    *

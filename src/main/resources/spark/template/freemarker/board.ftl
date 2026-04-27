@@ -89,9 +89,6 @@
                         <!-- Bank Trade -->
                         <div role="tabpanel" class="tab-pane text-center" id="bank-trade-tab">
                             <div id="bank-trade-container" style="padding: 10px;">
-                                <div class="alert alert-warning" style="padding: 5px; margin-bottom: 10px;">
-                                    <strong>Current Rate: </strong><span id="bank-exchange-rate-text">4 to 1</span>
-                                </div>
                                 <label>Give:</label>
                                 <div class="bank-resources-grid">
                                     <div class="bank-resources-grid">
