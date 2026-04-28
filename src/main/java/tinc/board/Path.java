@@ -81,76 +81,68 @@ public class Path {
    *          Player whose roads to evaluate.
    * @return Int that is the length of the longest road for this player.
    */
+  
   public int getLongestPath(Player player) {
-    Collection<Path> visited = new ArrayList<>();
-    List<Path> queue = new ArrayList<>();
-    Map<Path, Integer> counts = new HashMap<>();
+      Collection<Path> visited = new ArrayList<>();
+      List<Path> queue = new ArrayList<>();
+      Map<Path, Integer> counts = new HashMap<>();
 
-    queue.add(this);
-    counts.put(this, 0);
+      queue.add(this);
+      counts.put(this, 1); // A single road segment has a length of 1
 
-    while (!queue.isEmpty()) {
-        Path toVisit = queue.remove(0);
-        visited.add(toVisit);
-        int curr = counts.get(toVisit) + 1;
+      while (!queue.isEmpty()) {
+          Path toVisit = queue.remove(0);
+          visited.add(toVisit);
+          int currLength = counts.get(toVisit);
 
-        // 1. Check if the START intersection is blocked by an opponent
-        boolean startBlocked = false;
-        if (toVisit.getStart().getBuilding().getPlayer() != null && !toVisit.getStart().getBuilding().getPlayer().equals(player)) {
-            startBlocked = true;
-        }
+          // --- CHECK START INTERSECTION ---
+          Intersection startNode = toVisit.getStart();
+          Building buildingAtStart = startNode.getBuilding();
+          
+          // A road is ONLY blocked if:
+          // 1. There is a building there (not null)
+          // 2. AND that building belongs to someone else (!equals(player))
+          boolean startBlocked = (buildingAtStart != null && !buildingAtStart.getPlayer().equals(player));
 
-        // Only traverse through the start intersection if it's NOT blocked
-        if (!startBlocked) {
-            for (Path p : toVisit.getStart().getPaths()) {
-                if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
-                    if (!visited.contains(p)) {
-                        visited.add(p);
-                        counts.put(p, curr);
-                        queue.add(0, p);
-                    } else {
-                        if (curr - counts.get(p) == 5) {
-                            counts.put(p, curr);
-                        }
-                    }
-                }
-            }
-        }
+          if (!startBlocked) {
+              for (Path p : startNode.getPaths()) {
+                  if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
+                      if (!visited.contains(p)) {
+                          counts.put(p, currLength + 1);
+                          queue.add(0, p);
+                      }
+                  }
+              }
+          }
 
-        // 2. Check if the END intersection is blocked by an opponent
-        boolean endBlocked = false;
-        if (toVisit.getEnd().getBuilding().getPlayer() != null && !toVisit.getEnd().getBuilding().getPlayer().equals(player)) {
-            endBlocked = true;
-        }
+          // --- CHECK END INTERSECTION ---
+          Intersection endNode = toVisit.getEnd();
+          Building buildingAtEnd = endNode.getBuilding();
+          
+          boolean endBlocked = (buildingAtEnd != null && !buildingAtEnd.getPlayer().equals(player));
 
-        // Only traverse through the end intersection if it's NOT blocked
-        if (!endBlocked) {
-            for (Path p : toVisit.getEnd().getPaths()) {
-                if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
-                    if (!visited.contains(p)) {
-                        visited.add(p);
-                        counts.put(p, curr);
-                        queue.add(0, p);
-                    } else {
-                        if (curr - counts.get(p) == 5) {
-                            counts.put(p, curr);
-                        }
-                    }
-                }
-            }
-        }
-    }
+          if (!endBlocked) {
+              for (Path p : endNode.getPaths()) {
+                  if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
+                      if (!visited.contains(p)) {
+                          counts.put(p, currLength + 1);
+                          queue.add(0, p);
+                      }
+                  }
+              }
+          }
+      }
 
-    int max = 0;
-    for (Path p : visited) {
-        int longest = counts.get(p);
-        if (longest > max) {
-            max = longest;
-        }
-    }
-    
-    return max;
+      // Find the maximum value recorded in our counts map
+      int max = 0;
+      for (int length : counts.values()) {
+          if (length > max) {
+              max = length;
+          }
+      }
+      return max;
   }
+
  
   /**
    * States whether or not a road can be placed in this location during setup.
