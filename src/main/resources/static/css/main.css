@@ -309,8 +309,8 @@ img[src$=".svg"] {
 }
 .robber-icon, .port-icon { width: 75%; height: 75%; object-fit: contain; }
 
-.path, .path-select, .intersection, .intersection-select { z-index: 15; }
-.intersection, .intersection-select { z-index: 20; }
+.intersection-select { z-index: 60 !important; }
+.path-select { z-index: 55 !important; }
 
 /* ==========================================================================
    9. FINAL UI POLISH & FIXES

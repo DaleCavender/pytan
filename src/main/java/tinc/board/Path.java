@@ -110,7 +110,6 @@ public class Path {
                         counts.put(p, curr);
                         queue.add(0, p);
                     } else {
-                        // Kept your original hexagonal cycle-detection logic!
                         if (curr - counts.get(p) == 5) {
                             counts.put(p, curr);
                         }
@@ -135,7 +134,6 @@ public class Path {
                         counts.put(p, curr);
                         queue.add(0, p);
                     } else {
-                        // Kept your original hexagonal cycle-detection logic!
                         if (curr - counts.get(p) == 5) {
                             counts.put(p, curr);
                         }
