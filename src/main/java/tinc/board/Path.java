@@ -103,7 +103,7 @@ public class Path {
         // Only traverse through the start intersection if it's NOT blocked
         if (!startBlocked) {
             for (Path p : toVisit.getStart().getPaths()) {
-                if (p.getRoad() != null && p.getRoad().getBuilding().getPlayer().equals(player)) {
+                if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
                     if (!visited.contains(p)) {
                         visited.add(p);
                         counts.put(p, curr);
@@ -126,7 +126,7 @@ public class Path {
         // Only traverse through the end intersection if it's NOT blocked
         if (!endBlocked) {
             for (Path p : toVisit.getEnd().getPaths()) {
-                if (p.getRoad() != null && p.getRoad().getBuilding().getPlayer().equals(player)) {
+                if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
                     if (!visited.contains(p)) {
                         visited.add(p);
                         counts.put(p, curr);
