@@ -81,69 +81,82 @@ public class Path {
    *          Player whose roads to evaluate.
    * @return Int that is the length of the longest road for this player.
    */
-  
   public int getLongestPath(Player player) {
-      Collection<Path> visited = new ArrayList<>();
-      List<Path> queue = new ArrayList<>();
-      Map<Path, Integer> counts = new HashMap<>();
+    Collection<Path> visited = new ArrayList<>();
+    List<Path> queue = new ArrayList<>();
+    Map<Path, Integer> counts = new HashMap<>();
+    
+    queue.add(this);
+    counts.put(this, 0); // Kept your original 0 base!
+    
+    while (!queue.isEmpty()) {
+        Path toVisit = queue.remove(0);
+        visited.add(toVisit);
+        int curr = counts.get(toVisit) + 1;
 
-      queue.add(this);
-      counts.put(this, 1); // A single road segment has a length of 1
+        // --- NEW: Check if the START intersection is blocked by an opponent
+        boolean startBlocked = false;
+        if (toVisit.getStart().getBuilding() != null 
+            && !toVisit.getStart().getBuilding().getPlayer().equals(player)) {
+            startBlocked = true;
+        }
 
-      while (!queue.isEmpty()) {
-          Path toVisit = queue.remove(0);
-          visited.add(toVisit);
-          int currLength = counts.get(toVisit);
+        // Only traverse the start paths if it's not blocked
+        if (!startBlocked) {
+            for (Path p : toVisit.getStart().getPaths()) {
+                if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
+                    if (!visited.contains(p)) {
+                        visited.add(p);
+                        counts.put(p, curr);
+                        queue.add(0, p);
+                    } else {
+                        // Kept your original hexagonal cycle-detection logic!
+                        if (curr - counts.get(p) == 5) {
+                            counts.put(p, curr);
+                        }
+                    }
+                }
+            }
+        }
 
-          // --- CHECK START INTERSECTION ---
-          Intersection startNode = toVisit.getStart();
-          Building buildingAtStart = startNode.getBuilding();
-          
-          // A road is ONLY blocked if:
-          // 1. There is a building there (not null)
-          // 2. AND that building belongs to someone else (!equals(player))
-          boolean startBlocked = (buildingAtStart != null && !buildingAtStart.getPlayer().equals(player));
+        // --- NEW: Check if the END intersection is blocked by an opponent
+        boolean endBlocked = false;
+        if (toVisit.getEnd().getBuilding() != null 
+            && !toVisit.getEnd().getBuilding().getPlayer().equals(player)) {
+            endBlocked = true;
+        }
 
-          if (!startBlocked) {
-              for (Path p : startNode.getPaths()) {
-                  if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
-                      if (!visited.contains(p)) {
-                          counts.put(p, currLength + 1);
-                          queue.add(0, p);
-                      }
-                  }
-              }
-          }
+        // Only traverse the end paths if it's not blocked
+        if (!endBlocked) {
+            for (Path p : toVisit.getEnd().getPaths()) {
+                if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
+                    if (!visited.contains(p)) {
+                        visited.add(p);
+                        counts.put(p, curr);
+                        queue.add(0, p);
+                    } else {
+                        // Kept your original hexagonal cycle-detection logic!
+                        if (curr - counts.get(p) == 5) {
+                            counts.put(p, curr);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-          // --- CHECK END INTERSECTION ---
-          Intersection endNode = toVisit.getEnd();
-          Building buildingAtEnd = endNode.getBuilding();
-          
-          boolean endBlocked = (buildingAtEnd != null && !buildingAtEnd.getPlayer().equals(player));
-
-          if (!endBlocked) {
-              for (Path p : endNode.getPaths()) {
-                  if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
-                      if (!visited.contains(p)) {
-                          counts.put(p, currLength + 1);
-                          queue.add(0, p);
-                      }
-                  }
-              }
-          }
-      }
-
-      // Find the maximum value recorded in our counts map
-      int max = 0;
-      for (int length : counts.values()) {
-          if (length > max) {
-              max = length;
-          }
-      }
-      return max;
+    int max = 0;
+    for (Path p : visited) {
+        int longest = counts.get(p);
+        if (longest > max) {
+            max = longest;
+        }
+    }
+    
+    return max;
   }
-
  
+   
   /**
    * States whether or not a road can be placed in this location during setup.
    *
