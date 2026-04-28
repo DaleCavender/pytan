@@ -96,14 +96,14 @@ public class Path {
 
         // 1. Check if the START intersection is blocked by an opponent
         boolean startBlocked = false;
-        if (toVisit.getStart().getPlayer() != null && !toVisit.getStart().getPlayer().equals(player)) {
+        if (toVisit.getStart().getBuilding().getPlayer() != null && !toVisit.getStart().getBuilding().getPlayer().equals(player)) {
             startBlocked = true;
         }
 
         // Only traverse through the start intersection if it's NOT blocked
         if (!startBlocked) {
             for (Path p : toVisit.getStart().getPaths()) {
-                if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
+                if (p.getRoad() != null && p.getRoad().getBuilding().getPlayer().equals(player)) {
                     if (!visited.contains(p)) {
                         visited.add(p);
                         counts.put(p, curr);
@@ -119,14 +119,14 @@ public class Path {
 
         // 2. Check if the END intersection is blocked by an opponent
         boolean endBlocked = false;
-        if (toVisit.getEnd().getPlayer() != null && !toVisit.getEnd().getPlayer().equals(player)) {
+        if (toVisit.getEnd().getBuilding().getPlayer() != null && !toVisit.getEnd().getBuilding().getPlayer().equals(player)) {
             endBlocked = true;
         }
 
         // Only traverse through the end intersection if it's NOT blocked
         if (!endBlocked) {
             for (Path p : toVisit.getEnd().getPaths()) {
-                if (p.getRoad() != null && p.getRoad().getPlayer().equals(player)) {
+                if (p.getRoad() != null && p.getRoad().getBuilding().getPlayer().equals(player)) {
                     if (!visited.contains(p)) {
                         visited.add(p);
                         counts.put(p, curr);
@@ -151,7 +151,7 @@ public class Path {
     
     return max;
   }
-  
+ 
   /**
    * States whether or not a road can be placed in this location during setup.
    *
