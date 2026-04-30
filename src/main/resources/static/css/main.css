@@ -523,3 +523,28 @@ svg.settlement-icon, svg.city-icon {
 .hidden, *.hidden, .hidden[class] { 
     display: none !important; 
 }
+/* ==========================================================================
+   11. CLICK-THROUGH HITBOX FIX (v25)
+   ========================================================================== */
+
+/* 
+ * 1. Force the visual elements to become "ghosts". 
+ * Your mouse clicks will now pass straight through the SVGs and roads.
+ */
+.intersection, .path {
+    pointer-events: none !important;
+}
+
+/* 
+ * 2. Force the hitboxes to always catch the mouse, and 
+ * elevate them to the absolute highest Z-index so nothing covers them.
+ */
+.intersection-select, .intersection-select.highlighted {
+    z-index: 150 !important;
+    pointer-events: auto !important;
+}
+
+.path-select, .path-select.highlighted {
+    z-index: 140 !important;
+    pointer-events: auto !important;
+}
