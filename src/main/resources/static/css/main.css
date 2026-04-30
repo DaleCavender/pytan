@@ -497,16 +497,22 @@ img[src$=".svg"] {
 
 /* Make Settlements and Cities POP (Consistent border regardless of SVG size) */
 .intersection { z-index: 40 !important; } /* Keeps buildings above roads */
-.path { z-index: 30 !important; }
+.path { 
+    z-index: 30 !important;
+    pointer-events: none;
+}
+
 
 svg.settlement-icon path, svg.city-icon path {
     vector-effect: non-scaling-stroke !important; /* Forces consistent border size */
     stroke: white !important;
     stroke-width: 2px !important; 
+    pointer-events: none;
 }
 svg.settlement-icon, svg.city-icon {
     filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.8)) !important;
     overflow: visible !important;
+    pointer-events: none;
 }
 
 /* Give roads a crisp border */
