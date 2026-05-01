@@ -309,7 +309,6 @@ img[src$=".svg"] {
 }
 .robber-icon, .port-icon { width: 75%; height: 75%; object-fit: contain; }
 
-.intersection-select { z-index: 60 !important; }
 .path-select { z-index: 55 !important; }
 
 /* ==========================================================================
@@ -545,7 +544,7 @@ svg.settlement-icon, svg.city-icon {
  * 2. Force the hitboxes to always catch the mouse, and 
  * elevate them to the absolute highest Z-index so nothing covers them.
  */
-.intersection-select, .intersection-select.highlighted {
+.intersection-select.highlighted {
     z-index: 150 !important;
     pointer-events: auto !important;
 }

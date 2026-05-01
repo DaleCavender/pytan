@@ -11,8 +11,8 @@
     <!-- Core Global CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/chartist.min.css">
-    <link rel="stylesheet" href="css/main.css?v=18">
-    <link rel="stylesheet" href="css/chat.css?v=18">
+    <link rel="stylesheet" href="css/main.css?v=19">
+    <link rel="stylesheet" href="css/chat.css?v=19">
     
     <!-- Dynamic Page-Specific CSS -->
     ${extra_css!""}
