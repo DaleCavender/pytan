@@ -58,7 +58,7 @@ Player.prototype.addPlayerTab = function() {
     html += "    <span title='Resource Cards' style='display:flex; align-items:center;'><span class='glyphicon glyphicon-file text-muted' style='font-size:18px; margin-right:4px;'></span> <strong>" + formatNumber(this.resourceCards) + "</strong></span>";
     html += "    <span title='Development Cards' style='display:flex; align-items:center;'><span class='glyphicon glyphicon-credit-card text-muted' style='font-size:18px; margin-right:4px;'></span> <strong>" + this.developmentCards + "</strong></span>";
     html += "    <span title='Longest Path' style='display:flex; align-items:center;'><span class='glyphicon glyphicon-road text' style='font-size:18px; margin-right:4px;'></span> " + this.longestRoadLength + "</span>";
-    html += "    <span title='Played Knights' style='display:flex; align-items:center;'><img src='/images/icon-knight.svg' style='width:20px; margin-right:4px;'> <strong>" + this.playedKnights + "</strong></span>";
+    html += "    <span title='Played Knights' style='display:flex; align-items:center;'><img src='/images/icon-knight.svg' style='width:25px; margin-right:4px;'> <strong>" + this.playedKnights + "</strong></span>";
     html += "  </div>";
     
     // Row 2: Buildings
@@ -126,7 +126,7 @@ function parsePlayers(playersData) {
         player.cities = playerData.numCities;
         player.largestArmy = playerData.largestArmy;
         player.longestRoad = playerData.longestRoad;
-        player.longestRoadLength = playerData.longestRoadLength || ""; 
+        player.longestRoadLength = playerData.longestRoadLength; 
         player.resourceCards = playerData.numResourceCards;
         player.developmentCards = playerData.numDevelopmentCards;
         
