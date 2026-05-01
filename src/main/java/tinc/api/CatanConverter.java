@@ -248,6 +248,7 @@ public class CatanConverter {
     private int numPlayedKnights;
     private int numRoads;
     private boolean longestRoad;
+    private int longestRoadLength;
     private boolean largestArmy;
     private int victoryPoints;
     private double numResourceCards;
@@ -263,6 +264,7 @@ public class CatanConverter {
       numPlayedKnights = p.numPlayedKnights();
       numRoads = p.numRoads();
       longestRoad = r.hasLongestRoad(p.getID());
+      longestRoadLength = r.getBoard().longestPath(p);
       largestArmy = r.hasLargestArmy(p.getID());
       victoryPoints = r.getNumPublicPoints(p.getID());
       rates = r.getBankRates(p.getID());

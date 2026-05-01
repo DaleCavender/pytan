@@ -68,13 +68,13 @@ Board.prototype.draw = function() {
 	for (var i = 0; i < this.tiles.length; i++) {
 		this.tiles[i].draw(this.transX, this.transY, this.scaleFactor);
 	}
+
+	for (var i = 0; i < this.paths.length; i++) {
+		this.paths[i].draw(this.transX, this.transY, this.scaleFactor);
+	}
 	
 	for (var i = 0; i < this.intersections.length; i++) {
 		this.intersections[i].draw(this.transX, this.transY, this.scaleFactor);
-	}
-	
-	for (var i = 0; i < this.paths.length; i++) {
-		this.paths[i].draw(this.transX, this.transY, this.scaleFactor);
 	}
 }
 
