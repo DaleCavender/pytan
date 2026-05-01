@@ -22,7 +22,7 @@ public interface Referee {
 
   int addPlayer(String name, String color);
 
-  void setPlayerInactive(int id);dd
+  void setPlayerInactive(int id);
 
   boolean isPlayerSkipped(int id);
 
