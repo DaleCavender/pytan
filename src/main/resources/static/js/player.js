@@ -16,6 +16,7 @@ function Player(id, name, color) {
     this.roads = 0;
     this.settlements = 0;
     this.cities = 0;
+    this.longestRoadLength = 0;
     this.largestArmy = false;
     this.longestRoad = false;
     this.hand = {};
@@ -56,6 +57,7 @@ Player.prototype.addPlayerTab = function() {
     html += "  <div style='display: flex; justify-content: space-around;'>";
     html += "    <span title='Resource Cards' style='display:flex; align-items:center;'><span class='glyphicon glyphicon-file text-muted' style='font-size:18px; margin-right:4px;'></span> <strong>" + formatNumber(this.resourceCards) + "</strong></span>";
     html += "    <span title='Development Cards' style='display:flex; align-items:center;'><span class='glyphicon glyphicon-credit-card text-muted' style='font-size:18px; margin-right:4px;'></span> <strong>" + this.developmentCards + "</strong></span>";
+    html += "    <span title='Longest Path' style='display:flex; align-items:center;'><span class='glyphicon glyphicon-road text' style='font-size:18px; margin-right:4px;'></span> " + this.longestRoadLength + "</span>";
     html += "    <span title='Played Knights' style='display:flex; align-items:center;'><img src='/images/icon-knight.svg' style='width:20px; margin-right:4px;'> <strong>" + this.playedKnights + "</strong></span>";
     html += "  </div>";
     
