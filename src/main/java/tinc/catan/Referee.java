@@ -22,6 +22,10 @@ public interface Referee {
 
   int addPlayer(String name, String color);
 
+  void setPlayerInactive(int id);dd
+
+  boolean isPlayerSkipped(int id);
+
   DevelopmentCard getDevCard();
 
   boolean devCardDeckIsEmpty();

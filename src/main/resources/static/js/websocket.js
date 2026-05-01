@@ -48,8 +48,9 @@ webSocket.onclose = function() {
 // When a leave game button is pressed, return to home screen
 $(".leave-game-btn").click(function(event) {
 	var exit = {
-		requestType : "gameOver",
-		reason : "explicitExit"
+		requestType : "action",
+		reason : "forfeitGame",
+		player: playerId
 	};
 	webSocket.send(JSON.stringify(exit));
 	deleteAllCookiesAndGoHome();

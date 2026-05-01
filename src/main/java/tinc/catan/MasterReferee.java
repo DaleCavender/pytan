@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import tinc.FollowUpAction;
 import tinc.board.Board;
@@ -29,6 +31,7 @@ public class MasterReferee implements Referee {
 
   private final Board _board;
   private final Map<Integer, Player> _players;
+  private final Set<Integer> _inactivePlayers;
   private final List<Integer> _turnOrder;
   private Turn _turn;
   private final Bank _bank;
@@ -48,6 +51,7 @@ public class MasterReferee implements Referee {
     _gameSettings = new GameSettings(); // Use default settings.
     _board = new Board(_gameSettings);
     _players = new HashMap<Integer, Player>();
+    _inactivePlayers = new HashSet<>();
     _turnOrder = initializeTurnOrder(_gameSettings.numPlayers);
     _bank = initializeBank(false);
     _devCardDeck = initializeDevDeck();
@@ -68,6 +72,7 @@ public class MasterReferee implements Referee {
     _gameSettings = gameSettings;
     _board = new Board(_gameSettings);
     _players = new HashMap<Integer, Player>();
+    _inactivePlayers = new HashSet<>();
     _turnOrder = initializeTurnOrder(_gameSettings.numPlayers);
     _bank = initializeBank(_gameSettings.isDynamic);
     _devCardDeck = initializeDevDeck();
@@ -102,16 +107,26 @@ public class MasterReferee implements Referee {
 
   @Override
   public void startNextTurn() {
-    Player nextPlayer = _players.get(_turnOrder.get((_turn.getTurnNum())
-        % _gameSettings.numPlayers));
+    int attempts = 0;
+    // Safety check: ensure we don't loop infinitely if everyone leaves
+    while (attempts < _gameSettings.numPlayers) {
+      int turnIndex = _turn.getTurnNum() % _gameSettings.numPlayers;
+      int nextID = _turnOrder.get(turnIndex);
 
-    if (_gameStatus == GameStatus.PROGRESS) {
-      _turn = new Turn(_turn.getTurnNum() + 1, nextPlayer.getDevCards());
-    } else {
+      if (!isPlayerSkipped(nextID)) {
+        Player nextPlayer = _players.get(nextID);
+        _turn = new Turn(_turn.getTurnNum() + 1, 
+          _gameStatus == GameStatus.PROGRESS ? nextPlayer.getDevCards() : Collections.emptyMap());
+        return; // Found a valid player, turn starts
+      }
+
+      // Skip this player: increment turn number and check the next person
       _turn = new Turn(_turn.getTurnNum() + 1, Collections.emptyMap());
+      attempts++;
     }
-
+    // Optional: If everyone is skipped, you could set game status to FINISHED
   }
+
 
   @Override
   public Player currentPlayer() {
@@ -316,6 +331,16 @@ public class MasterReferee implements Referee {
   }
 
   @Override
+  public void setPlayerInactive(int id) {
+    _inactivePlayers.add(id);
+  }
+
+  @Override
+  public boolean isPlayerSkipped(int id) {
+      return _inactivePlayers.contains(id);
+  }
+
+  @Override
   public Bank getBank() {
     return _bank;
   }
@@ -409,6 +434,21 @@ public class MasterReferee implements Referee {
       }
       return Collections.unmodifiableList(list);
     }
+
+    @Override
+    public void setPlayerInactive(int id) {
+      throw new UnsupportedOperationException(
+        "A ReadOnlyReferee cannot mark a player as inactive.");
+    }
+    
+    @Override
+    public boolean isPlayerSkipped(int id) {
+      if (_referee instanceof MasterReferee) {
+        return ((MasterReferee) _referee).isPlayerSkipped(id);
+      }
+      return false;
+    }
+
 
     @Override
     public void playDevCard() {

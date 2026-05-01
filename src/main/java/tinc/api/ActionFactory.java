@@ -119,6 +119,8 @@ public class ActionFactory {
           return new ProposeTrade(_referee, playerID, actionJSON);
         case UpdateResource.ID:
           return new UpdateResource(_referee, playerID);
+        case "forfeitGame":
+          return new ForfeitGame(_referee, playerID);
         default:
           String err = String.format("The action %s does not exist.", action);
           throw new IllegalArgumentException(err);

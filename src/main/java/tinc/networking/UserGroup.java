@@ -249,29 +249,39 @@ public class UserGroup implements Group {
     return myBuilder.desiredSize == table.size();
   }
 
-
   public class CleanupTask implements Runnable {
-
     private User      u;
     private UserTable table;
-
 
     public CleanupTask(User u, UserTable t) {
       this.u = u;
       this.table = t;
     }
 
-
     @Override
     public void run() {
       while (true) {
         try {
-          if (table.expired(u)) {
-            System.out.println("User expired!");
-            for (User u : table.onlyConnectedUsers()) {
-              u.message(Networking.GAME_OVER_DISCONNECTED_USER);
+          if (table.expired(this.u)) {
+            System.out.println("User expired! Forfeiting player.");
+            
+            // 1. Create a forfeit action acting on behalf of the dropped user
+            JsonObject forfeitAction = new JsonObject();
+            forfeitAction.addProperty("requestType", "action");
+            forfeitAction.addProperty("action", "forfeitGame");
+            forfeitAction.addProperty("player", this.u.userID());
+
+            // 2. Perform the action (this triggers setPlayerInactive and startNextTurn)
+            api.performAction(forfeitAction);
+
+            // 3. Send the updated game state to everyone still connected
+            for (User other : table.onlyConnectedUsers()) {
+              JsonObject gs = api.getGameState(other.userID());
+              gs.addProperty(Networking.REQUEST_IDENTIFIER, "getGameState");
+              other.message(gs);
             }
-            table.clear();
+            
+            // Note: We do NOT call table.clear() anymore, because the game continues!
             return;
           } else {
             Thread.sleep(1000);
@@ -280,7 +290,6 @@ public class UserGroup implements Group {
           // thread consistency error, can just kill the thread.
           return;
         }
-
       }
     }
   }
