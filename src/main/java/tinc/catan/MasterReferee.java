@@ -153,6 +153,18 @@ public class MasterReferee implements Referee {
 
   @Override
   public FollowUpAction getNextFollowUp(int playerID) {
+    // If the game asks an inactive player to do something (like discard cards or review a trade)
+    if (_inactivePlayers.contains(playerID)) {
+      
+      // Fetch their pending actions and throw them in the trash
+      FollowUpAction action = _turn.getNextFollowUp(playerID);
+      while (action != null) {
+        _turn.removeFollowUp(action);
+        action = _turn.getNextFollowUp(playerID);
+      }
+      
+      // Tell the game this player has nothing to do
+      return null; 
     return _turn.getNextFollowUp(playerID);
   }
 

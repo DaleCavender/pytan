@@ -527,7 +527,7 @@
             </div>
             <div class="modal-body text-center">
                 <p><strong id="disconnected-user-name"></strong> has disconnected.</p>
-                <p class="text-muted">The game will continue. If it is their turn, it will be skipped.</p>
+                <p class="text-muted">The game will continue. They have 60 seconds to return.</p>
             </div>
             <div class="modal-footer" style="text-align:center;">
                 <button type="button" class="btn btn-success btn-block" data-dismiss="modal">Continue Playing</button>
@@ -545,15 +545,15 @@
 <@simpleModal id="duplicate-tab-modal" title="Multiple Tabs Open" body="<p>You already have an active game open in another tab.</p>" buttons='' />
 <@simpleModal id="user-exited-modal" title="Game Over" body='<p><strong id="user-exited-name"></strong> left the game.</p>' buttons='<button type="button" class="btn btn-danger btn-block" data-dismiss="modal" id="user-exited-go-home-btn">Return Home</button>' />
 
-<script src="/js/player.js?v=3"></script>
-<script src="/js/tile.js?v=3"></script>
-<script src="/js/intersection.js?v=3"></script>
-<script src="/js/path.js?v=3"></script>
-<script src="/js/board.js?v=3"></script>
-<script src="/js/websocket.js?v=3"></script>
-<script src="/js/chartist.min.js?v=3"></script>
-<script src="/js/moment.min.js?v=3"></script>
-<script src="/js/main.js?v=3"></script>
+<script src="/js/player.js?v=4"></script>
+<script src="/js/tile.js?v=4"></script>
+<script src="/js/intersection.js?v=4"></script>
+<script src="/js/path.js?v=4"></script>
+<script src="/js/board.js?v=4"></script>
+<script src="/js/websocket.js?v=4"></script>
+<script src="/js/chartist.min.js?v=4"></script>
+<script src="/js/moment.min.js?v=4"></script>
+<script src="/js/main.js?v=4"></script>
 
 </#assign>
 

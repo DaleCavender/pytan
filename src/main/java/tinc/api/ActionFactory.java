@@ -64,6 +64,9 @@ public class ActionFactory {
           "Missing PlayerID which is required for all actions.");
     }
     if (_referee.getTurn().waitingForFollowUp()) {
+      if (action.equals("forfeitGame")){
+        return new ForfeitGame(_referee, playerID);
+      }
       FollowUpAction nextAction = _referee.getNextFollowUp(playerID);
       if (nextAction != null && action.equals(nextAction.getID())) {
         // Set up the action:
