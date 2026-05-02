@@ -25,6 +25,7 @@ import tinc.board.IntersectionCoordinate;
 import tinc.MasterReferee;
 import tinc.Player;
 import tinc.Referee;
+import tinc.ForfeitGame;
 
 public class ActionFactory {
 

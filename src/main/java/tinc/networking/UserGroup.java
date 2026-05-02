@@ -109,6 +109,42 @@ public class UserGroup implements Group {
   @Override
   public boolean handleMessage(User u, JsonObject j) {
     synchronized (this) {
+      if (j.has(Networking.REQUEST_IDENTIFIER) && j.get(Networking.REQUEST_IDENTIFIER).getAsString().equals("action")) {
+        if (j.has("action") && j.get("action").getAsString().equals("forfeitGame")) {
+          System.out.println("Explicit forfeit received for " + u);
+          
+          // 1. Tell the Referee to mark them inactive and skip their turn
+          api.performAction(j.toString());
+          
+          // 2. Purge them from the networking table so the onClose event ignores them!
+          table.userNotAFK(u);
+          table.removeUser(u);
+          
+          if (table.isEmpty()) {
+            System.out.println("Last player left. Tearing down game room.");
+            JsonObject gameOver = new JsonObject();
+            gameOver.addProperty(Networking.REQUEST_IDENTIFIER, "gameOver");
+            gameOver.addProperty("reason", "explicitExit");
+            
+            // Feed the gameOver signal to the processors to delete the room
+            for (RequestProcessor req : myBuilder.reqs) {
+              if (req.match(gameOver)) {
+                req.run(u, this, gameOver, api);
+              }
+            }
+            return true; // Stop here, the room is gone
+          }
+
+          // 3. Unpause the frontend and send the updated game state to the remaining players
+          for (User other : table.onlyConnectedUsers()) {
+            other.message(Networking.GAME_READY_MESSAGE);
+            JsonObject gs = api.getGameState(other.userID());
+            gs.addProperty(Networking.REQUEST_IDENTIFIER, "getGameState");
+            other.message(gs);
+          }
+          return true; // Stop processing this message
+        }
+      }
       if (!allUsersConnectedWithMessage()) {
         if (j.has(Networking.REQUEST_IDENTIFIER)
             && !j.get(Networking.REQUEST_IDENTIFIER).getAsString()
@@ -272,10 +308,29 @@ public class UserGroup implements Group {
             forfeitAction.addProperty("player", this.u.userID());
 
             // 2. Perform the action (this triggers setPlayerInactive and startNextTurn)
-            api.performAction(forfeitAction);
+            api.performAction(forfeitAction.toString());
+
+            table.userNotAFK(this.u);
+            table.removeUser(this.u);
+
+            if (table.isEmpty()) {
+              System.out.println("Last player expired. Tearing down game room.");
+              JsonObject gameOver = new JsonObject();
+              gameOver.addProperty(Networking.REQUEST_IDENTIFIER, "gameOver");
+              gameOver.addProperty("reason", "disconnectedUser");
+              
+              for (RequestProcessor req : myBuilder.reqs) {
+                if (req.match(gameOver)) {
+                  // Notice we use UserGroup.this because we are inside a Runnable
+                  req.run(this.u, UserGroup.this, gameOver, api); 
+                }
+              }
+              return; // Stop here, room is gone
+            }
 
             // 3. Send the updated game state to everyone still connected
             for (User other : table.onlyConnectedUsers()) {
+              other.message(Networking.GAME_READY_MESSAGE);
               JsonObject gs = api.getGameState(other.userID());
               gs.addProperty(Networking.REQUEST_IDENTIFIER, "getGameState");
               other.message(gs);

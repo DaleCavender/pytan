@@ -53,7 +53,9 @@ $(".leave-game-btn").click(function(event) {
 		player: playerId
 	};
 	webSocket.send(JSON.stringify(exit));
-	deleteAllCookiesAndGoHome();
+	setTimeout(function() {	
+		deleteAllCookiesAndGoHome();
+	}, 250);
 });
 
 // ////////////////////////////////////////
