@@ -165,6 +165,7 @@ public class MasterReferee implements Referee {
       
       // Tell the game this player has nothing to do
       return null; 
+    }
     return _turn.getNextFollowUp(playerID);
   }
 
