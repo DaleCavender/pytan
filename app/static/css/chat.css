@@ -1,0 +1,90 @@
+body #chat-container {
+    display: flex !important; 
+    position: fixed !important;
+    left: 20px;
+    bottom: 20px;
+    
+    width: 300px;
+    
+    /* THE FIX: Let the content dictate the height, but set a strict ceiling */
+    height: auto !important; 
+    max-height: calc(100vh - 160px) !important; /* Stops just below the End Turn button */
+    
+    z-index: 105;
+    background-color: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    overflow: hidden;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body #chat-container:hover {
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+body #chat {
+    /* Allow it to shrink when it hits max-height so the scrollbar appears */
+    flex-shrink: 1; 
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+}
+
+.chat-spacer {
+    /* We don't need this to stretch anymore since the box itself shrinks */
+    display: none !important; 
+}
+
+.chat-message {
+    border-left: 4px solid #ccc;
+    padding: 4px 0 4px 10px;
+    margin-bottom: 4px;
+    font-size: 13px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    flex-shrink: 0;
+    color: #222;
+    background: transparent;
+}
+
+.chat-timestamp {
+    color: #666;
+    font-size: 10px;
+    margin-right: 5px;
+}
+
+.chat-sender {
+    font-weight: 800;
+    color: #111;
+}
+
+body #chatControls {
+    flex-shrink: 0; /* Ensures the input box never gets squished */
+    background: rgba(248, 248, 248, 0.4);
+    padding: 10px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body #chatControls input {
+    width: 100%;
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(0,0,0,0.2);
+    background: rgba(255, 255, 255, 0.7); 
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    outline: none;
+    transition: background 0.3s ease;
+}
+
+body #chatControls input:focus {
+    background: white;
+    border-color: #337ab7;
+}
