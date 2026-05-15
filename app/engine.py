@@ -168,6 +168,49 @@ def update_longest_road(game: GameState):
         return f"{new_leader.name} now has the Longest Road ({max_len})!"
     return None
 
+def handle_leave_game(game: GameState, player_id: int, messages_out: list) -> bool:
+    player = get_player(game, player_id)
+    if not player:
+        return False
+
+    if game.status == "WAITING":
+        game.players = [p for p in game.players if p.id != player_id]
+        if player_id in game.turnOrder:
+            game.turnOrder.remove(player_id)
+        
+        if player_id in game.setup_queue:
+            game.setup_queue.remove(player_id)
+            
+        messages_out.append(("all", f"🚪 {player.name} left the lobby."))
+        return True
+
+    player.is_active = False
+    messages_out.append(("all", f"🏳️ {player.name} has left the game!"))
+
+    if player_id in game.discard_pending:
+        del game.discard_pending[player_id]
+        
+    if game.active_trade:
+        if player_id in game.active_trade.get("_acceptedTrade", []):
+            game.active_trade["_acceptedTrade"].remove(player_id)
+        if player_id not in game.active_trade.get("_declinedTrade", []):
+            game.active_trade["_declinedTrade"].append(player_id)
+
+    if game.currentTurn == player_id:
+        if getattr(game, 'is_special_build_phase', False):
+            if game.special_build_queue:
+                game.currentTurn = game.special_build_queue.pop(0)
+                messages_out.append(("all", f"Special Building Phase: {get_player(game, game.currentTurn).name} can build."))
+            else:
+                game.is_special_build_phase = False
+                for p in game.players: 
+                    p.wants_special_build = False
+                pass_to_next_active_player(game, messages_out)
+        else:
+            pass_to_next_active_player(game, messages_out)
+    return True
+
+
 def pass_to_next_active_player(game: GameState, messages_out: list):
     """Recursively passes the turn until it hits an active player."""
 

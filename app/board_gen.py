@@ -19,7 +19,7 @@ CORE_HEXES_4 = [
 
 # --- 5/6 PLAYER EXTENDED CONFIG ---
 RESOURCES_6 = ["WOOD"]*6 + ["BRICK"]*5 + ["SHEEP"]*6 + ["WHEAT"]*6 + ["ORE"]*5 + ["DESERT"]*2
-ROLL_NUMBERS_6 = [5, 2, 6, 3, 8, 10, 9, 12, 11, 4, 8, 10, 9, 4, 5, 6, 3, 11, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12]
+ROLL_NUMBERS_6 = [2, 5, 4, 6, 3, 9, 8, 11, 11, 10, 6, 3, 8, 4, 8, 10, 11, 12, 10, 5, 4, 9, 5, 9, 12, 3, 2, 6]
 
 CORE_HEXES_6 = [
     # --- Outer Ring (16 Tiles) ---
