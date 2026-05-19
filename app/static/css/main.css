@@ -347,7 +347,7 @@ img[src$=".svg"] {
 .wildcard-color { background-color: #F8F9FA !important; } /* White/Grey for 3:1 ports */
 
 /* Breathing Room for Icons */
-.build-cost-group .circle, .trade-stepper .circle, .navbar-btn .circle { margin: 0 4px; }
+.build-cost-group .circle, .trade-stepper .circle, .navbar-btn .circle { margin: 0 2px; }
 #hand-resources li, #hand-dev-cards li { margin-left: 10px; }
 .pc-row .pc-icon { margin: 0 4px; }
 
@@ -377,6 +377,12 @@ img[src$=".svg"] {
     
     /* Click-through policy so we don't block the build menu */
     pointer-events: none !important; 
+
+    position: fixed !important;
+    bottom: 80px; /* Sit right above the resource hand */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000; /* Ensure it stays above the board */
     
     /* Sizing and Centering */
     width: 100%;
@@ -627,6 +633,36 @@ svg.settlement-icon, svg.city-icon {
     50% { opacity: 1; text-shadow: 0px 0px 4px rgba(0,0,0,0.1); }
     100% { opacity: 0.7; }
 }
+
+/* Position the SBP Button to the RIGHT of the End Turn button */
+#sbp-opt-in-btn {
+    position: fixed !important;
+    top: 80px !important;
+    left: 20px !important; /* 20px (left) + 160px (end turn width) + 10px (gap) */
+    width: 160px !important;
+    height: 45px !important;
+    z-index: 150 !important;
+    font-weight: bold !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease;
+    background-color: white; /* Inactive State */
+    color: #333;
+    border: 2px solid #ccc;
+}
+
+/* Green Active State */
+#sbp-opt-in-btn.sbp-active {
+    background-color: #5cb85c !important; /* Success Green */
+    color: white !important;
+    border-color: #4cae4c !important;
+    box-shadow: 0 0 10px rgba(92, 184, 92, 0.5);
+}
+
+#sbp-opt-in-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 
 /* Rip the End Turn button out of the Flexbox and pin it to the Top Left */
 #end-turn-btn {

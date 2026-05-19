@@ -582,6 +582,28 @@ function handleGetGameState(gameStateData) {
     if (gameStateData.hasOwnProperty("followUp")) {
         handleFollowUp(gameStateData.followUp);
     }
+        // --- 5/6 PLAYER UI: SPECIAL BUILD TOGGLE ---
+    if (gameSettings.numPlayers > 4) {
+        var sbpBtn = $("#sbp-opt-in-btn");
+        sbpBtn.removeClass("hidden");
+        
+        // 1. Disable the button if it's your actual normal turn
+        if (currentPlayerTurn === playerId && !gameStateData.is_special_build_phase) {
+            sbpBtn.prop("disabled", true).removeClass("sbp-active").text("Special Build: OFF");
+        } else {
+            sbpBtn.prop("disabled", false);
+            
+            // 2. SYNC: Change color and text based on backend 'wants_special_build'
+            var myData = gameStateData.players.find(function(p) { return p.id === playerId; });
+            if (myData && myData.wants_special_build) {
+                sbpBtn.addClass("sbp-active").text("Special Build: ON");
+            } else {
+                sbpBtn.removeClass("sbp-active").text("Special Build: OFF");
+            }
+        }
+    } else {
+        $("#sbp-opt-in-btn").addClass("hidden");
+    }
 }
 
 

@@ -430,6 +430,7 @@ def handle_move_robber(game: GameState, player_id: int, payload: dict, messages_
     for t in game.board.tiles:
         t.hasRobber = False
     target_tile.hasRobber = True
+    player = get_player(game, player_id)
     
     messages_out.append(("all", f"{player.name} moved the Robber!"))
     

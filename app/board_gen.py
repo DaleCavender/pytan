@@ -23,16 +23,16 @@ ROLL_NUMBERS_6 = [2, 5, 4, 6, 3, 9, 8, 11, 11, 10, 6, 3, 8, 4, 8, 10, 11, 12, 10
 
 CORE_HEXES_6 = [
     # --- Outer Ring (16 Tiles) ---
-    HexCoord(2,0,0), HexCoord(2,1,0), HexCoord(2,2,0), HexCoord(1,2,0),
-    HexCoord(0,2,0), HexCoord(0,3,1), HexCoord(0,3,2), HexCoord(0,3,3),
-    HexCoord(0,3,4), HexCoord(0,2,4), HexCoord(0,1,4), HexCoord(0,0,3),
-    HexCoord(1,0,3), HexCoord(2,0,3), HexCoord(2,0,2), HexCoord(2,0,1), 
+    HexCoord(3,0,0), HexCoord(3,1,0), HexCoord(3,2,0), HexCoord(2,2,0), 
+    HexCoord(1,2,0), HexCoord(0,2,0), HexCoord(0,2,1), HexCoord(0,2,2),
+    HexCoord(0,2,3),HexCoord(0,1,3), HexCoord(0,0,3), HexCoord(1,0,3),
+    HexCoord(2,0,3), HexCoord(3,0,3), HexCoord(3,0,2), HexCoord(3,0,1),
     # --- Middle Ring (10 Tiles) ---
-    HexCoord(1,0,0), HexCoord(1,1,0), HexCoord(0,1,0), HexCoord(0,2,1),
-    HexCoord(0,2,2), HexCoord(0,2,3), HexCoord(0,1,3), HexCoord(0,0,2),
-    HexCoord(1,0,2), HexCoord(1,0,1),
+    HexCoord(2,0,0), HexCoord(2,1,0), HexCoord(1,1,0), HexCoord(0,1,0),
+    HexCoord(0,1,1), HexCoord(0,1,2), HexCoord(0,0,2), HexCoord(1,0,2),
+    HexCoord(2,0,2), HexCoord(2,0,1),
     # --- Center Tiles (4 Tiles) ---
-    HexCoord(0,0,0), HexCoord(0,1,1), HexCoord(0,1,2), HexCoord(0,0,1)
+    HexCoord(1,0,0), HexCoord(0,0,0),  HexCoord(0,0,1), HexCoord(1,0,1)
 ]
 
 PORT_ORDER = ["WILDCARD", "SHEEP", "WILDCARD", "WHEAT", "BRICK", "WILDCARD", "ORE", "WILDCARD", "WOOD"]
@@ -136,16 +136,78 @@ def generate_board(num_players: int = 4) -> Board:
     if num_players > 4:
         port_order += ["WILDCARD", "SHEEP"] 
     random.shuffle(port_order)
+    unvisited = set(sea_tiles_coords)
+    sea_list = []
     
-    sea_list = sorted(list(sea_tiles_coords)) # Sort to keep placement consistent
+    # Start at a predictable, absolute corner (e.g., smallest x/y/z)
+    current_tile = min(unvisited, key=lambda c: (c.x, c.y, c.z))
+    sea_list.append(current_tile)
+    unvisited.remove(current_tile)
+    
+    while unvisited:
+        x, y, z = current_tile.x, current_tile.y, current_tile.z
+        # Get the 6 immediate neighbors of our current step on the path
+        neighbors = [
+            normalize_hex(HexCoord(x, y, z+1)), normalize_hex(HexCoord(x, y+1, z+1)),
+            normalize_hex(HexCoord(x, y+1, z)), normalize_hex(HexCoord(x+1, y+1, z)),
+            normalize_hex(HexCoord(x+1, y, z)), normalize_hex(HexCoord(x+1, y, z+1))
+        ]
+        
+        found_next = False
+        for n in neighbors:
+            if n in unvisited:
+                current_tile = n
+                sea_list.append(current_tile)
+                unvisited.remove(current_tile)
+                found_next = True
+                break
+                
+        # Safety fallback: If the ring breaks (shouldn't happen on standard boards)
+        if not found_next:
+            current_tile = unvisited.pop()
+            sea_list.append(current_tile)
+
     for i, sea_coord in enumerate(sea_list):
         port_type = None
         port_locs = []
         
-        if i % 2 == 0 and port_order:
+        # 1. Calculate the 6 corners (intersections) of this Sea Tile
+        x, y, z = sea_coord.x, sea_coord.y, sea_coord.z
+        adjacent = [
+            normalize_hex(HexCoord(x, y, z+1)),     # Up Left
+            normalize_hex(HexCoord(x, y+1, z+1)),   # Up Right
+            normalize_hex(HexCoord(x, y+1, z)),     # Right
+            normalize_hex(HexCoord(x+1, y+1, z)),   # Lower Right
+            normalize_hex(HexCoord(x+1, y, z)),     # Lower Left
+            normalize_hex(HexCoord(x+1, y, z+1))    # Left
+        ]
+        
+        corners = [
+            normalize_intersection(sea_coord, adjacent[5], adjacent[0]),
+            normalize_intersection(sea_coord, adjacent[0], adjacent[1]),
+            normalize_intersection(sea_coord, adjacent[1], adjacent[2]),
+            normalize_intersection(sea_coord, adjacent[2], adjacent[3]),
+            normalize_intersection(sea_coord, adjacent[3], adjacent[4]),
+            normalize_intersection(sea_coord, adjacent[4], adjacent[5])
+        ]
+        
+        # 2. Assign ports to every alternating sea tile
+        if i % 2 == 1 and port_order:
             port_type = port_order.pop(0)
-
-    
+            
+            # The two corners closest to the center of the board are the ones touching land!
+            sorted_corners = sorted(corners, key=dist_to_center)
+            port_locs = [sorted_corners[0], sorted_corners[1]]
+            
+        # 3. Add the Sea Tile to the final output
+        final_tiles.append(Tile(
+            hexCoordinate=sea_coord,
+            type="SEA",
+            number=0,
+            portType=port_type,
+            portLocations=port_locs
+        ))
+        
     return Board(
         tiles=final_tiles,
         intersections=list(intersections_map.values()),

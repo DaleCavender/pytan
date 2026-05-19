@@ -24,9 +24,14 @@ $(window).load(function() {
     }
 });
 
-$(document).on("change", "#sbp-opt-in-checkbox", function() {
-    sendToggleSpecialBuild($(this).is(":checked"));
+$(document).on("click", "#sbp-opt-in-btn", function() {
+    // Check if it's already active by looking for our custom class
+    var isCurrentlyActive = $(this).hasClass("sbp-active");
+    
+    // Send the toggle (if it's active, we want to turn it off, so send false)
+    sendToggleSpecialBuild(!isCurrentlyActive);
 });
+
 
 // Mouse movement variables
 var dragging = false;

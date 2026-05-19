@@ -24,13 +24,9 @@
 <div id="side-controls-container" class="ui-overlay">
     
     <div id="left-ui-panel">
-        <!-- Special Build Phase Toggle (5/6 Player Games) -->
-        <div id="sbp-toggle-container" class="hidden" style="background: rgba(255,255,255,0.9); padding: 8px; border-radius: 6px; margin-bottom: 10px; text-align: center; pointer-events: auto;">
-            <label style="margin: 0; cursor: pointer;">
-                <input type="checkbox" id="sbp-opt-in-checkbox"> Opt-In to Special Build
-            </label>
-        </div>
-        
+        <button id="sbp-opt-in-btn" class="btn btn-default hidden">
+            Special Build: OFF
+        </button>
         <input type="button" class="btn btn-primary btn-block" id="end-turn-btn" value="End Turn" style="margin: 10px 0;">
     </div>
 
@@ -162,10 +158,10 @@
                 <div class="build-item-row" style="display: flex; align-items: center;">
                     <button class="btn btn-default build-btn" id="settlement-build-btn" title="Build Settlement" disabled><span class="glyphicon glyphicon-home"></span></button>
                     <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
-                        1<div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
-                        1<div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
-                        1<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
-                        1<div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
+                        <div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
+                        <div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
+                        <div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                        <div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
                     </div>
                 </div>
             </div>
@@ -176,8 +172,11 @@
                 <div class="build-item-row" style="display: flex; align-items: center;">
                     <button class="btn btn-default build-btn" id="city-build-btn" title="Build City" disabled><span class="glyphicon glyphicon-tower"></span></button>
                     <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
-                        3<div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
-                        2<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                        <div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                        <div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                        <div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                        <div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                        <div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
                     </div>
                 </div>
             </div>
@@ -188,8 +187,8 @@
                 <div class="build-item-row" style="display: flex; align-items: center;">
                     <button class="btn btn-default build-btn" id="road-build-btn" title="Build Road" disabled><span class="glyphicon glyphicon-road"></span></button>
                     <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
-                        1<div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
-                        1<div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
+                        <div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
+                        <div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
                     </div>
                 </div>
             </div>
@@ -200,9 +199,9 @@
                 <div class="build-item-row" style="display: flex; align-items: center;">
                     <button class="btn btn-default build-btn" id="buy-dev-card-modal-open" data-toggle="modal" data-target="#buy-dev-card-modal" title="Buy Development Card" disabled><span class="glyphicon glyphicon-credit-card"></span></button>
                     <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
-                        1<div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
-                        1<div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
-                        1<div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
+                        <div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                        <div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                        <div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
                     </div>
                 </div>
             </div>
@@ -510,13 +509,13 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="/js/main.js?v=15"></script>
 <script src="/js/player.js?v=5"></script>
 <script src="/js/tile.js?v=4"></script>
 <script src="/js/intersection.js?v=4"></script>
 <script src="/js/path.js?v=4"></script>
 <script src="/js/board.js?v=4"></script>
-<script src="/js/websocket.js?v=5"></script>
+<script src="/js/websocket.js?v=7"></script>
 <script src="/js/chartist.min.js?v=4"></script>
 <script src="/js/moment.min.js?v=4"></script>
-<script src="/js/main.js?v=14"></script>
 {% endblock %}

@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app = FastAPI()
 ACTIVE_GAMES: dict[str, GameState] = {}
 GAME_ROOMS: dict[str, dict[WebSocket, int]] = {}
-DEV_MODE = False
+DEV_MODE = True
 
 app.mount("/js", StaticFiles(directory=os.path.join(BASE_DIR, "static/js")), name="js")
 app.mount("/css", StaticFiles(directory=os.path.join(BASE_DIR, "static/css")), name="css")
