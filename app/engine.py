@@ -1,4 +1,5 @@
 from .models import GameState
+from .main import DEV_MODE
 import random
 
 ACTION_REGISTRY = {}
@@ -305,6 +306,8 @@ def process_action(game: GameState, player_id: int, payload: dict, messages_out:
 
 @register_action("updateResource")
 def handle_give_resources(game: GameState, player_id: int, payload: dict, messages_out: list)  -> bool:
+    if not DEV_MODE:
+        return False
     player = get_player(game, player_id)
     for res in player.resources: player.resources[res] = 99
     return True
