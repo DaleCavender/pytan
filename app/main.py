@@ -195,6 +195,16 @@ async def root():
 
 @app.get("/home")
 async def home(request: Request):
+    client_uuid = request.cookies.get("USER_ID")
+    
+    if client_uuid:
+        for gid, game in ACTIVE_GAMES.items():
+            player = next((p for p in game.players if p.uuid == client_uuid), None)
+            if player and game.status != "FINISHED":
+                response = RedirectResponse(url="/board")
+                response.set_cookie(key="desiredGroupId", value=gid)
+                return response
+
     return templates.TemplateResponse("home.html", {"request": request, "title": "Catan : Home"})
 
 @app.get("/board")
@@ -277,6 +287,19 @@ async def websocket_action(websocket: WebSocket):
             await websocket.close(code=1008)
             return
         
+        if not player.is_active:
+            player.is_active = True
+            for ws_conn in list(GAME_ROOMS[game_id].keys()):
+                msg_payload = {
+                    "requestType": "action",
+                    "action": "systemMessage", 
+                    "content": {"message": f"🔌 {player.name} reconnected."}
+                }
+                try:
+                    await ws_conn.send_text(json.dumps(msg_payload))
+                except Exception:
+                    pass
+
         GAME_ROOMS[game_id][websocket] = player.id
 
         ready_to_start = (len(game.players) == 1) if game.dev_mode else (len(game.players) == game.settings.numPlayers)
