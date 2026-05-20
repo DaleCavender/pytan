@@ -116,3 +116,4 @@ class GameState:
     active_trade: Optional[Dict] = None
     special_build_queue: List[int] = field(default_factory=list)
     is_special_build_phase: bool = False
+    dev_mode: bool = False

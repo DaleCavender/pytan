@@ -1,5 +1,4 @@
 from .models import GameState
-from .main import DEV_MODE
 import random
 
 ACTION_REGISTRY = {}
@@ -306,7 +305,7 @@ def process_action(game: GameState, player_id: int, payload: dict, messages_out:
 
 @register_action("updateResource")
 def handle_give_resources(game: GameState, player_id: int, payload: dict, messages_out: list)  -> bool:
-    if not DEV_MODE:
+    if not game.dev_mode:
         return False
     player = get_player(game, player_id)
     for res in player.resources: player.resources[res] = 99
@@ -503,6 +502,8 @@ def handle_build_settlement(game: GameState, player_id: int, payload: dict, mess
     
     player.numSettlements -= 1
     player.victoryPoints += 1
+
+    messages_out.append(("all", f"{player.name} built a Settlement!"))
     
     if action_name == "buildSettlement":
         for res in ["brick", "wood", "wheat", "sheep"]: player.resources[res] -= 1
@@ -517,10 +518,12 @@ def handle_build_settlement(game: GameState, player_id: int, payload: dict, mess
                         player.resources[res_type] += 1
                         messages_out.append((player_id, f"You received 1 {res_type}."))
     for p in game.players:
-        if p.victoryPoints >= game.settings.victoryPoints:
+        total_vp = p.victoryPoints + p.dev_cards.get("Victory Point", 0)
+        if total_vp >= game.settings.victoryPoints:
             game.winner = p.id
             game.status = "FINISHED"
-            messages_out.append(("all", f"GAME OVER! {p.name} has won the game with {p.victoryPoints} points!"))
+            messages_out.append(("all", f"🏆 GAME OVER! {p.name} has won the game with {total_vp} points!"))
+            break
     return True
 
 @register_action("buildCity")
@@ -553,11 +556,11 @@ def handle_build_city(game: GameState, player_id: int, payload: dict, messages_o
     player.victoryPoints += 1
     
     messages_out.append(("all", f"{player.name} built a City!"))
-    
-    if player.victoryPoints >= game.settings.victoryPoints:
+    total_vp = p.victoryPoints + p.dev_cards.get("Victory Point", 0)
+    if total_vp >= game.settings.victoryPoints:
         game.winner = player.id
         game.status = "FINISHED"
-        messages_out.append(("all", f"GAME OVER! {player.name} has won the game with {player.victoryPoints} points!"))
+        messages_out.append(("all", f"GAME OVER! {player.name} has won the game with {total_vp} points!"))
         
     return True
 
@@ -608,10 +611,11 @@ def handle_build_road(game: GameState, player_id: int, payload: dict, messages_o
         player.resources["brick"] -= 1
         player.resources["wood"] -= 1
     for p in game.players:
-        if p.victoryPoints >= game.settings.victoryPoints:
+        total_vp = p.victoryPoints + p.dev_cards.get("Victory Point", 0)
+        if total_vp >= game.settings.victoryPoints:
             game.winner = p.id
             game.status = "FINISHED"
-            messages_out.append(("all", f"GAME OVER! {p.name} has won the game with {p.victoryPoints} points!"))
+            messages_out.append(("all", f"🏆 GAME OVER! {p.name} has won the game with {total_vp} points!"))
     return True
 
 @register_action("buyDevCard")
@@ -631,13 +635,14 @@ def handle_buy_dev_card(game: GameState, player_id: int, payload: dict, messages
     card = game.dev_card_deck.pop()
     player.new_dev_cards[card] += 1
 
-    messages_out.append((player_id, f"You bought a Development Card and received a {card}!"))
+    messages_out.append((player_id, f"You received a {card}!"))
     messages_out.append(("all", f"{player.name} bought a Development Card."))
     for p in game.players:
-        if p.victoryPoints >= game.settings.victoryPoints:
+        total_vp = p.victoryPoints + p.dev_cards.get("Victory Point", 0)
+        if total_vp >= game.settings.victoryPoints:
             game.winner = p.id
             game.status = "FINISHED"
-            messages_out.append(("all", f"GAME OVER! {p.name} has won the game with {p.victoryPoints} points!"))
+            messages_out.append(("all", f"🏆 GAME OVER! {p.name} has won the game with {total_vp} points!"))
     return True
 
 @register_action("playKnight")
@@ -658,10 +663,11 @@ def handle_play_knight(game: GameState, player_id: int, payload: dict, messages_
     msg = update_largest_army(game)
     if msg: messages_out.append(("all", msg))
     for p in game.players:
-        if p.victoryPoints >= game.settings.victoryPoints:
+        total_vp = p.victoryPoints + p.dev_cards.get("Victory Point", 0)
+        if total_vp >= game.settings.victoryPoints:
             game.winner = p.id
             game.status = "FINISHED"
-            messages_out.append(("all", f"GAME OVER! {p.name} has won the game with {p.victoryPoints} points!"))
+            messages_out.append(("all", f"🏆 GAME OVER! {p.name} has won the game with {total_vp} points!"))
     return True
 
 @register_action("playMonopoly")
@@ -775,7 +781,6 @@ def handle_review_trade(game: GameState, player_id: int, payload: dict, messages
     active_opponents = sum(1 for p in game.players if p.is_active and p.id != game.currentTurn)
     if len(game.active_trade["_declinedTrade"]) >= active_opponents:
         messages_out.append((game.currentTurn, "Everyone declined your trade."))
-        game.expected_action = None
         
     return True
 
@@ -844,7 +849,7 @@ def handle_bank_trade(game: GameState, player_id: int, payload: dict, messages_o
     player.resources[res_to_give] -= total_cost
     player.resources[res_to_get] += amount_to_get
     
-    messages_out.append((player_id, f"Traded {total_cost} {res_to_give} for {amount_to_get} {res_to_get}."))
+    messages_out.append(("all", f"{player.name} traded {total_cost} {res_to_give} for {amount_to_get} {res_to_get}."))
     return True
 
 @register_action("endTurn")

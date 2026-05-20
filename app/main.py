@@ -20,7 +20,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 app = FastAPI()
 ACTIVE_GAMES: dict[str, GameState] = {}
 GAME_ROOMS: dict[str, dict[WebSocket, int]] = {}
-DEV_MODE = False
 
 app.mount("/js", StaticFiles(directory=os.path.join(BASE_DIR, "static/js")), name="js")
 app.mount("/css", StaticFiles(directory=os.path.join(BASE_DIR, "static/css")), name="css")
@@ -280,7 +279,7 @@ async def websocket_action(websocket: WebSocket):
         
         GAME_ROOMS[game_id][websocket] = player.id
 
-        ready_to_start = (len(game.players) == 1) if DEV_MODE else (len(game.players) == game.settings.numPlayers)
+        ready_to_start = (len(game.players) == 1) if game.dev_mode else (len(game.players) == game.settings.numPlayers)
 
         if ready_to_start and game.status == "WAITING":
             game.status = "SETUP"
@@ -369,8 +368,36 @@ async def websocket_action(websocket: WebSocket):
         traceback.print_exc()
     finally:
         if game_id and game_id in GAME_ROOMS:
+            pid = GAME_ROOMS[game_id].get(websocket)
+            
             if websocket in GAME_ROOMS[game_id]:
                 del GAME_ROOMS[game_id][websocket]
-
+                
             if game_id in ACTIVE_GAMES:
-                await broadcast_game_state(game_id)
+                game = ACTIVE_GAMES[game_id]
+                
+                if pid is not None:
+                    p = get_player(game, pid)
+                    if p: 
+                        p.is_active = False
+
+                if game.status == "WAITING":
+                    if len(game.players) > 0 and game.players[0].id == pid:
+                        del ACTIVE_GAMES[game_id]
+                        del GAME_ROOMS[game_id]
+                        print(f"Lobby '{game_id}' destroyed because Host (P{pid}) disconnected.")
+                    else:
+                        if pid is not None:
+                            game.players = [p for p in game.players if p.id != pid]
+                            if pid in game.turnOrder:
+                                game.turnOrder.remove(pid)
+                        await broadcast_game_state(game_id)
+                        
+                else:
+                    active_count = sum(1 for p in game.players if p.is_active)
+                    if active_count == 0:
+                        del ACTIVE_GAMES[game_id]
+                        del GAME_ROOMS[game_id]
+                        print(f"Game '{game_id}' destroyed because all players disconnected.")
+                    else:
+                        await broadcast_game_state(game_id)

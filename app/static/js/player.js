@@ -27,7 +27,6 @@ function Player(id, name, color) {
  * Renders the prominent player card at the top of the UI
  */
 Player.prototype.addPlayerTab = function() {
-    var tabTitle = (this.id === playerId) ? "You" : "P" + this.id;
     $("#player-tabs-content").append("<div class='player-tab-pane' id='p" + this.id + "-tab'></div>");
     var tab = $("#p" + this.id + "-tab");
     
@@ -43,7 +42,7 @@ Player.prototype.addPlayerTab = function() {
     
     // Header: Prominent Name and massive VP Badge
     html += "<div class='pc-header' style='background-color:" + hdrColor + "; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;'>";
-    html += "  <div style='font-size: 18px; font-weight: 900;'>" + this.name + " <span style='font-size:12px; font-weight:normal;'>(" + tabTitle + ")</span></div>";
+    html += "  <div style='font-size: 18px; font-weight: 900;'>" + this.name + "</div>";
     
     // The VP Badge
     html += "  <div style='background: #EAC932; color: #333; padding: 4px 10px; border-radius: 12px; font-size: 18px; font-weight: bold; border: 1px solid #333; display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3);'>";
