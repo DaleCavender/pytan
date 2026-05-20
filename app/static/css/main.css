@@ -26,17 +26,6 @@ html, body {
 
 .pointer { cursor: pointer; }
 
-/* ==========================================================================
-   2. LAYOUT LOCKDOWN (Absolute Positioning)
-   ========================================================================== */
-
-/* The Wrapper Layer (Invisible) */
-.ui-overlay {
-    position: fixed;
-    z-index: 100;
-    pointer-events: none; 
-}
-
 /* TOP: Player Cards - Centered */
 #top-players-container {
     top: 15px;
@@ -46,56 +35,16 @@ html, body {
     justify-content: center;
 }
 
-/* MIDDLE: Side Panels - Hard Pinned to Edges */
-#side-controls-container {
-    top: 50px;
-    bottom: 110px;
-    left: 0;
-    right: 0;
-    width: 100vw;
-    display: block !important; /* Forces panels to ignore flex-stretch */
-}
-
-#left-ui-panel {
-    position: absolute !important;
-    left: 20px !important;
-    top: 90px !important;    /* Below the player cards */
-    bottom: 20px !important; /* Pinned to the bottom of the viewport */
-    width: 300px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-end !important; /* Forces children (chat) to the bottom */
-    pointer-events: none !important;      /* Clicks pass through the empty space */
-}
-
-#left-ui-panel > * {
-    pointer-events: auto !important; /* Re-enable clicks for the button and chat */
-}
-
-
-#right-ui-panel {
-    position: absolute;
-    right: 20px;
-    top: 250px;
-    width: 320px !important;
-    max-width: 350px !important;
-    pointer-events: auto;
-}
-
-/* BOTTOM RIGHT: Build Menu - Fixed above Navbar */
-#build-menu-container {
-    right: 20px;
-    bottom: 110px;
-    pointer-events: auto;
-}
-
 /* ==========================================================================
    3. PLAYER CARDS (Vertical Compression & Icon Prep)
    ========================================================================== */
 .player-cards-wrapper {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
     gap: 10px;
+    width: 100%;
 }
 
 .player-tab-pane {
@@ -176,18 +125,6 @@ html, body {
 /* ==========================================================================
    5. BOTTOM HAND & NAVBAR
    ========================================================================== */
-
-   .navbar-fixed-bottom.above-board {
-    z-index: 150;
-    background-color: transparent;
-    border: none;
-    pointer-events: none;
-}
-
-.navbar-fixed-bottom .panel {
-    pointer-events: auto;
-    margin-bottom: 5px;
-}
 
 #hand-resources, #hand-dev-cards { margin: 0; padding: 0; display: inline-block; }
 
@@ -634,22 +571,6 @@ svg.settlement-icon, svg.city-icon {
     100% { opacity: 0.7; }
 }
 
-/* Position the SBP Button to the RIGHT of the End Turn button */
-#sbp-opt-in-btn {
-    position: fixed !important;
-    top: 80px !important;
-    left: 20px !important; /* 20px (left) + 160px (end turn width) + 10px (gap) */
-    width: 160px !important;
-    height: 45px !important;
-    z-index: 150 !important;
-    font-weight: bold !important;
-    border-radius: 8px !important;
-    transition: all 0.2s ease;
-    background-color: white; /* Inactive State */
-    color: #333;
-    border: 2px solid #ccc;
-}
-
 /* Green Active State */
 #sbp-opt-in-btn.sbp-active {
     background-color: #5cb85c !important; /* Success Green */
@@ -666,13 +587,6 @@ svg.settlement-icon, svg.city-icon {
 
 /* Rip the End Turn button out of the Flexbox and pin it to the Top Left */
 #end-turn-btn {
-    position: fixed !important;
-    top: 20px !important;
-    left: 20px !important;
-    width: 160px !important; /* Fixed width instead of block-width */
-    height: 45px !important;
-    z-index: 150 !important;
-    
     /* Make it look punchy and clickable */
     font-size: 16px !important;
     font-weight: bold !important;
@@ -687,48 +601,227 @@ svg.settlement-icon, svg.city-icon {
 }
 
 /* ==========================================================================
-   12. RESPONSIVE SCALING FOR SMALL SCREENS
+   MASTER RESPONSIVE FLEXBOX LAYOUT
    ========================================================================== */
+
+/* The Invisible Full-Screen Wrapper */
+#master-ui-layer {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes Top to top, Bottom to bottom */
+    padding: 15px;
+    pointer-events: none; /* Clicks pass through to the board */
+    z-index: 100;
+    overflow: hidden;
+}
+
+/* Re-enable clicks ONLY on the actual UI panels */
+#master-ui-layer .panel, 
+#master-ui-layer button, 
+#master-ui-layer input,
+#master-ui-layer .player-tab-pane,
+#chat-container,
+#message-container {
+    pointer-events: auto !important;
+}
+
+/* --- ROW BEHAVIORS --- */
+.ui-row {
+    display: flex;
+    width: 100%;
+}
+
+.top-row {
+    justify-content: space-between; /* Centers player cards */
+    align-items: flex-start;
+    flex-shrink: 0;
+}
+
+.top-left-flank, .top-right-flank {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.top-center-flank {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+
+/* Button Group Styling */
+.top-left-flank .control-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    pointer-events: auto !important;
+}
+
+.middle-row {
+    flex-grow: 1; /* Takes up all remaining vertical space */
+    justify-content: space-between; /* Pushes left-col left, right-col right */
+    align-items: flex-end; /* Pushes chat down towards the bottom */
+    padding-bottom: 10px;
+    min-height: 0; /* Critical for flexbox scrolling inner elements */
+}
+
+.bottom-row {
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+/* --- COLUMN BEHAVIORS --- */
+.ui-col {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+}
+
+.left-col {
+    gap: 10px;
+    width: 300px;
+    max-width: 30%;
+    justify-content: flex-end;
+    height: 100%;
+}
+
+.right-col {
+    width: 320px;
+    max-width: 35%;
+    align-items: flex-end;
+}
+
+.bottom-left-col {
+    width: 300px;
+    justify-content: flex-end;
+}
+
+.bottom-center-col {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.bottom-right-col {
+    width: 320px;
+    align-items: flex-end;
+}
+
+/* --- SPECIFIC PANEL ADJUSTMENTS --- */
+
+/* Trade/Settings Menu */
+#right-menu-container {
+    display: flex;
+    flex-direction: row;
+    height: 100%; /* Fills available vertical space in middle row */
+    max-height: 60vh; /* Limits it from hitting the top/bottom */
+    width: 100%;
+}
+
+/* Hand Panel (Formerly Navbar) */
+.hand-panel {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 20px;
+    margin-bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* End Turn & SBP Buttons */
+#end-turn-btn, #sbp-opt-in-btn {
+    height: 45px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    position: static !important; 
+    width: 140px;
+    transform: none;
+    margin: 0;
+}
+
+/* Chat Container */
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    max-height: 35vh; /* Dynamically sizes based on screen height */
+    min-height: 120px;
+    width: 100%;
+    flex-shrink: 1;
+}
+
+/* System Messages */
+#message-container {
+    width: 100%;
+    /* Remove the old absolute/fixed positioning */
+    position: relative !important;
+    bottom: auto; left: auto; transform: none;
+}
+
+/* Remove the bottom margin from the last build item so it sits flush */
+.build-item-container:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Tighten the padding of the panel body specifically for the build menu */
+.build-panel-custom .panel-body {
+    padding: 10px 10px 5px 10px !important; /* Reduces bottom padding from 10px to 5px */
+}
+
+/* Remove default Bootstrap bottom margin from the outer panel */
+#build-menu-container .panel {
+    margin-bottom: 0 !important;
+}
 
 /* For Narrow Screens (Laptops / Tablets) */
 @media screen and (max-width: 1250px) {
-    /* Scale down and pin to Top Center */
     #top-players-container {
         transform: scale(0.85);
         transform-origin: top center;
     }
-    
-    /* Scale down and pin to Top Right */
     #right-ui-panel {
         transform: scale(0.85);
         transform-origin: top right;
     }
-    
-    /* Scale down and pin to Bottom Right */
     #build-menu-container {
         transform: scale(0.85);
         transform-origin: bottom right;
     }
-    
-    /* Scale down and pin to Bottom Center */
-    .navbar-fixed-bottom.above-board {
+    /* FIX: Target the new hand-panel */
+    .hand-panel {
         transform: scale(0.85);
         transform-origin: bottom center;
     }
 }
 
+/* For Very Small/Narrow Screens (Small Laptops / iPads) */
+@media screen and (max-width: 950px) {
+    .hand-panel {
+        transform: scale(0.70); /* Shrink hand further */
+    }
+    .left-col {
+        width: 250px; /* Squeeze the chat column slightly */
+    }
+    .top-left-flank, .top-right-flank {
+        width: 160px; /* Shrink flanks so player cards fit */
+    }
+}
+
 /* For Extremely Short Screens */
 @media screen and (max-height: 750px) {
-    /* Aggressively shrink side panels to guarantee no vertical collisions */
-    #right-ui-panel {
-        transform: scale(0.75);
+    #right-menu-container {
+        transform: scale(0.85);
         transform-origin: top right;
     }
     #build-menu-container {
         transform: scale(0.75);
         transform-origin: bottom right;
     }
-    #left-ui-panel {
+    .left-col {
         transform: scale(0.85);
         transform-origin: bottom left;
     }

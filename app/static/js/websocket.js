@@ -506,6 +506,30 @@ function handleGetGameState(gameStateData) {
     gameSettings = gameStateData.settings;
     gameStats = gameStateData.stats;
 
+	if (playerId < 0) {
+        // Hide building/turn menus
+        $("#build-menu-container").addClass("hidden");
+        $(".hand-panel").addClass("hidden");
+        $(".top-left-flank").addClass("hidden"); // Hides End Turn & SBP buttons
+        
+        // Keep the right menu, but hide Trade and force Settings open
+        $("#right-menu-container").removeClass("hidden");
+        $("#right-tab-tabs li:first-child").addClass("hidden"); // Hides the Trade Icon
+        $('#right-tab-tabs a[href="#extras-tab"]').tab('show'); // Force Bootstrap to open Extras
+        
+        // Add a Spectator Badge to the empty Top Left corner
+        if (!$("#spectator-badge").length) {
+            $("body").append("<div id='spectator-badge' style='position:fixed; top:20px; left:20px; background:rgba(0,0,0,0.75); color:white; padding:8px 15px; font-weight:bold; font-size:16px; border-radius:6px; z-index:1000; pointer-events:none; border: 1px solid #777;'><span class='glyphicon glyphicon-eye-open'></span> SPECTATING</div>");
+        }
+    } else {
+        // Ensure they are visible if someone transitioned from a previous spectator state (edge case)
+        $("#build-menu-container").removeClass("hidden");
+        $(".hand-panel").removeClass("hidden");
+        $("#right-menu-container").removeClass("hidden");
+        $(".top-left-flank").removeClass("hidden");
+        $("#spectator-badge").remove();
+    }
+
     // 2. THE FIX: Find your player object in the array by ID (not index!)
     var myData = gameStateData.players.find(function(p) {
         return p.id === playerId;
@@ -513,11 +537,8 @@ function handleGetGameState(gameStateData) {
 
     if (myData) {
         tradeRates = myData.rates;
-    } else {
-        // Fallback for the split second before join is finalized
-        tradeRates = {brick: 4, wood: 4, ore: 4, wheat: 4, sheep: 4};
+		fillPlayerTradeRates(tradeRates);
     }
-
     // 3. Clear and rebuild the lookup maps
     playersById = {};
     players = parsePlayers(gameStateData.players);
@@ -527,8 +548,6 @@ function handleGetGameState(gameStateData) {
         playersById[p.id] = p;
     }
     
-    // Parse and draw hand
-    fillPlayerHand(gameStateData.hand);
     
     // Create player tabs and turn counter
     $("#player-tabs").empty();
@@ -548,18 +567,23 @@ function handleGetGameState(gameStateData) {
         }
     }
     
-    if (currentPlayerTurn === playerId) {
+    if (playerId >= 0 && currentPlayerTurn === playerId) {
         $("#end-turn-btn").prop("disabled", false);
     } else {
         $("#end-turn-btn").prop("disabled", true);
     }
     
-    // Show what buildings player can currently buy
-    fillPlayerBuyOptions(gameStateData.hand);
-    // Draw trade rates
-    fillPlayerTradeRates(tradeRates);
-    // Build current extras tab
-    buildExtrasTab();
+    if (playerId >= 0) {
+		// Parse and draw hand
+		fillPlayerHand(gameStateData.hand);
+		// Show what buildings player can currently buy
+		fillPlayerBuyOptions(gameStateData.hand);
+		// Draw trade rates
+		fillPlayerTradeRates(tradeRates);
+		// Build current extras tab
+		buildExtrasTab();
+	}
+
     // Create board
     board = new Board();
     board.createBoard(gameStateData.board);
