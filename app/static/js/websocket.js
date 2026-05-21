@@ -343,29 +343,42 @@ function sendMessage(message) {
  * Create and insert a message into chat.
  * @param msg - the message to insert
  */
-function insertChatMessage(msg) {
+function insertChatMessage(msg, skipScroll) {
     var formattedDate = moment(msg.timeStamp).format("h:mm A");
     var fromPlayer = playersById[msg.userId];
     var playerColor = fromPlayer ? fromPlayer.color : "#999";
-
+    
     var msgDiv = $("<div class='chat-message'></div>");
     msgDiv.css("border-left-color", playerColor);
 
-    // Using a more structured internal layout
+    // Sanitize Sender
+    var safeSender = $("<span>").text(msg.sender).html(); 
+    
+    // Sanitize Content, THEN run the Image Regex
+    var safeContent = $("<span>").text(msg.content).html();
+    
+    // Convert direct image links to actual images!
+    var imageRegex = /(https?:\/\/[^\s]+?\.(?:png|jpg|jpeg|gif|svg)(?:\?[^\s]*)?)/gi;
+    safeContent = safeContent.replace(imageRegex, "<br><img src='$1' style='max-width: 100%; border-radius: 6px; margin-top: 4px; border: 1px solid #ccc;' />");
+
     var header = "<span class='chat-timestamp'>" + formattedDate + "</span>" +
-                 "<span class='chat-sender'>" + msg.sender + ":</span> ";
-    var text = $("<span class='chat-text'></span>").text(msg.content);
+                 "<span class='chat-sender'>" + safeSender + ":</span> ";
+                 
+    // Note: We use .html() instead of .text() here so our <img> tag renders properly
+    var text = $("<span class='chat-text'></span>").html(safeContent);
     
     msgDiv.append(header).append(text);
     $("#chat").append(msgDiv);
 
-    // Smooth scroll to bottom: using setTimeout and stop(true,true) ensures 
-    // the layout is evaluated after text wrapping, and animations don't stack up.
-    setTimeout(function() {
-        var chatBox = $("#chat");
-        chatBox.stop(true, true).animate({ scrollTop: chatBox.prop("scrollHeight") }, 200);
-    }, 10);
+    if (!skipScroll) {
+        // Wait longer if there's an image so it has time to load and affect height
+        var delay = imageRegex.test(msg.content) ? 150 : 30;
+        setTimeout(function() {
+            scrollChatToBottom(false);
+        }, delay);
+    }
 }
+
 
 
 
@@ -587,10 +600,15 @@ function handleGetGameState(gameStateData) {
 		buildExtrasTab();
 	}
 
-    // Create board
-    board = new Board();
-    board.createBoard(gameStateData.board);
-    board.draw();
+	if (!board) {
+        // Initial load: create DOM elements
+        board = new Board();
+        board.createBoard(gameStateData.board);
+        board.draw();
+    } else {
+        // Subsequent loads: update DOM elements in-place
+        board.updateBoard(gameStateData.board);
+    }
     
     // If in place road mode, enter build rode mode
     if (inPlaceRoadMode) {
@@ -735,6 +753,16 @@ function sendToggleSpecialBuild(wantsSBP) {
         requestType: "action",
         action: "toggleSpecialBuild",
         wants_special_build: wantsSBP
+    };
+    webSocket.send(JSON.stringify(payload));
+}
+
+function sendUpdateProfileAction(newName, newColor) {
+    var payload = {
+        requestType: "action",
+        action: "updateProfile",
+        name: newName,
+        color: newColor
     };
     webSocket.send(JSON.stringify(payload));
 }

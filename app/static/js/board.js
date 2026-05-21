@@ -126,3 +126,53 @@ Board.prototype.createBoard = function(boardData) {
 		this.addPath(parsePath(paths[i]));
 	}
 }
+
+/*
+ * Updates the board without destroying DOM elements.
+ * @param boardData - the new board data 
+ */
+Board.prototype.updateBoard = function(boardData) {
+    var tiles = boardData.tiles;
+    var intersections = boardData.intersections;
+    var paths = boardData.paths;
+
+    // 1. Update Tiles (Robber)
+    for (var i = 0; i < this.tiles.length; i++) {
+        if (this.tiles[i].hasRobber !== tiles[i].hasRobber) {
+            this.tiles[i].hasRobber = tiles[i].hasRobber;
+            this.tiles[i].draw(this.transX, this.transY, this.scaleFactor);
+        }
+    }
+
+    // 2. Update Intersections (Settlements & Cities)
+    for (var i = 0; i < this.intersections.length; i++) {
+        var newIntData = intersections[i];
+        this.intersections[i].canBuildSettlement = newIntData.canBuildSettlement;
+        
+        if (newIntData.hasOwnProperty("building") && newIntData.building) {
+            var newPlayer = playersById[newIntData.building.player];
+            var newType = newIntData.building.type === "settlement" ? BUILDING.SETTLEMENT : BUILDING.CITY;
+            
+            if (this.intersections[i].building !== newType || this.intersections[i].player.color !== newPlayer.color) {
+                this.intersections[i].building = newType;
+                this.intersections[i].player = newPlayer;
+                this.intersections[i].draw(this.transX, this.transY, this.scaleFactor);
+            }
+        }
+    }
+
+    // 3. Update Paths (Roads)
+    for (var i = 0; i < this.paths.length; i++) {
+        var newPathData = paths[i];
+        this.paths[i].canBuildRoad = newPathData.canBuildRoad;
+        
+        if (newPathData.hasOwnProperty("road") && newPathData.road) {
+            if (!this.paths[i].containsRoad  || this.paths[i].player.color !== newPlayer.colora) {
+                var newPlayer = playersById[newPathData.road.player];
+                this.paths[i].containsRoad = true;
+                this.paths[i].player = newPlayer;
+                this.paths[i].draw(this.transX, this.transY, this.scaleFactor);
+            }
+        }
+    }
+};

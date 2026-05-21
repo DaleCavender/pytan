@@ -12,6 +12,12 @@ var wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
 var wsUrl = wsProtocol + window.location.host + "/groups/"; // Use /groups/ for home.js
 var webSocket = new WebSocket(wsUrl);
 
+// Available colors
+var ALLOWED_COLORS = ["#BF2720", "#115EC9", "#DFA629", "#EDEAD9", "#8B4513", "#228B22"];
+var selectedProfileColor = null;
+
+
+
 // NOTE: Use "/action/" for websocket.js and "/groups/" for home.js
 
 
@@ -223,3 +229,30 @@ function id(id) {
 }
 
 document.onkeypress = stopReturnKey;
+
+// Initialize the color picker
+ALLOWED_COLORS.forEach(function(color) {
+    var colorBox = $("<div class='circle pointer'></div>").css({
+        "background-color": color,
+        "width": "25px",
+        "height": "25px",
+        "border": "2px solid transparent"
+    });
+    
+    colorBox.click(function() {
+        $("#color-picker-container .circle").css("border", "2px solid transparent");
+        $(this).css("border", "2px solid #333");
+        selectedProfileColor = color;
+    });
+    
+    $("#color-picker-container").append(colorBox);
+});
+
+// Handle Save Button
+$("#update-profile-btn").click(function() {
+    var newName = $("#profile-name-input").val().trim();
+    if (!newName && !selectedProfileColor) return;
+    
+    sendUpdateProfileAction(newName, selectedProfileColor);
+    $("#profile-name-input").val(""); // Clear after saving
+});

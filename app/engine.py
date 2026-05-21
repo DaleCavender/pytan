@@ -2,6 +2,7 @@ from .models import GameState
 import random
 
 ACTION_REGISTRY = {}
+ALLOWED_COLORS = ["#BF2720", "#115EC9", "#DFA629", "#EDEAD9", "#8B4513", "#228B22"]
 
 def register_action(action_name: str):
     """Decorator to easily register action handlers."""
@@ -492,6 +493,8 @@ def handle_steal_card(game: GameState, player_id: int, payload: dict, messages_o
 @register_action("placeSettlement") 
 @register_action("buildSettlement")
 def handle_build_settlement(game: GameState, player_id: int, payload: dict, messages_out: list)  -> bool:
+    if player_id != game.currentTurn:
+        return False
     player = get_player(game, player_id)
     action_name = payload.get("action")
     intersect = find_intersection(game, payload.get("coordinate"))
@@ -574,6 +577,8 @@ def handle_build_city(game: GameState, player_id: int, payload: dict, messages_o
 @register_action("placeRoad")
 @register_action("buildRoad")
 def handle_build_road(game: GameState, player_id: int, payload: dict, messages_out: list)  -> bool:
+    if player_id != game.currentTurn:
+        return False
     player = get_player(game, player_id)
     action_name = payload.get("action")
     path = find_path(game, payload)
@@ -857,6 +862,36 @@ def handle_bank_trade(game: GameState, player_id: int, payload: dict, messages_o
     
     messages_out.append(("all", f"{player.name} traded {total_cost} {res_to_give} for {amount_to_get} {res_to_get}."))
     return True
+
+
+@register_action("updateProfile")
+def handle_update_profile(game: GameState, player_id: int, payload: dict, messages_out: list) -> bool:
+    player = get_player(game, player_id)
+    new_name = payload.get("name", "").strip()[:12] # Limit name length
+    new_color = payload.get("color")
+    
+    updates = []
+    old_name = player.name
+
+    # Handle Name Change
+    if new_name and new_name != player.name:
+        player.name = new_name
+        updates.append(f"name to {new_name}")
+        
+    # Handle Color Change
+    if new_color in ALLOWED_COLORS and new_color != player.color:
+        # Ensure color is not taken by another active player
+        if not any(p.color == new_color for p in game.players if p.is_active and p.id != player_id):
+            player.color = new_color
+            updates.append("color")
+            
+    if updates:
+        display_name = old_name if "name" in updates[0] else player.name
+        messages_out.append(("all", f"👤 {display_name} changed their {' and '.join(updates)}."))
+        return True
+        
+    return False
+
 
 @register_action("endTurn")
 def handle_end_turn(game: GameState, player_id: int, payload: dict, messages_out: list)  -> bool:
