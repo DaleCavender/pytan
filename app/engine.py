@@ -556,7 +556,7 @@ def handle_build_city(game: GameState, player_id: int, payload: dict, messages_o
     player.victoryPoints += 1
     
     messages_out.append(("all", f"{player.name} built a City!"))
-    total_vp = p.victoryPoints + p.dev_cards.get("Victory Point", 0)
+    total_vp = player.victoryPoints + player.dev_cards.get("Victory Point", 0)
     if total_vp >= game.settings.victoryPoints:
         game.winner = player.id
         game.status = "FINISHED"

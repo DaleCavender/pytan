@@ -74,8 +74,7 @@ Player.prototype.addPlayerTab = function() {
     if (this.longestRoad || this.largestArmy) {
         html += "<div class='pc-badges' style='padding: 6px; background: #eee; display: flex; justify-content: center; gap: 5px;'>";
         if (this.longestRoad) {
-            var roadText = this.longestRoadLength ? " (" + this.longestRoadLength + ")" : "";
-            html += "<span class='label label-danger' style='font-size:12px;'><span class='glyphicon glyphicon-road'></span> Road" + roadText + "</span>";
+            html += "<span class='label label-danger' style='font-size:12px;'><span class='glyphicon glyphicon-road'></span> Road </span>";
         }
         if (this.largestArmy) {
             html += "<span class='label label-primary' style='font-size:12px;'><img src='/images/icon-knight.svg' style='width:14px; margin-right:3px;'> Army</span>";
