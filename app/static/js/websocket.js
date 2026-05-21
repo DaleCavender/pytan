@@ -355,15 +355,18 @@ function insertChatMessage(msg) {
     var header = "<span class='chat-timestamp'>" + formattedDate + "</span>" +
                  "<span class='chat-sender'>" + msg.sender + ":</span> ";
     var text = $("<span class='chat-text'></span>").text(msg.content);
-
+    
     msgDiv.append(header).append(text);
-
     $("#chat").append(msgDiv);
 
-    // Smooth scroll to bottom
-    var chatBox = $("#chat");
-    chatBox.stop().animate({ scrollTop: chatBox[0].scrollHeight + 100}, 200);
+    // Smooth scroll to bottom: using setTimeout and stop(true,true) ensures 
+    // the layout is evaluated after text wrapping, and animations don't stack up.
+    setTimeout(function() {
+        var chatBox = $("#chat");
+        chatBox.stop(true, true).animate({ scrollTop: chatBox.prop("scrollHeight") }, 200);
+    }, 10);
 }
+
 
 
 /*

@@ -659,6 +659,8 @@ def handle_build_settlement(game: GameState, player_id: int, payload: dict, mess
     
     player.numSettlements -= 1
     player.victoryPoints += 1
+
+    messages_out.append(("all", f"{player.name} built a Settlement!"))
     
     if action_name == "buildSettlement":
         for res in ["brick", "wood", "wheat", "sheep"]: player.resources[res] -= 1
@@ -673,10 +675,12 @@ def handle_build_settlement(game: GameState, player_id: int, payload: dict, mess
                         player.resources[res_type] += 1
                         messages_out.append((player_id, f"You received 1 {res_type}."))
     for p in game.players:
-        if p.victoryPoints >= game.settings.victoryPoints:
+        total_vp = p.victoryPoints + p.dev_cards.get("Victory Point", 0)
+        if total_vp >= game.settings.victoryPoints:
             game.winner = p.id
             game.status = "FINISHED"
-            messages_out.append(("all", f"GAME OVER! {p.name} has won the game with {p.victoryPoints} points!"))
+            messages_out.append(("all", f"🏆 GAME OVER! {p.name} has won the game with {total_vp} points!"))
+            break
     return True
 
 @register_action("buildCity")
@@ -709,11 +713,11 @@ def handle_build_city(game: GameState, player_id: int, payload: dict, messages_o
     player.victoryPoints += 1
     
     messages_out.append(("all", f"{player.name} built a City!"))
-    
-    if player.victoryPoints >= game.settings.victoryPoints:
+    total_vp = player.victoryPoints + player.dev_cards.get("Victory Point", 0)
+    if total_vp >= game.settings.victoryPoints:
         game.winner = player.id
         game.status = "FINISHED"
-        messages_out.append(("all", f"GAME OVER! {player.name} has won the game with {player.victoryPoints} points!"))
+        messages_out.append(("all", f"GAME OVER! {player.name} has won the game with {total_vp} points!"))
         
     return True
 
@@ -764,10 +768,11 @@ def handle_build_road(game: GameState, player_id: int, payload: dict, messages_o
         player.resources["brick"] -= 1
         player.resources["wood"] -= 1
     for p in game.players:
-        if p.victoryPoints >= game.settings.victoryPoints:
+        total_vp = p.victoryPoints + p.dev_cards.get("Victory Point", 0)
+        if total_vp >= game.settings.victoryPoints:
             game.winner = p.id
             game.status = "FINISHED"
-            messages_out.append(("all", f"GAME OVER! {p.name} has won the game with {p.victoryPoints} points!"))
+            messages_out.append(("all", f"🏆 GAME OVER! {p.name} has won the game with {total_vp} points!"))
     return True
 
 @register_action("buyDevCard")
@@ -787,13 +792,14 @@ def handle_buy_dev_card(game: GameState, player_id: int, payload: dict, messages
     card = game.dev_card_deck.pop()
     player.new_dev_cards[card] += 1
 
-    messages_out.append((player_id, f"You bought a Development Card and received a {card}!"))
+    messages_out.append((player_id, f"You received a {card}!"))
     messages_out.append(("all", f"{player.name} bought a Development Card."))
     for p in game.players:
-        if p.victoryPoints >= game.settings.victoryPoints:
+        total_vp = p.victoryPoints + p.dev_cards.get("Victory Point", 0)
+        if total_vp >= game.settings.victoryPoints:
             game.winner = p.id
             game.status = "FINISHED"
-            messages_out.append(("all", f"GAME OVER! {p.name} has won the game with {p.victoryPoints} points!"))
+            messages_out.append(("all", f"🏆 GAME OVER! {p.name} has won the game with {total_vp} points!"))
     return True
 
 @register_action("playKnight")
@@ -814,10 +820,11 @@ def handle_play_knight(game: GameState, player_id: int, payload: dict, messages_
     msg = update_largest_army(game)
     if msg: messages_out.append(("all", msg))
     for p in game.players:
-        if p.victoryPoints >= game.settings.victoryPoints:
+        total_vp = p.victoryPoints + p.dev_cards.get("Victory Point", 0)
+        if total_vp >= game.settings.victoryPoints:
             game.winner = p.id
             game.status = "FINISHED"
-            messages_out.append(("all", f"GAME OVER! {p.name} has won the game with {p.victoryPoints} points!"))
+            messages_out.append(("all", f"🏆 GAME OVER! {p.name} has won the game with {total_vp} points!"))
     return True
 
 @register_action("playMonopoly")
@@ -931,7 +938,6 @@ def handle_review_trade(game: GameState, player_id: int, payload: dict, messages
     active_opponents = sum(1 for p in game.players if p.is_active and p.id != game.currentTurn)
     if len(game.active_trade["_declinedTrade"]) >= active_opponents:
         messages_out.append((game.currentTurn, "Everyone declined your trade."))
-        game.expected_action = None
         
     return True
 
@@ -1000,7 +1006,7 @@ def handle_bank_trade(game: GameState, player_id: int, payload: dict, messages_o
     player.resources[res_to_give] -= total_cost
     player.resources[res_to_get] += amount_to_get
     
-    messages_out.append((player_id, f"Traded {total_cost} {res_to_give} for {amount_to_get} {res_to_get}."))
+    messages_out.append(("all", f"{player.name} traded {total_cost} {res_to_give} for {amount_to_get} {res_to_get}."))
     return True
 
 @register_action("endTurn")
@@ -1596,6 +1602,16 @@ async def root():
 
 @app.get("/home")
 async def home(request: Request):
+    client_uuid = request.cookies.get("USER_ID")
+    
+    if client_uuid:
+        for gid, game in ACTIVE_GAMES.items():
+            player = next((p for p in game.players if p.uuid == client_uuid), None)
+            if player and game.status != "FINISHED":
+                response = RedirectResponse(url="/board")
+                response.set_cookie(key="desiredGroupId", value=gid)
+                return response
+
     return templates.TemplateResponse("home.html", {"request": request, "title": "Catan : Home"})
 
 @app.get("/board")
@@ -1678,6 +1694,19 @@ async def websocket_action(websocket: WebSocket):
             await websocket.close(code=1008)
             return
         
+        if not player.is_active:
+            player.is_active = True
+            for ws_conn in list(GAME_ROOMS[game_id].keys()):
+                msg_payload = {
+                    "requestType": "action",
+                    "action": "systemMessage", 
+                    "content": {"message": f"🔌 {player.name} reconnected."}
+                }
+                try:
+                    await ws_conn.send_text(json.dumps(msg_payload))
+                except Exception:
+                    pass
+
         GAME_ROOMS[game_id][websocket] = player.id
 
         ready_to_start = (len(game.players) == 1) if game.dev_mode else (len(game.players) == game.settings.numPlayers)
@@ -1769,11 +1798,40 @@ async def websocket_action(websocket: WebSocket):
         traceback.print_exc()
     finally:
         if game_id and game_id in GAME_ROOMS:
+            pid = GAME_ROOMS[game_id].get(websocket)
+            
             if websocket in GAME_ROOMS[game_id]:
                 del GAME_ROOMS[game_id][websocket]
-
+                
             if game_id in ACTIVE_GAMES:
-                await broadcast_game_state(game_id)
+                game = ACTIVE_GAMES[game_id]
+                
+                if pid is not None:
+                    p = get_player(game, pid)
+                    if p: 
+                        p.is_active = False
+
+                if game.status == "WAITING":
+                    if len(game.players) > 0 and game.players[0].id == pid:
+                        del ACTIVE_GAMES[game_id]
+                        del GAME_ROOMS[game_id]
+                        print(f"Lobby '{game_id}' destroyed because Host (P{pid}) disconnected.")
+                    else:
+                        if pid is not None:
+                            game.players = [p for p in game.players if p.id != pid]
+                            if pid in game.turnOrder:
+                                game.turnOrder.remove(pid)
+                        await broadcast_game_state(game_id)
+                        
+                else:
+                    active_count = sum(1 for p in game.players if p.is_active)
+                    if active_count == 0:
+                        del ACTIVE_GAMES[game_id]
+                        del GAME_ROOMS[game_id]
+                        print(f"Game '{game_id}' destroyed because all players disconnected.")
+                    else:
+                        await broadcast_game_state(game_id)
+
 
 --- FILE: app/templates/home.html ---
 {% extends "main.html" %}
@@ -1785,7 +1843,7 @@ async def websocket_action(websocket: WebSocket):
 {% block body_content %}
 <div class="text-center">
 <div class='row'>
-<h1><span style='color:#aa0000'>(definitely not) catan</span></h1>
+<h1><span style='color:#aa0000'>(definitely) catan</span></h1>
 </div>
 	<div class="row" id="pre-name-container">
 		<div class="col-xs-10 col-xs-offset-1 col-sm-offset-3 col-sm-6 col-lg-offset-4 col-lg-4" style='margin-top:8%'>
@@ -1850,7 +1908,7 @@ async def websocket_action(websocket: WebSocket):
 
 
 {% block extra_js %}
-	<script src="/js/home.js"></script>
+	<script src="/js/home.js?v=2"></script>
 {% endblock %}
 
 
@@ -1917,198 +1975,241 @@ async def websocket_action(websocket: WebSocket):
 <div id="board-viewport" class="sea-color unselectable"></div>
 
 <!-- ==========================================
-     1. TOP OVERLAY: Player Cards
+     MASTER RESPONSIVE UI OVERLAY
      ========================================== -->
-<div id="top-players-container" class="ui-overlay">
-    <div id="player-tabs-content" class="player-cards-wrapper">
-        <!-- player.js dynamically injects Player Cards here -->
-    </div>
-</div>
+<div id="master-ui-layer">
 
-<!-- ==========================================
-     2. SIDE OVERLAY: Left & Right Panels
-     ========================================== -->
-<div id="side-controls-container" class="ui-overlay">
-    
-    <div id="left-ui-panel">
-        <button id="sbp-opt-in-btn" class="btn btn-default hidden">
-            Special Build: OFF
-        </button>
-        <input type="button" class="btn btn-primary btn-block" id="end-turn-btn" value="End Turn" style="margin: 10px 0;">
+    <!-- 1. TOP ROW (Player Cards) -->
+    <div class="ui-row top-row">
+        <div class="ui-col top-left-flank">
+            <div class="control-group">
+                <input type="button" class="btn btn-primary" id="end-turn-btn" value="End Turn">
+                <button id="sbp-opt-in-btn" class="btn btn-default hidden">Special Build: OFF</button>
+            </div>
+        </div>
+        <div class="ui-col top-center-flank">
+            <div id="player-tabs-content" class="player-cards-wrapper">
+                <!-- player.js dynamically injects Player Cards here -->
+            </div>
+        </div>
+
+        <div class="ui-col top-right-flank"></div>
     </div>
 
-    <!-- RIGHT PANEL: Trade & Extras Tabs -->
-    <div id="right-ui-panel">
-        <div id="right-menu-container" class="panel panel-default">
-            
-            <!-- Tab Headers (Icons) -->
-            <ul class="nav nav-pills nav-stacked" id="right-tab-tabs" role="tablist">
-                <li role="presentation" class="active">
-                    <a href="#trade-tab" data-toggle="tab" title="Trade"><span class="glyphicon glyphicon-transfer"></span></a>
-                </li>
-                <li role="presentation">
-                    <a href="#extras-tab" data-toggle="tab" title="Settings"><span class="glyphicon glyphicon-cog"></span></a>
-                </li>
-            </ul>
-            
-            <!-- Tab Content -->
-            <div class="tab-content right-tab-content">
-                
-                <!-- Trade Tab -->
-                <div role="tabpanel" class="tab-pane active" id="trade-tab">
-                    <ul class="nav nav-tabs right-inner-tabs" role="tablist">
-                        <li role="presentation" class="active" id="interplayer-trade-tab-toggle">
-                            <a href="#player-trade-tab" role="tab" data-toggle="tab">Players</a>
+    <!-- 2. MIDDLE ROW (Turn Controls, Chat, Trade/Settings) -->
+    <div class="ui-row middle-row">
+        <!-- Middle Left -->
+        <div class="ui-col left-col">
+           
+            <div id="chat-container">
+                <div id="chat"></div>
+                <div id="chatControls">
+                    <input id="message" class="form-control" placeholder="Type a message...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Right -->
+        <div class="ui-col right-col">
+            <div id="right-menu-container" class="panel panel-default">
+                <ul class="nav nav-pills nav-stacked" id="right-tab-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#trade-tab" data-toggle="tab" title="Trade"><span class="glyphicon glyphicon-transfer"></span></a></li>
+                    <li role="presentation"><a href="#extras-tab" data-toggle="tab" title="Settings"><span class="glyphicon glyphicon-cog"></span></a></li>
+                </ul>
+                <div class="tab-content right-tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="trade-tab">
+                        <ul class="nav nav-tabs right-inner-tabs" role="tablist">
+                            <li role="presentation" class="active" id="interplayer-trade-tab-toggle">
+                                <a href="#player-trade-tab" role="tab" data-toggle="tab">Players</a>
+                            </li>
+                            <li role="presentation" id="bank-trade-tab-toggle">
+                                <a href="#bank-trade-tab" role="tab" data-toggle="tab">Bank</a>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content">
+                            <!-- Interplayer Trade -->
+                            <div role="tabpanel" class="tab-pane active" id="player-trade-tab">
+                                <div class="trade-grid">
+                                    {% for res in ["brick", "wood", "ore", "wheat", "sheep"] %}
+                                    <div class="trade-resource-row">
+                                        <div class="circle trade-circle {{ res }}-color">
+                                            <img src="/images/icon-{{ res }}.svg" alt="{{ res }}">
+                                        </div>
+                                        <div class="trade-stepper">
+                                            <button class="btn btn-xs btn-default trade-btn-step" data-res="{{ res }}" data-type="give" data-action="plus"><span class="glyphicon glyphicon-plus"></span></button>
+                                            <span class="trade-val text-danger" id="give-val-{{ res }}">0</span>
+                                            <button class="btn btn-xs btn-default trade-btn-step" data-res="{{ res }}" data-type="give" data-action="minus"><span class="glyphicon glyphicon-minus"></span></button>
+                                            <small class="text-muted">Give</small>
+                                        </div>
+                                        <div class="trade-stepper">
+                                            <button class="btn btn-xs btn-default trade-btn-step" data-res="{{ res }}" data-type="want" data-action="plus"><span class="glyphicon glyphicon-plus"></span></button>
+                                            <span class="trade-val text-success" id="want-val-{{ res }}">0</span>
+                                            <button class="btn btn-xs btn-default trade-btn-step" data-res="{{ res }}" data-type="want" data-action="minus"><span class="glyphicon glyphicon-minus"></span></button>
+                                            <small class="text-muted">Want</small>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="text-center" style="padding: 10px;">
+                                    <input type="button" id="propose-interplayer-trade-btn" class="btn btn-primary btn-sm" value="Propose Trade" disabled="disabled">
+                                </div>
+                            </div>
+
+                            <!-- Bank Trade -->
+                            <div role="tabpanel" class="tab-pane text-center" id="bank-trade-tab">
+                                <div id="bank-trade-container" style="padding: 10px;">
+                                    <label>Give:</label>
+                                    <div class="bank-resources-grid">
+                                        {% for res in ["brick", "wood", "ore", "wheat", "sheep"] %}
+                                            <div class="to-give-circle-container circle" res="{{ res }}" style="position:relative;">
+                                                <div class="circle trade-circle {{ res }}-color pointer"><img src="/images/icon-{{ res }}.svg"></div>
+                                                <span class="badge" id="{{ res }}-trade-rate" style="position:absolute; bottom:-5px; right:-5px; background-color:#d9534f; font-size:11px; border:1px solid white;">4:1</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <hr style="margin: 10px 0;">
+                                    <label>Receive:</label>
+                                    <div class="bank-resources-grid">
+                                        {% for res in ["brick", "wood", "ore", "wheat", "sheep"] %}
+                                            <div class="to-get-circle-container circle" res="{{ res }}">
+                                                <div class="circle trade-circle {{ res }}-color pointer"><img src="/images/icon-{{ res }}.svg"></div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div style="margin-top: 15px;">
+                                        <input id="bank-trade-amount-input" class="form-control input-sm" type="number" value="1" style="width: 60px; display: inline-block;">
+                                        <input type="button" class="btn btn-primary btn-sm" value="Trade With Bank" id="bank-trade-btn">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Extras Tab -->
+                    <div role="tabpanel" class="tab-pane" id="extras-tab" style="padding: 10px;">
+                        <div class="list-group" style="margin-bottom: 0;">
+                            <div class="list-group-item active">Settings & Info</div>
+                            <div class="list-group-item" id="game-settings-container"></div>
+                            <button id="mute-btn" type="button" class="list-group-item" data-toggle="button"><span class="glyphicon glyphicon-volume-off"></span> Mute Audio</button>
+                            <button id="show-stats-btn" class="list-group-item" data-toggle="modal" data-target="#stats-modal"><span class="glyphicon glyphicon-stats"></span> Roll Distribution</button>
+                            <button id="message-history-btn" class="list-group-item" data-toggle="modal" data-target="#message-history-modal"><span class="glyphicon glyphicon-list-alt"></span> Message History</button>
+                            <a href="http://www.catan.com/service/game-rules" target="_blank" class="list-group-item"><span class="glyphicon glyphicon-book"></span> Official Rules</a>
+                            <button class="list-group-item btn-danger text-white" data-toggle="modal" data-target="#exit-game-modal"><span class="glyphicon glyphicon-log-out"></span> Leave Game</button>
+                        </div>
+                    </div>
+                    {% include "trade_and_extras_tabs.html" ignore missing %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. BOTTOM ROW (Messages, Hand, Build Menu) -->
+    <div class="ui-row bottom-row">
+        
+        <!-- Bottom Left / Center-Left: System Messages -->
+        <div class="ui-col bottom-left-col">
+        </div>
+
+        <!-- Bottom Center: Resource Hand & Inventory -->
+        <div class="ui-col bottom-center-col">
+            <div id="message-container"></div>
+            <div class="panel panel-default hand-panel">
+                <div class="hand-section">
+                    <ul class="nav navbar-nav" id="hand-resources">
+                        <div class="hand-section">
+                            <li class="navbar-btn"><div class="circle card-circle brick-color" title="Brick"><img src="/images/icon-brick.svg"></div><div class="card-number" id="brick-number">0</div></li>
+                            <li class="navbar-btn"><div class="circle card-circle wood-color" title="Wood"><img src="/images/icon-wood.svg"></div><div class="card-number" id="wood-number">0</div></li>
+                            <li class="navbar-btn"><div class="circle card-circle ore-color" title="Ore"><img src="/images/icon-ore.svg"></div><div class="card-number" id="ore-number">0</div></li>
+                            <li class="navbar-btn"><div class="circle card-circle wheat-color" title="Wheat"><img src="/images/icon-wheat.svg"></div><div class="card-number" id="wheat-number">0</div></li>
+                            <li class="navbar-btn"><div class="circle card-circle sheep-color" title="Sheep"><img src="/images/icon-sheep.svg"></div><div class="card-number" id="sheep-number">0</div></li>
+                    </ul>
+                </div>
+                <div class="hand-section inventory-divider">
+                    <ul class="nav navbar-nav" id="hand-inventory">
+                        <li class="navbar-btn" title="Roads Remaining">
+                            <div class="circle card-circle player-building-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-road" style="color:white; line-height:32px; font-size:16px;"></span></div>
+                            <div class="card-number" id="hand-roads-count">0</div>
                         </li>
-                        <li role="presentation" id="bank-trade-tab-toggle">
-                            <a href="#bank-trade-tab" role="tab" data-toggle="tab">Bank</a>
+                        <li class="navbar-btn" title="Settlements Remaining">
+                            <div class="circle card-circle player-building-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-home" style="color:white; line-height:32px; font-size:16px;"></span></div>
+                            <div class="card-number" id="hand-settlements-count">0</div>
+                        </li>
+                        <li class="navbar-btn" title="Cities Remaining">
+                            <div class="circle card-circle player-building-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-tower" style="color:white; line-height:32px; font-size:16px;"></span></div>
+                            <div class="card-number" id="hand-cities-count">0</div>
                         </li>
                     </ul>
-                    
-                    <div class="tab-content">
-                        <!-- Interplayer Trade -->
-                        <div role="tabpanel" class="tab-pane active" id="player-trade-tab">
-                            <div class="trade-grid">
-                                {% for res in ["brick", "wood", "ore", "wheat", "sheep"] %}
-                                <div class="trade-resource-row">
-                                    <div class="circle trade-circle {{ res }}-color">
-                                        <img src="/images/icon-{{ res }}.svg" alt="{{ res }}">
-                                    </div>
-                                    <div class="trade-stepper">
-                                        <button class="btn btn-xs btn-default trade-btn-step" data-res="{{ res }}" data-type="give" data-action="plus"><span class="glyphicon glyphicon-plus"></span></button>
-                                        <span class="trade-val text-danger" id="give-val-{{ res }}">0</span>
-                                        <button class="btn btn-xs btn-default trade-btn-step" data-res="{{ res }}" data-type="give" data-action="minus"><span class="glyphicon glyphicon-minus"></span></button>
-                                        <small class="text-muted">Give</small>
-                                    </div>
-                                    <div class="trade-stepper">
-                                        <button class="btn btn-xs btn-default trade-btn-step" data-res="{{ res }}" data-type="want" data-action="plus"><span class="glyphicon glyphicon-plus"></span></button>
-                                        <span class="trade-val text-success" id="want-val-{{ res }}">0</span>
-                                        <button class="btn btn-xs btn-default trade-btn-step" data-res="{{ res }}" data-type="want" data-action="minus"><span class="glyphicon glyphicon-minus"></span></button>
-                                        <small class="text-muted">Want</small>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <div class="text-center" style="padding: 10px;">
-                                <input type="button" id="propose-interplayer-trade-btn" class="btn btn-primary btn-sm" value="Propose Trade" disabled="disabled">
-                            </div>
-                        </div>
+                </div>
+                <div class="hand-section">
+                    <ul class="nav navbar-nav" id="hand-dev-cards">
+                        <!-- Paste your Dev Card li items here -->
+                        <li class="navbar-btn"><div class="circle card-circle pointer" id="knight-btn" title="Knight"><img src="/images/icon-knight.svg"></div><div class="card-number" id="knight-number">0</div></li>
+                        <li class="navbar-btn"><div class="circle card-circle pointer" id="year-of-plenty-btn" title="Year of Plenty"><img src="/images/icon-year-of-plenty.svg"></div><div class="card-number" id="year-of-plenty-number">0</div></li>
+                        <li class="navbar-btn"><div class="circle card-circle pointer" id="monopoly-btn" title="Monopoly"><img src="/images/icon-monopoly.svg"></div><div class="card-number" id="monopoly-number">0</div></li>
+                        <li class="navbar-btn"><div class="circle card-circle pointer" id="road-building-btn" title="Road Building"><img src="/images/icon-road-building.svg"></div><div class="card-number" id="road-building-number">0</div></li>
+                        <li class="navbar-btn"><div class="circle card-circle" title="Victory Point"><img src="/images/icon-victory-point.svg"></div><div class="card-number" id="victory-point-number">0</div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-                        <!-- Bank Trade -->
-                        <div role="tabpanel" class="tab-pane text-center" id="bank-trade-tab">
-                            <div id="bank-trade-container" style="padding: 10px;">
-                                <label>Give:</label>
-                                <div class="bank-resources-grid">
-                                    {% for res in ["brick", "wood", "ore", "wheat", "sheep"] %}
-                                        <div class="to-give-circle-container circle" res="{{ res }}" style="position:relative;">
-                                            <div class="circle trade-circle {{ res }}-color pointer"><img src="/images/icon-{{ res }}.svg"></div>
-                                            <span class="badge" id="{{ res }}-trade-rate" style="position:absolute; bottom:-5px; right:-5px; background-color:#d9534f; font-size:11px; border:1px solid white;">4:1</span>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                                <hr style="margin: 10px 0;">
-                                <label>Receive:</label>
-                                <div class="bank-resources-grid">
-                                    {% for res in ["brick", "wood", "ore", "wheat", "sheep"] %}
-                                        <div class="to-get-circle-container circle" res="{{ res }}">
-                                            <div class="circle trade-circle {{ res }}-color pointer"><img src="/images/icon-{{ res }}.svg"></div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                                <div style="margin-top: 15px;">
-                                    <input id="bank-trade-amount-input" class="form-control input-sm" type="number" value="1" style="width: 60px; display: inline-block;">
-                                    <input type="button" class="btn btn-primary btn-sm" value="Trade With Bank" id="bank-trade-btn">
+        <!-- Bottom Right: Build Menu -->
+        <div class="ui-col bottom-right-col">
+            <div id="build-menu-container" class="panel panel-default build-panel-custom">
+                <div class="panel panel-default build-panel-custom">
+                    <div class="panel-heading text-center"><h5 class="panel-title-small">Build</h5></div>
+                        <div class="panel-body" style="padding: 10px;">
+                        <!-- Settlement -->
+                        <div class="build-item-container" style="margin-bottom: 10px;">
+                            <div style="font-weight: bold; font-size: 12px; text-transform: uppercase;">Settlement</div>
+                            <div class="build-item-row" style="display: flex; align-items: center;">
+                                <button class="btn btn-default build-btn" id="settlement-build-btn" title="Build Settlement" disabled><span class="glyphicon glyphicon-home"></span></button>
+                                <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
+                                    <div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
+                                    <div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
+                                    <div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                                    <div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Extras Tab -->
-                <div role="tabpanel" class="tab-pane" id="extras-tab" style="padding: 10px;">
-                    <div class="list-group" style="margin-bottom: 0;">
-                        <div class="list-group-item active">Settings & Info</div>
-                        <div class="list-group-item" id="game-settings-container"></div>
-                        <button id="mute-btn" type="button" class="list-group-item" data-toggle="button"><span class="glyphicon glyphicon-volume-off"></span> Mute Audio</button>
-                        <button id="show-stats-btn" class="list-group-item" data-toggle="modal" data-target="#stats-modal"><span class="glyphicon glyphicon-stats"></span> Roll Distribution</button>
-                        <button id="message-history-btn" class="list-group-item" data-toggle="modal" data-target="#message-history-modal"><span class="glyphicon glyphicon-list-alt"></span> Message History</button>
-                        <a href="http://www.catan.com/service/game-rules" target="_blank" class="list-group-item"><span class="glyphicon glyphicon-book"></span> Official Rules</a>
-                        <button class="list-group-item btn-danger text-white" data-toggle="modal" data-target="#exit-game-modal"><span class="glyphicon glyphicon-log-out"></span> Leave Game</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Persistent System Messages -->
-<div id="message-container"></div>
-
-<!-- User Chat Container -->
-<div id="chat-container">
-    <div id="chat"></div>
-    <div id="chatControls">
-        <input id="message" class="form-control" placeholder="Type a message...">
-    </div>
-</div>
-
-<!-- ==========================================
-     3. BOTTOM RIGHT OVERLAY: Build Menu
-     ========================================== -->
-<div id="build-menu-container" class="ui-overlay">
-    <div class="panel panel-default build-panel-custom">
-        <div class="panel-heading text-center"><h5 class="panel-title-small">Build</h5></div>
-            <div class="panel-body" style="padding: 10px;">
-            <!-- Settlement -->
-            <div class="build-item-container" style="margin-bottom: 10px;">
-                <div style="font-weight: bold; font-size: 12px; text-transform: uppercase;">Settlement</div>
-                <div class="build-item-row" style="display: flex; align-items: center;">
-                    <button class="btn btn-default build-btn" id="settlement-build-btn" title="Build Settlement" disabled><span class="glyphicon glyphicon-home"></span></button>
-                    <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
-                        <div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
-                        <div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
-                        <div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
-                        <div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- City -->
-            <div class="build-item-container" style="margin-bottom: 10px;">
-                <div style="font-weight: bold; font-size: 12px; text-transform: uppercase;">City</div>
-                <div class="build-item-row" style="display: flex; align-items: center;">
-                    <button class="btn btn-default build-btn" id="city-build-btn" title="Build City" disabled><span class="glyphicon glyphicon-tower"></span></button>
-                    <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
-                        <div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
-                        <div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
-                        <div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
-                        <div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
-                        <div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Road -->
-            <div class="build-item-container" style="margin-bottom: 10px;">
-                <div style="font-weight: bold; font-size: 12px; text-transform: uppercase;">Road</div>
-                <div class="build-item-row" style="display: flex; align-items: center;">
-                    <button class="btn btn-default build-btn" id="road-build-btn" title="Build Road" disabled><span class="glyphicon glyphicon-road"></span></button>
-                    <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
-                        <div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
-                        <div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Dev Card -->
-            <div class="build-item-container">
-                <div style="font-weight: bold; font-size: 12px; text-transform: uppercase;">Development Card</div>
-                <div class="build-item-row" style="display: flex; align-items: center;">
-                    <button class="btn btn-default build-btn" id="buy-dev-card-modal-open" data-toggle="modal" data-target="#buy-dev-card-modal" title="Buy Development Card" disabled><span class="glyphicon glyphicon-credit-card"></span></button>
-                    <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
-                        <div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
-                        <div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
-                        <div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
+                        <!-- City -->
+                        <div class="build-item-container" style="margin-bottom: 10px;">
+                            <div style="font-weight: bold; font-size: 12px; text-transform: uppercase;">City</div>
+                            <div class="build-item-row" style="display: flex; align-items: center;">
+                                <button class="btn btn-default build-btn" id="city-build-btn" title="Build City" disabled><span class="glyphicon glyphicon-tower"></span></button>
+                                <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
+                                    <div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                                    <div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                                    <div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                                    <div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                                    <div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Road -->
+                        <div class="build-item-container" style="margin-bottom: 10px;">
+                            <div style="font-weight: bold; font-size: 12px; text-transform: uppercase;">Road</div>
+                            <div class="build-item-row" style="display: flex; align-items: center;">
+                                <button class="btn btn-default build-btn" id="road-build-btn" title="Build Road" disabled><span class="glyphicon glyphicon-road"></span></button>
+                                <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
+                                    <div class="circle build-circle brick-color"><img src="/images/icon-brick.svg"></div>
+                                    <div class="circle build-circle wood-color"><img src="/images/icon-wood.svg"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Dev Card -->
+                        <div class="build-item-container">
+                            <div style="font-weight: bold; font-size: 12px; text-transform: uppercase;">Development Card</div>
+                            <div class="build-item-row" style="display: flex; align-items: center;">
+                                <button class="btn btn-default build-btn" id="buy-dev-card-modal-open" data-toggle="modal" data-target="#buy-dev-card-modal" title="Buy Development Card" disabled><span class="glyphicon glyphicon-credit-card"></span></button>
+                                <div class="build-cost-group" style="display: flex; margin-left: 10px; align-items: center;">
+                                    <div class="circle build-circle ore-color"><img src="/images/icon-ore.svg"></div>
+                                    <div class="circle build-circle wheat-color"><img src="/images/icon-wheat.svg"></div>
+                                    <div class="circle build-circle sheep-color"><img src="/images/icon-sheep.svg"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2117,58 +2218,7 @@ async def websocket_action(websocket: WebSocket):
 </div>
 
 <!-- ==========================================
-     4. BOTTOM NAVBAR (Hand, Inventory, Dev Cards)
-     ========================================== -->
-<div class="navbar navbar-fixed-bottom above-board">
-    <div class="col-xs-12 text-center">
-        <!-- Message wrapper logic sits here -->
-        <div id="message-container-wrapper" class="text-center"></div>
-        
-        <div class="panel panel-default" style="display: inline-flex; justify-content: center; align-items: center; padding: 5px 20px; margin-bottom: 5px;">
-            
-            <!-- LEFT: Resource Hand -->
-            <div class="hand-section">
-                <ul class="nav navbar-nav" id="hand-resources">
-                    <li class="navbar-btn"><div class="circle card-circle brick-color" title="Brick"><img src="/images/icon-brick.svg"></div><div class="card-number" id="brick-number">0</div></li>
-                    <li class="navbar-btn"><div class="circle card-circle wood-color" title="Wood"><img src="/images/icon-wood.svg"></div><div class="card-number" id="wood-number">0</div></li>
-                    <li class="navbar-btn"><div class="circle card-circle ore-color" title="Ore"><img src="/images/icon-ore.svg"></div><div class="card-number" id="ore-number">0</div></li>
-                    <li class="navbar-btn"><div class="circle card-circle wheat-color" title="Wheat"><img src="/images/icon-wheat.svg"></div><div class="card-number" id="wheat-number">0</div></li>
-                    <li class="navbar-btn"><div class="circle card-circle sheep-color" title="Sheep"><img src="/images/icon-sheep.svg"></div><div class="card-number" id="sheep-number">0</div></li>
-                </ul>
-            </div>
-            <!-- CENTER: Building Inventory -->
-            <div class="hand-section inventory-divider">
-                <ul class="nav navbar-nav" id="hand-inventory">
-                    <li class="navbar-btn" title="Roads Remaining">
-                        <div class="circle card-circle player-building-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-road" style="color:white; line-height:32px; font-size:16px;"></span></div>
-                        <div class="card-number" id="hand-roads-count">0</div>
-                    </li>
-                    <li class="navbar-btn" title="Settlements Remaining">
-                        <div class="circle card-circle player-building-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-home" style="color:white; line-height:32px; font-size:16px;"></span></div>
-                        <div class="card-number" id="hand-settlements-count">0</div>
-                    </li>
-                    <li class="navbar-btn" title="Cities Remaining">
-                        <div class="circle card-circle player-building-swatch" style="border: 2px solid #333;"><span class="glyphicon glyphicon-tower" style="color:white; line-height:32px; font-size:16px;"></span></div>
-                        <div class="card-number" id="hand-cities-count">0</div>
-                    </li>
-                </ul>
-            </div>
-            <!-- RIGHT: Dev Card Hand -->
-            <div class="hand-section">
-                <ul class="nav navbar-nav" id="hand-dev-cards">
-                    <li class="navbar-btn"><div class="circle card-circle pointer" id="knight-btn" title="Knight"><img src="/images/icon-knight.svg"></div><div class="card-number" id="knight-number">0</div></li>
-                    <li class="navbar-btn"><div class="circle card-circle pointer" id="year-of-plenty-btn" title="Year of Plenty"><img src="/images/icon-year-of-plenty.svg"></div><div class="card-number" id="year-of-plenty-number">0</div></li>
-                    <li class="navbar-btn"><div class="circle card-circle pointer" id="monopoly-btn" title="Monopoly"><img src="/images/icon-monopoly.svg"></div><div class="card-number" id="monopoly-number">0</div></li>
-                    <li class="navbar-btn"><div class="circle card-circle pointer" id="road-building-btn" title="Road Building"><img src="/images/icon-road-building.svg"></div><div class="card-number" id="road-building-number">0</div></li>
-                    <li class="navbar-btn"><div class="circle card-circle" title="Victory Point"><img src="/images/icon-victory-point.svg"></div><div class="card-number" id="victory-point-number">0</div></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ==========================================
-     5. MODALS & MACROS
+     MODALS & MACROS
      ========================================== -->
 {% macro simple_modal(id, title, body="", buttons="") %}
 <div class="modal fade" id="{{ id }}" tabindex="-1" role="dialog" data-backdrop="static">
@@ -2416,15 +2466,22 @@ async def websocket_action(websocket: WebSocket):
 {% endblock %}
 
 {% block extra_js %}
-<script src="/js/main.js?v=15"></script>
-<script src="/js/player.js?v=5"></script>
+<!-- 1. Libraries -->
+<script src="/js/chartist.min.js?v=4"></script>
+<script src="/js/moment.min.js?v=4"></script>
+
+<!-- 2. Models (Data structures used by everyone) -->
+<script src="/js/player.js?v=7"></script>
 <script src="/js/tile.js?v=4"></script>
 <script src="/js/intersection.js?v=4"></script>
 <script src="/js/path.js?v=4"></script>
 <script src="/js/board.js?v=4"></script>
+
+<!-- 3. Network (Defines the send...Action functions) -->
 <script src="/js/websocket.js?v=7"></script>
-<script src="/js/chartist.min.js?v=4"></script>
-<script src="/js/moment.min.js?v=4"></script>
+
+<!-- 4. UI Logic (Uses the send actions and the models) -->
+<script src="/js/main.js?v=14"></script>
 {% endblock %}
 
 
@@ -2441,7 +2498,7 @@ async def websocket_action(websocket: WebSocket):
     
     <!-- Core Global CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/main.css?v=9">
+    <link rel="stylesheet" href="/css/main.css?v=15">
     {% block extra_css %}{% endblock %}
     <script src="/js/jquery-2.1.1.js"></script>
     
@@ -2542,7 +2599,6 @@ function Player(id, name, color) {
  * Renders the prominent player card at the top of the UI
  */
 Player.prototype.addPlayerTab = function() {
-    var tabTitle = (this.id === playerId) ? "You" : "P" + this.id;
     $("#player-tabs-content").append("<div class='player-tab-pane' id='p" + this.id + "-tab'></div>");
     var tab = $("#p" + this.id + "-tab");
     
@@ -2558,7 +2614,7 @@ Player.prototype.addPlayerTab = function() {
     
     // Header: Prominent Name and massive VP Badge
     html += "<div class='pc-header' style='background-color:" + hdrColor + "; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;'>";
-    html += "  <div style='font-size: 18px; font-weight: 900;'>" + this.name + " <span style='font-size:12px; font-weight:normal;'>(" + tabTitle + ")</span></div>";
+    html += "  <div style='font-size: 18px; font-weight: 900;'>" + this.name + "</div>";
     
     // The VP Badge
     html += "  <div style='background: #EAC932; color: #333; padding: 4px 10px; border-radius: 12px; font-size: 18px; font-weight: bold; border: 1px solid #333; display: flex; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3);'>";
@@ -2590,8 +2646,7 @@ Player.prototype.addPlayerTab = function() {
     if (this.longestRoad || this.largestArmy) {
         html += "<div class='pc-badges' style='padding: 6px; background: #eee; display: flex; justify-content: center; gap: 5px;'>";
         if (this.longestRoad) {
-            var roadText = this.longestRoadLength ? " (" + this.longestRoadLength + ")" : "";
-            html += "<span class='label label-danger' style='font-size:12px;'><span class='glyphicon glyphicon-road'></span> Road" + roadText + "</span>";
+            html += "<span class='label label-danger' style='font-size:12px;'><span class='glyphicon glyphicon-road'></span> Road </span>";
         }
         if (this.largestArmy) {
             html += "<span class='label label-primary' style='font-size:12px;'><img src='/images/icon-knight.svg' style='width:14px; margin-right:3px;'> Army</span>";
@@ -4254,6 +4309,30 @@ function handleGetGameState(gameStateData) {
     gameSettings = gameStateData.settings;
     gameStats = gameStateData.stats;
 
+	if (playerId < 0) {
+        // Hide building/turn menus
+        $("#build-menu-container").addClass("hidden");
+        $(".hand-panel").addClass("hidden");
+        $(".top-left-flank").addClass("hidden"); // Hides End Turn & SBP buttons
+        
+        // Keep the right menu, but hide Trade and force Settings open
+        $("#right-menu-container").removeClass("hidden");
+        $("#right-tab-tabs li:first-child").addClass("hidden"); // Hides the Trade Icon
+        $('#right-tab-tabs a[href="#extras-tab"]').tab('show'); // Force Bootstrap to open Extras
+        
+        // Add a Spectator Badge to the empty Top Left corner
+        if (!$("#spectator-badge").length) {
+            $("body").append("<div id='spectator-badge' style='position:fixed; top:20px; left:20px; background:rgba(0,0,0,0.75); color:white; padding:8px 15px; font-weight:bold; font-size:16px; border-radius:6px; z-index:1000; pointer-events:none; border: 1px solid #777;'><span class='glyphicon glyphicon-eye-open'></span> SPECTATING</div>");
+        }
+    } else {
+        // Ensure they are visible if someone transitioned from a previous spectator state (edge case)
+        $("#build-menu-container").removeClass("hidden");
+        $(".hand-panel").removeClass("hidden");
+        $("#right-menu-container").removeClass("hidden");
+        $(".top-left-flank").removeClass("hidden");
+        $("#spectator-badge").remove();
+    }
+
     // 2. THE FIX: Find your player object in the array by ID (not index!)
     var myData = gameStateData.players.find(function(p) {
         return p.id === playerId;
@@ -4261,11 +4340,8 @@ function handleGetGameState(gameStateData) {
 
     if (myData) {
         tradeRates = myData.rates;
-    } else {
-        // Fallback for the split second before join is finalized
-        tradeRates = {brick: 4, wood: 4, ore: 4, wheat: 4, sheep: 4};
+		fillPlayerTradeRates(tradeRates);
     }
-
     // 3. Clear and rebuild the lookup maps
     playersById = {};
     players = parsePlayers(gameStateData.players);
@@ -4275,8 +4351,6 @@ function handleGetGameState(gameStateData) {
         playersById[p.id] = p;
     }
     
-    // Parse and draw hand
-    fillPlayerHand(gameStateData.hand);
     
     // Create player tabs and turn counter
     $("#player-tabs").empty();
@@ -4296,18 +4370,23 @@ function handleGetGameState(gameStateData) {
         }
     }
     
-    if (currentPlayerTurn === playerId) {
+    if (playerId >= 0 && currentPlayerTurn === playerId) {
         $("#end-turn-btn").prop("disabled", false);
     } else {
         $("#end-turn-btn").prop("disabled", true);
     }
     
-    // Show what buildings player can currently buy
-    fillPlayerBuyOptions(gameStateData.hand);
-    // Draw trade rates
-    fillPlayerTradeRates(tradeRates);
-    // Build current extras tab
-    buildExtrasTab();
+    if (playerId >= 0) {
+		// Parse and draw hand
+		fillPlayerHand(gameStateData.hand);
+		// Show what buildings player can currently buy
+		fillPlayerBuyOptions(gameStateData.hand);
+		// Draw trade rates
+		fillPlayerTradeRates(tradeRates);
+		// Build current extras tab
+		buildExtrasTab();
+	}
+
     // Create board
     board = new Board();
     board.createBoard(gameStateData.board);
@@ -15647,17 +15726,6 @@ html, body {
 
 .pointer { cursor: pointer; }
 
-/* ==========================================================================
-   2. LAYOUT LOCKDOWN (Absolute Positioning)
-   ========================================================================== */
-
-/* The Wrapper Layer (Invisible) */
-.ui-overlay {
-    position: fixed;
-    z-index: 100;
-    pointer-events: none; 
-}
-
 /* TOP: Player Cards - Centered */
 #top-players-container {
     top: 15px;
@@ -15667,56 +15735,16 @@ html, body {
     justify-content: center;
 }
 
-/* MIDDLE: Side Panels - Hard Pinned to Edges */
-#side-controls-container {
-    top: 50px;
-    bottom: 110px;
-    left: 0;
-    right: 0;
-    width: 100vw;
-    display: block !important; /* Forces panels to ignore flex-stretch */
-}
-
-#left-ui-panel {
-    position: absolute !important;
-    left: 20px !important;
-    top: 90px !important;    /* Below the player cards */
-    bottom: 20px !important; /* Pinned to the bottom of the viewport */
-    width: 300px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-end !important; /* Forces children (chat) to the bottom */
-    pointer-events: none !important;      /* Clicks pass through the empty space */
-}
-
-#left-ui-panel > * {
-    pointer-events: auto !important; /* Re-enable clicks for the button and chat */
-}
-
-
-#right-ui-panel {
-    position: absolute;
-    right: 20px;
-    top: 250px;
-    width: 320px !important;
-    max-width: 350px !important;
-    pointer-events: auto;
-}
-
-/* BOTTOM RIGHT: Build Menu - Fixed above Navbar */
-#build-menu-container {
-    right: 20px;
-    bottom: 110px;
-    pointer-events: auto;
-}
-
 /* ==========================================================================
    3. PLAYER CARDS (Vertical Compression & Icon Prep)
    ========================================================================== */
 .player-cards-wrapper {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
     gap: 10px;
+    width: 100%;
 }
 
 .player-tab-pane {
@@ -15797,18 +15825,6 @@ html, body {
 /* ==========================================================================
    5. BOTTOM HAND & NAVBAR
    ========================================================================== */
-
-   .navbar-fixed-bottom.above-board {
-    z-index: 150;
-    background-color: transparent;
-    border: none;
-    pointer-events: none;
-}
-
-.navbar-fixed-bottom .panel {
-    pointer-events: auto;
-    margin-bottom: 5px;
-}
 
 #hand-resources, #hand-dev-cards { margin: 0; padding: 0; display: inline-block; }
 
@@ -16255,22 +16271,6 @@ svg.settlement-icon, svg.city-icon {
     100% { opacity: 0.7; }
 }
 
-/* Position the SBP Button to the RIGHT of the End Turn button */
-#sbp-opt-in-btn {
-    position: fixed !important;
-    top: 80px !important;
-    left: 20px !important; /* 20px (left) + 160px (end turn width) + 10px (gap) */
-    width: 160px !important;
-    height: 45px !important;
-    z-index: 150 !important;
-    font-weight: bold !important;
-    border-radius: 8px !important;
-    transition: all 0.2s ease;
-    background-color: white; /* Inactive State */
-    color: #333;
-    border: 2px solid #ccc;
-}
-
 /* Green Active State */
 #sbp-opt-in-btn.sbp-active {
     background-color: #5cb85c !important; /* Success Green */
@@ -16287,13 +16287,6 @@ svg.settlement-icon, svg.city-icon {
 
 /* Rip the End Turn button out of the Flexbox and pin it to the Top Left */
 #end-turn-btn {
-    position: fixed !important;
-    top: 20px !important;
-    left: 20px !important;
-    width: 160px !important; /* Fixed width instead of block-width */
-    height: 45px !important;
-    z-index: 150 !important;
-    
     /* Make it look punchy and clickable */
     font-size: 16px !important;
     font-weight: bold !important;
@@ -16308,48 +16301,227 @@ svg.settlement-icon, svg.city-icon {
 }
 
 /* ==========================================================================
-   12. RESPONSIVE SCALING FOR SMALL SCREENS
+   MASTER RESPONSIVE FLEXBOX LAYOUT
    ========================================================================== */
+
+/* The Invisible Full-Screen Wrapper */
+#master-ui-layer {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes Top to top, Bottom to bottom */
+    padding: 15px;
+    pointer-events: none; /* Clicks pass through to the board */
+    z-index: 100;
+    overflow: hidden;
+}
+
+/* Re-enable clicks ONLY on the actual UI panels */
+#master-ui-layer .panel, 
+#master-ui-layer button, 
+#master-ui-layer input,
+#master-ui-layer .player-tab-pane,
+#chat-container,
+#message-container {
+    pointer-events: auto !important;
+}
+
+/* --- ROW BEHAVIORS --- */
+.ui-row {
+    display: flex;
+    width: 100%;
+}
+
+.top-row {
+    justify-content: space-between; /* Centers player cards */
+    align-items: flex-start;
+    flex-shrink: 0;
+}
+
+.top-left-flank, .top-right-flank {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.top-center-flank {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+}
+
+/* Button Group Styling */
+.top-left-flank .control-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    pointer-events: auto !important;
+}
+
+.middle-row {
+    flex-grow: 1; /* Takes up all remaining vertical space */
+    justify-content: space-between; /* Pushes left-col left, right-col right */
+    align-items: flex-end; /* Pushes chat down towards the bottom */
+    padding-bottom: 10px;
+    min-height: 0; /* Critical for flexbox scrolling inner elements */
+}
+
+.bottom-row {
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-shrink: 0;
+}
+
+/* --- COLUMN BEHAVIORS --- */
+.ui-col {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+}
+
+.left-col {
+    gap: 10px;
+    width: 300px;
+    max-width: 30%;
+    justify-content: flex-end;
+    height: 100%;
+}
+
+.right-col {
+    width: 320px;
+    max-width: 35%;
+    align-items: flex-end;
+}
+
+.bottom-left-col {
+    width: 300px;
+    justify-content: flex-end;
+}
+
+.bottom-center-col {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.bottom-right-col {
+    width: 320px;
+    align-items: flex-end;
+}
+
+/* --- SPECIFIC PANEL ADJUSTMENTS --- */
+
+/* Trade/Settings Menu */
+#right-menu-container {
+    display: flex;
+    flex-direction: row;
+    height: 100%; /* Fills available vertical space in middle row */
+    max-height: 60vh; /* Limits it from hitting the top/bottom */
+    width: 100%;
+}
+
+/* Hand Panel (Formerly Navbar) */
+.hand-panel {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 20px;
+    margin-bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* End Turn & SBP Buttons */
+#end-turn-btn, #sbp-opt-in-btn {
+    height: 45px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    position: static !important; 
+    width: 140px;
+    transform: none;
+    margin: 0;
+}
+
+/* Chat Container */
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    max-height: 35vh; /* Dynamically sizes based on screen height */
+    min-height: 120px;
+    width: 100%;
+    flex-shrink: 1;
+}
+
+/* System Messages */
+#message-container {
+    width: 100%;
+    /* Remove the old absolute/fixed positioning */
+    position: relative !important;
+    bottom: auto; left: auto; transform: none;
+}
+
+/* Remove the bottom margin from the last build item so it sits flush */
+.build-item-container:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Tighten the padding of the panel body specifically for the build menu */
+.build-panel-custom .panel-body {
+    padding: 10px 10px 5px 10px !important; /* Reduces bottom padding from 10px to 5px */
+}
+
+/* Remove default Bootstrap bottom margin from the outer panel */
+#build-menu-container .panel {
+    margin-bottom: 0 !important;
+}
 
 /* For Narrow Screens (Laptops / Tablets) */
 @media screen and (max-width: 1250px) {
-    /* Scale down and pin to Top Center */
     #top-players-container {
         transform: scale(0.85);
         transform-origin: top center;
     }
-    
-    /* Scale down and pin to Top Right */
     #right-ui-panel {
         transform: scale(0.85);
         transform-origin: top right;
     }
-    
-    /* Scale down and pin to Bottom Right */
     #build-menu-container {
         transform: scale(0.85);
         transform-origin: bottom right;
     }
-    
-    /* Scale down and pin to Bottom Center */
-    .navbar-fixed-bottom.above-board {
+    /* FIX: Target the new hand-panel */
+    .hand-panel {
         transform: scale(0.85);
         transform-origin: bottom center;
     }
 }
 
+/* For Very Small/Narrow Screens (Small Laptops / iPads) */
+@media screen and (max-width: 950px) {
+    .hand-panel {
+        transform: scale(0.70); /* Shrink hand further */
+    }
+    .left-col {
+        width: 250px; /* Squeeze the chat column slightly */
+    }
+    .top-left-flank, .top-right-flank {
+        width: 160px; /* Shrink flanks so player cards fit */
+    }
+}
+
 /* For Extremely Short Screens */
 @media screen and (max-height: 750px) {
-    /* Aggressively shrink side panels to guarantee no vertical collisions */
-    #right-ui-panel {
-        transform: scale(0.75);
+    #right-menu-container {
+        transform: scale(0.85);
         transform-origin: top right;
     }
     #build-menu-container {
         transform: scale(0.75);
         transform-origin: bottom right;
     }
-    #left-ui-panel {
+    .left-col {
         transform: scale(0.85);
         transform-origin: bottom left;
     }

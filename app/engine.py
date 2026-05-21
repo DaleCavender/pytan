@@ -205,6 +205,10 @@ def handle_leave_game(game: GameState, player_id: int, messages_out: list) -> bo
                 game.is_special_build_phase = False
                 for p in game.players: 
                     p.wants_special_build = False
+                
+                if getattr(game, 'original_turn', None) is not None:
+                    game.currentTurn = game.original_turn
+                    game.original_turn = None
                 pass_to_next_active_player(game, messages_out)
         else:
             pass_to_next_active_player(game, messages_out)
@@ -397,6 +401,8 @@ def handle_drop_cards(game: GameState, player_id: int, payload: dict, messages_o
     player = get_player(game, player_id)
 
     for res, amount in to_drop.items():
+        if amount < 0:
+            return False
         if player.resources.get(res, 0) < amount:
             return False
             
@@ -882,6 +888,7 @@ def handle_end_turn(game: GameState, player_id: int, payload: dict, messages_out
 
     if game.settings.numPlayers > 4 and not game.is_special_build_phase:
         game.is_special_build_phase = True
+        game.original_turn = game.currentTurn
         curr_idx = game.turnOrder.index(game.currentTurn)
         game.special_build_queue = []
         for i in range(1, len(game.turnOrder)):
@@ -902,5 +909,8 @@ def handle_end_turn(game: GameState, player_id: int, payload: dict, messages_out
         return True
 
     game.is_special_build_phase = False
+    if getattr(game, 'original_turn', None) is not None:
+        game.currentTurn = game.original_turn
+        game.original_turn = None
     pass_to_next_active_player(game, messages_out)
     return True
