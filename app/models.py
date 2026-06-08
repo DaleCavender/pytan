@@ -117,4 +117,5 @@ class GameState:
     special_build_queue: List[int] = field(default_factory=list)
     is_special_build_phase: bool = False
     original_turn: Optional[int] = None
+    last_roll : Optional[Dict[str, int]] = None
     dev_mode: bool = False

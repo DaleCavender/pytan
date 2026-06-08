@@ -231,6 +231,7 @@ def pass_to_next_active_player(game: GameState, messages_out: list):
         game.expected_action = None
         game.valid_rob_targets = []
     
+    game.last_roll = None
     game.active_trade = None
     game.has_rolled = False
 
@@ -344,6 +345,8 @@ def handle_start_turn(game: GameState, player_id: int, payload: dict, messages_o
         die1 = random.randint(1, 6)
         die2 = random.randint(1, 6)
         roll = die1 + die2
+
+        game.last_roll = {"die1": die1, "die2": die2}
         
         messages_out.append(("all", f"{player.name} rolled a {roll}!"))
 

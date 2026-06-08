@@ -169,6 +169,7 @@ async def broadcast_game_state(game_id: str):
             "settings": game_dict["settings"],
             "players": game_dict["players"],
             "board": current_board,
+            "lastRoll" : getattr(game, 'last_roll', None),
             "hand": {
                 "resources": player_obj.resources,
                 "devCards": {k: player_obj.dev_cards.get(k, 0) + player_obj.new_dev_cards.get(k, 0) for k in player_obj.dev_cards},

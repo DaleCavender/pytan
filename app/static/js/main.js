@@ -63,6 +63,16 @@ $(window).load(function() {
         $("#profile-name-input").val("");
         addMessage("Update request sent...");
     });
+
+	    // --- INJECT DICE & DIFF BADGES ---
+    var diceHtml = "<div id='dice-container' class='hidden'><div id='die1' class='die red-die'></div><div id='die2' class='die yellow-die'></div></div>";
+    $("#master-ui-layer").append(diceHtml);
+
+    var resKeys = ["brick", "wood", "ore", "wheat", "sheep", "knight", "year-of-plenty", "monopoly", "road-building", "victory-point"];
+    resKeys.forEach(function(key) {
+        var badge = $("<span class='card-diff hidden' id='diff-" + key + "'></span>");
+        $("#" + key + "-number").parent().css("position", "relative").append(badge);
+    });
 });
 
 $(document).on("click", "#sbp-opt-in-btn", function() {

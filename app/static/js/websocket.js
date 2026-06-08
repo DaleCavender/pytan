@@ -6,6 +6,9 @@
 var wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
 var wsUrl = wsProtocol + window.location.host + "/action/"; // Use /groups/ for home.js
 var webSocket = new WebSocket(wsUrl);
+var lastHandForDiff = null;
+var lastTurnForDiff = null;
+var lastDiceState = null;
 
 // Send a heartbeat on the websocket
 function heartbeat() {
@@ -371,7 +374,69 @@ function insertChatMessage(msg, skipScroll) {
     $("#chat").prepend(msgDiv);
 }
 
+function updateVisualIndicators(gameStateData) {
+    // 1. UPDATE DICE
+    if (gameStateData.lastRoll) {
+        $("#dice-container").removeClass("hidden");
+        $("#die1").text(gameStateData.lastRoll.die1);
+        $("#die2").text(gameStateData.lastRoll.die2);
+        
+        // Only trigger the pop animation if it's a NEW roll
+        var currentDiceState = gameStateData.lastRoll.die1 + "-" + gameStateData.lastRoll.die2;
+        if (currentDiceState !== lastDiceState || gameStateData.currentTurn !== lastTurnForDiff) {
+             $(".die").removeClass("pop-anim");
+             void $(".die")[0].offsetWidth; // trigger reflow to restart animation
+             $(".die").addClass("pop-anim");
+             lastDiceState = currentDiceState;
+        }
+    } else {
+        $("#dice-container").addClass("hidden");
+        lastDiceState = null;
+    }
 
+    // 2. UPDATE HAND DIFFERENCES (+1 / -1)
+    if (playerId < 0) return; // Spectators don't have hands
+    var newHand = gameStateData.hand;
+
+    // Reset baseline and hide badges if the turn changes
+    if (!lastHandForDiff || gameStateData.currentTurn !== lastTurnForDiff) {
+        $(".card-diff").addClass("hidden").text("");
+        lastHandForDiff = JSON.parse(JSON.stringify(newHand));
+        lastTurnForDiff = gameStateData.currentTurn;
+        return;
+    }
+
+    // Check if the hand actually changed in this specific server update
+    var handChanged = JSON.stringify(newHand.resources) !== JSON.stringify(lastHandForDiff.resources) || 
+                      JSON.stringify(newHand.devCards) !== JSON.stringify(lastHandForDiff.devCards);
+
+    if (handChanged) {
+        // A card was gained or used! Clear ALL old badges first.
+        $(".card-diff").addClass("hidden").text("");
+
+        function applyDiff(newDict, oldDict) {
+            for (var key in newDict) {
+                var diff = newDict[key] - (oldDict[key] || 0);
+                var idKey = key.replace(/\s+/g, '-').toLowerCase(); 
+                var badge = $("#diff-" + idKey);
+                
+                if (diff !== 0) {
+                    badge.removeClass("hidden positive negative pop-anim");
+                    void badge[0].offsetWidth; // force DOM reflow to restart animation
+                    
+                    badge.addClass(diff > 0 ? "positive" : "negative").addClass("pop-anim");
+                    badge.text((diff > 0 ? "+" : "") + diff);
+                }
+            }
+        }
+
+        applyDiff(newHand.resources, lastHandForDiff.resources);
+        applyDiff(newHand.devCards, lastHandForDiff.devCards);
+
+        // Save the new hand state as the baseline for the NEXT change
+        lastHandForDiff = JSON.parse(JSON.stringify(newHand));
+    }
+}
 
 
 /*
@@ -610,6 +675,7 @@ function handleGetGameState(gameStateData) {
     if (inPlaceSettlementMode) {
         enterPlaceSettlementMode();
     }
+	updateVisualIndicators(gameStateData);
     // Handle win game
     if (gameStateData.hasOwnProperty("winner")) {
         var winner = gameStateData.winner;

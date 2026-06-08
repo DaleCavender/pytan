@@ -813,3 +813,66 @@ svg.settlement-icon, svg.city-icon {
         transform-origin: bottom left;
     }
 }
+/* ==========================================================================
+   DICE VISUALS
+   ========================================================================== */
+#dice-container {
+    position: absolute;
+    bottom: 90px;
+    right: 22%; /* Positions it right above the dev cards */
+    display: flex;
+    gap: 12px;
+    z-index: 80;
+    pointer-events: none;
+}
+.die {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    font-weight: bold;
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.3), 0 5px 10px rgba(0,0,0,0.4);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+.red-die {
+    background-color: #d9534f;
+    color: white;
+    border: 1px solid #b52b27;
+}
+.yellow-die {
+    background-color: #f0ad4e;
+    color: #333;
+    border: 1px solid #eea236;
+    text-shadow: none;
+}
+
+/* ==========================================================================
+   CARD DIFFERENCE INDICATORS (+1 / -1)
+   ========================================================================== */
+.card-diff {
+    position: absolute;
+    top: -12px;
+    right: -8px;
+    font-size: 13px;
+    font-weight: 900;
+    padding: 3px 6px;
+    border-radius: 50%;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+    pointer-events: none;
+}
+.card-diff.positive { background-color: #5cb85c; color: white; border: 1px solid #4cae4c; }
+.card-diff.negative { background-color: #d9534f; color: white; border: 1px solid #d43f3a; }
+
+/* Pop Animation for both Dice and Diffs */
+@keyframes pop-in {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.3); }
+    100% { transform: scale(1); opacity: 1; }
+}
+.pop-anim {
+    animation: pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
