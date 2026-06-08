@@ -17,7 +17,6 @@ body #chat-container {
     border: 1px solid rgba(0, 0, 0, 0.15);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    flex-direction: column;
     overflow: hidden;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -37,6 +36,7 @@ body #chat {
     flex-direction: column;
     background: transparent;
     overflow-anchor: auto !important;
+    flex-direction: column-reverse;
 }
 
 .chat-spacer {

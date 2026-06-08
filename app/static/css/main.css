@@ -48,6 +48,8 @@ html, body {
 }
 
 .player-tab-pane {
+    position: relative;
+    z-index: 200;
     width: 160px; /* Slimmer */
     background: white;
     border-radius: 4px;
@@ -153,13 +155,6 @@ html, body {
 .trade-val { font-weight: bold; min-width: 15px; text-align: center; }
 
 .circle { border-radius: 50%; display: inline-block; vertical-align: middle; }
-
-.brick-color { background-color: #9E4221; }
-.wood-color  { background-color: #408754; }
-.wheat-color { background-color: #EAC932; }
-.ore-color   { background-color: #A1AFDA; }
-.sheep-color { background-color: #83B94E; }
-
 /* ==========================================================================
    7. SVGs & ICON SCALING
    ========================================================================== */
@@ -205,14 +200,6 @@ img[src$=".svg"] {
 }
 .hexagon:before { transform: rotateZ(60deg); }
 .hexagon:after { transform: rotateZ(-60deg); }
-
-/* Tile Colors */
-.brick-color  { background-color: #945D3F; }
-.wood-color   { background-color: #408754; }
-.wheat-color  { background-color: #EAC932; }
-.ore-color    { background-color: #A1AFDA; }
-.sheep-color  { background-color: #83B94E; }
-.desert-color { background-color: #D2B48C; }
 
 /* 
  * Tokens MUST be position: relative! 
@@ -275,7 +262,7 @@ img[src$=".svg"] {
     border: 2px solid #333 !important; 
 }
 /* Ensure the specific resource colors override any other background rules */
-.brick-color  { background-color: #945D3F !important; }
+.brick-color  { background-color: #9E4221 !important; }
 .wood-color   { background-color: #408754 !important; }
 .wheat-color  { background-color: #EAC932 !important; }
 .ore-color    { background-color: #A1AFDA !important; }

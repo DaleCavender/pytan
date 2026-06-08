@@ -368,15 +368,7 @@ function insertChatMessage(msg, skipScroll) {
     var text = $("<span class='chat-text'></span>").html(safeContent);
     
     msgDiv.append(header).append(text);
-    $("#chat").append(msgDiv);
-
-    if (!skipScroll) {
-        // Wait longer if there's an image so it has time to load and affect height
-        var delay = imageRegex.test(msg.content) ? 150 : 30;
-        setTimeout(function() {
-            scrollChatToBottom(false);
-        }, delay);
-    }
+    $("#chat").prepend(msgDiv);
 }
 
 

@@ -21,7 +21,48 @@ $(window).load(function() {
     var href = window.location.pathname;
     if(href != "/home" && !document.cookie){
     	window.location = "/home"; // redirect to home
+    }var ALLOWED_COLORS = ["#BF2720", "#115EC9", "#DFA629", "#EDEAD9", "#8B4513", "#228B22"];
+    var selectedProfileColor = null;
+
+    // Generate the color circles
+    var picker = $("#color-picker-container");
+    if (picker.length > 0) {
+        ALLOWED_COLORS.forEach(function(color) {
+            var swatch = $("<div class='circle pointer'></div>").css({
+                "background-color": color,
+                "width": "30px",
+                "height": "30px",
+                "border": "2px solid #ddd",
+                "transition": "transform 0.1s"
+            });
+
+            swatch.click(function() {
+                $("#color-picker-container .circle").css("border", "2px solid #ddd").css("transform", "scale(1)");
+                $(this).css("border", "3px solid #333").css("transform", "scale(1.2)");
+                selectedProfileColor = color;
+            });
+
+            picker.append(swatch);
+        });
     }
+
+    // Wiring up the Save Button
+    $("#update-profile-btn").click(function() {
+        var newName = $("#profile-name-input").val().trim();
+        
+        // Validation: Must have at least a name or a color selected
+        if (!newName && !selectedProfileColor) {
+            addMessage("Please enter a name or pick a color first!");
+            return;
+        }
+
+        // Send to server via the function in websocket.js
+        sendUpdateProfileAction(newName, selectedProfileColor);
+        
+        // Success feedback
+        $("#profile-name-input").val("");
+        addMessage("Update request sent...");
+    });
 });
 
 $(document).on("click", "#sbp-opt-in-btn", function() {

@@ -186,6 +186,11 @@ Tile.prototype.draw = function(transX, transY, scale) {
 			});
 		}	
 	}
+	else {
+		numberCircle.children("img.robber-icon").remove
+		numberCircle.children().removeClass("hidden");
+		numberCircle.off("mouseenter mouseleave");
+	}
 
 	// Draw port
 	if (this.port !== PORT.NONE) {
