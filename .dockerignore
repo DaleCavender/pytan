@@ -1,0 +1,18 @@
+# Local virtual environments
+venv/
+.venv/
+__pycache__/
+
+# Version control
+.git/
+.gitignore
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Legacy Java/Maven artifacts
+target/
+.mvn-classpath
+.project
+.classpath
